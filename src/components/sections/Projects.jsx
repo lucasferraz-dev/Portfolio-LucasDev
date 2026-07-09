@@ -1,4 +1,5 @@
 import styles from './Projects.module.css';
+import FotoSave from '../../assets/savepoint.png';
 
 const PROJECTS = [
   {
@@ -22,7 +23,7 @@ export default function Projects() {
         {PROJECTS.map((project) => (
           <div key={project.id} className={styles.card}>
             <div className={styles.imageWrapper}>
-              <img src={project.image} alt={project.title} className={styles.image} />
+              <img src={FotoSave} alt={project.title} className={styles.image} />
             </div>
             <div className={styles.cardContent}>
               <div className={styles.cardHeader}>

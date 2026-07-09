@@ -1,4 +1,5 @@
 import styles from './Hero.module.css';
+import fotoPerfil from '../../assets/perfil.png'
 
 export default function Hero() {
   return (
@@ -33,7 +34,7 @@ export default function Hero() {
 
       <div className={styles.visualContainer}>
         <div className={styles.photoFrame}>
-          <img src="/perfil.png" alt="Lucas Ferraz" className={styles.profilePhoto} />
+          <img src={fotoPerfil} alt="Lucas Ferraz" className={styles.profilePhoto} />
         </div>
         
         <div className={styles.dbStatusCard}>
