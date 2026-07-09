@@ -1,0 +1,70 @@
+@reference "../../index.css";
+
+.sectionContainer {
+  @apply py-24 max-w-none w-full px-6 md:px-16 lg:px-24 border-t border-slate-900/60;
+}
+
+.header {
+  @apply text-center mb-20;
+}
+
+.tagline {
+  @apply text-sm font-mono tracking-widest text-[#00cc55] uppercase block mb-4;
+}
+
+.sectionTitle {
+  @apply text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white;
+}
+
+.grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6 w-full mb-10;
+}
+
+.card {
+  @apply bg-[#0c0c14] border border-slate-900 rounded-2xl p-8 flex items-center justify-between transition-all duration-300 shadow-xl;
+}
+
+.card:hover {
+  @apply border-[#00cc55]/20;
+  transform: translateY(-3px);
+}
+
+.cardContent {
+  @apply flex flex-col gap-2;
+}
+
+.label {
+  @apply text-xs md:text-sm font-mono text-slate-500 uppercase tracking-widest font-bold;
+}
+
+.value {
+  @apply text-base md:text-lg lg:text-xl font-bold text-white tracking-wide break-all;
+}
+
+.arrow {
+  @apply text-slate-700 transition-colors duration-200 text-xl font-black pl-4;
+}
+
+.card:hover .arrow {
+  @apply text-[#00cc55];
+}
+
+.statusCard {
+  @apply bg-[#0c0c14] border border-slate-900 rounded-2xl p-8 w-full shadow-xl text-left;
+}
+
+.statusHeader {
+  @apply flex items-center gap-3 mb-3;
+}
+
+.dot {
+  @apply w-3 h-3 rounded-full bg-[#00cc55] animate-pulse;
+}
+
+.statusTitle {
+  @apply text-base font-mono font-bold text-white tracking-wide;
+}
+
+.statusText {
+  @apply text-sm md:text-base text-slate-400 leading-relaxed pl-6;
+}
