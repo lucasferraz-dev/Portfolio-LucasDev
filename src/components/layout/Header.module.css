@@ -1,0 +1,53 @@
+@reference "../../index.css";
+
+.headerContainer {
+  @apply fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-transparent bg-transparent py-2;
+}
+
+.scrolled {
+  @apply bg-[#06060a]/90 backdrop-blur-md border-slate-900/80 shadow-lg py-0;
+}
+
+.navWrapper {
+  @apply max-w-none w-full px-8 md:px-16 lg:px-24 py-6 flex items-center justify-between transition-all duration-300;
+}
+
+.navWrapperScrolled {
+  @apply py-4;
+}
+
+.logo {
+  @apply font-mono text-xl md:text-2xl font-black tracking-tight text-white flex items-center gap-1 transition-colors;
+}
+
+.logo:hover {
+  @apply text-[#00cc55];
+}
+
+.logoPrefix, .logoSuffix {
+  @apply text-[#00cc55] font-bold;
+}
+
+.logoSuffix {
+  @apply opacity-60;
+}
+
+.navbar {
+  @apply flex items-center gap-8 md:gap-12 font-mono text-base md:text-lg;
+}
+
+.navLink {
+  @apply text-slate-400 font-bold tracking-wide transition-colors duration-200 flex items-center gap-1.5;
+}
+
+.navLink:hover {
+  @apply text-white;
+}
+
+.linkLine {
+  @apply text-slate-700 font-normal transition-colors duration-200;
+}
+
+.navLink:hover .linkLine {
+  @apply text-[#00cc55];
+}

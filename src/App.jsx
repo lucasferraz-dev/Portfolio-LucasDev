@@ -1,15 +1,21 @@
+import Header from './components/layout/Header';
 import Hero from './components/sections/Hero';
-import Projects from './components/sections/Projects';
 import Skills from './components/sections/Skills';
+import Projects from './components/sections/Projects';
 import Contact from './components/sections/Contact';
 
 export default function App() {
   return (
-    <main className="min-h-screen bg-[#0b0b10] overflow-x-hidden">
-      <Hero />
-      <Projects />
-      <Skills />
-      <Contact />
-    </main>
+    <div className="min-h-screen bg-[#06060a] text-slate-300 selection:bg-[#00cc55]/20 selection:text-[#00cc55]">
+      <Header />
+      
+      {/* Seções do site */}
+      <main className="pt-20">
+        <Hero />
+        <Skills />
+        <Projects />
+        <Contact />
+      </main>
+    </div>
   );
 }
