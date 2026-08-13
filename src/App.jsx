@@ -10,7 +10,6 @@ export default function App() {
     <div className="min-h-screen bg-[#06060a] text-slate-300 selection:bg-[#00cc55]/20 selection:text-[#00cc55]">
       <Header />
 
-      {/* Seções do site */}
       <main className="pt-20">
         <Hero />
         <Skills />
@@ -19,22 +18,6 @@ export default function App() {
       </main>
 
       <Analytics />
-    </div>
-  );
-}
-
-export default function App() {
-  return (
-    <div className="min-h-screen bg-[#06060a] text-slate-300 selection:bg-[#00cc55]/20 selection:text-[#00cc55]">
-      <Header />
-      
-      {/* Seções do site */}
-      <main className="pt-20">
-        <Hero />
-        <Skills />
-        <Projects />
-        <Contact />
-      </main>
     </div>
   );
 }
