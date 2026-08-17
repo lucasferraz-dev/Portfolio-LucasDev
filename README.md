@@ -1,16 +1,71 @@
-# React + Vite
+# Portfólio - Lucas Ferraz dos Santos
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Portfólio pessoal desenvolvido para apresentar minha trajetória acadêmica,
+experiências profissionais, projetos e conhecimentos na área de tecnologia.
 
-Currently, two official plugins are available:
+🌐 **Acesse:** https://ferrazdeveloper.com
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Tecnologias
 
-## React Compiler
+- React
+- Vite
+- Tailwind CSS
+- Framer Motion
+- JavaScript
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Funcionalidades
 
-## Expanding the Oxlint configuration
+- Apresentação profissional
+- Seção de habilidades e tecnologias
+- Experiências profissionais
+- Projetos desenvolvidos
+- Links para GitHub e LinkedIn
+- Animações e transições de interface
+- Design responsivo para diferentes dispositivos
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## 🛠️ Desenvolvimento
+
+O projeto foi desenvolvido utilizando React com Vite, utilizando Tailwind CSS
+para estilização e Framer Motion para animações e transições da interface.
+
+## ▶️ Como executar
+
+Clone o repositório:
+
+```bash
+git clone https://github.com/lucasferraz-dev/Portfolio-LucasDev.git
+```
+
+Entre na pasta:
+
+```bash
+cd portfolio-LucasDev
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Execute o projeto:
+
+```bash
+npm run dev
+```
+
+O projeto estará disponivel no endereço informado pelo Vite no terminal.
+
+## 📌 Autor
+
+Lucas Ferraz dos Santos
+
+GitHub: https://github.com/lucasferraz-dev
+
+LinkedIn: https://www.linkedin.com/in/lucas-ferraz-bcc
+
+Portfólio: https://ferrazdeveloper.com
+
+## 📸 Preview
+
+![Preview do portfólio](./public/preview.png)
