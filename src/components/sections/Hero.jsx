@@ -1,5 +1,5 @@
 import styles from './Hero.module.css';
-import fotoPerfil from '../../assets/perfil.png'
+import fotoPerfil from '../../assets/perfil.jfif'
 
 export default function Hero() {
   return (
