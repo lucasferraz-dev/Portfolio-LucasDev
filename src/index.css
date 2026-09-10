@@ -1,10 +1,59 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   margin: 0;
-  background-color: #0b0b10;
+  background-color: #06060a;
   color: #ffffff;
   font-family: system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Header é fixo: sem isso o título da seção fica escondido ao clicar no menu */
+section[id] {
+  scroll-margin-top: 96px;
+}
+
+/* Foco visível — necessário para navegação por teclado */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #00cc55;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Link de pular navegação (aparece só ao tabular) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: #00cc55;
+  color: #06060a;
+  padding: 12px 20px;
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+  border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* Respeita quem desativou animações no sistema (iOS/macOS: Reduzir Movimento) */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

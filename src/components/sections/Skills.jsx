@@ -2,18 +2,19 @@ import styles from './Skills.module.css';
 
 const SKILL_SCHEMAS = [
   {
-    table: 'relational_storage',
-    type: 'Core Engine',
+    table: 'frontend_stack',
+    type: 'Interface Layer',
     columns: [
-      { name: 'MySQL', status: 'PRIMARY KEY' },
-      { name: 'SQL Server', status: 'INDEXED' },
-      { name: 'Database Design', status: 'OPTIMIZED' },
-      { name: 'Query Optimization', status: 'HIGH PERF' }
+      { name: 'React', status: 'ACTIVE' },
+      { name: 'JavaScript', status: 'ACTIVE' },
+      { name: 'Tailwind CSS', status: 'STYLED' },
+      { name: 'HTML / CSS', status: 'RENDERED' }
     ]
   },
+
   {
     table: 'backend_runtime',
-    type: 'Data Pipelines',
+    type: 'Application Layer',
     columns: [
       { name: 'Node.js', status: 'ACTIVE' },
       { name: 'Express', status: 'ACTIVE' },
@@ -21,14 +22,15 @@ const SKILL_SCHEMAS = [
       { name: 'REST APIs', status: 'CONNECTED' }
     ]
   },
+
   {
-    table: 'interface_infra',
-    type: 'Environment',
+    table: 'data_storage',
+    type: 'Persistence Layer',
     columns: [
-      { name: 'React', status: 'RENDERED' },
-      { name: 'Tailwind CSS', status: 'COMPILED' },
-      { name: 'Git / GitHub', status: 'PUSHED' },
-      { name: 'Linux Terminal', status: 'ROOT' }
+      { name: 'MySQL', status: 'PRIMARY KEY' },
+      { name: 'SQL Server', status: 'INDEXED' },
+      { name: 'SQLite', status: 'OPTIMIZED' },
+      { name: 'GitHub', status: 'MODELED' }
     ]
   }
 ];

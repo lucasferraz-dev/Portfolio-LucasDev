@@ -34,7 +34,7 @@ export default function Contact() {
           <h3 className={styles.statusTitle}>CLUSTER STATUS: ONLINE</h3>
         </div>
         <p className={styles.statusText}>
-          Pronto para novas conexões, projetos e otimizações de sistemas de dados. Mande sua requisição.
+          Sempre aberto a novos desafios, projetos e oportunidades para aprender construindo.
         </p>
       </div>
 

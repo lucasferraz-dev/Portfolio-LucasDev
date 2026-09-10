@@ -5,7 +5,7 @@
 }
 
 .header {
-  @apply text-center mb-20;
+  @apply text-center mb-12;
 }
 
 .tagline {
@@ -15,6 +15,36 @@
 .sectionTitle {
   @apply text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white;
 }
+
+.sectionSubtitle {
+  @apply text-base md:text-lg text-slate-500 max-w-2xl mx-auto mt-6 leading-relaxed;
+}
+
+/* ---------- Filtros ---------- */
+
+.filters {
+  @apply flex flex-wrap items-center justify-center gap-3 mb-14;
+}
+
+.filterPrefix {
+  @apply text-xs font-mono uppercase tracking-widest text-slate-600 mr-1 hidden sm:inline;
+}
+
+.filterButton {
+  @apply px-4 py-2 text-xs font-mono font-bold tracking-widest uppercase rounded-lg
+         border border-slate-900 bg-[#0c0c14] text-slate-500 cursor-pointer
+         transition-colors duration-200;
+}
+
+.filterButton:hover {
+  @apply text-slate-200 border-slate-800;
+}
+
+.filterActive {
+  @apply bg-[#00cc55]/10 text-[#00cc55] border-[#00cc55]/30;
+}
+
+/* ---------- Card ---------- */
 
 .grid {
   @apply flex flex-col gap-10 w-full;
@@ -40,12 +70,32 @@
   transform: scale(1.02);
 }
 
+.imagePlaceholder {
+  @apply w-full h-full flex flex-col items-center justify-center gap-3 bg-[#08080e];
+  background-image:
+    linear-gradient(rgba(0, 204, 85, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 204, 85, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.placeholderText {
+  @apply font-mono text-sm md:text-base font-bold tracking-widest text-[#00cc55]/70 text-center px-6;
+}
+
+.placeholderSub {
+  @apply font-mono text-[10px] tracking-[0.25em] text-slate-700 uppercase;
+}
+
 .cardContent {
-  @apply p-8 md:p-10 flex flex-col flex-1 justify-between;
+  @apply p-8 md:p-10 flex flex-col flex-1;
 }
 
 .cardHeader {
-  @apply flex items-baseline gap-4 mb-6 border-b border-slate-900/40 pb-4;
+  @apply flex flex-wrap items-baseline justify-between gap-4 mb-5 border-b border-slate-900/40 pb-4;
+}
+
+.titleRow {
+  @apply flex items-baseline gap-4;
 }
 
 .projectId {
@@ -56,20 +106,100 @@
   @apply text-2xl md:text-3xl font-bold text-white tracking-tight;
 }
 
+.categoryBadge {
+  @apply px-3 py-1 text-[10px] font-mono font-bold tracking-widest uppercase rounded-md
+         border border-slate-800 text-slate-500;
+}
+
+/* ---------- Meta (onde / quando / papel) ---------- */
+
+.metaGrid {
+  @apply flex flex-col gap-2.5 mb-6 m-0;
+}
+
+.metaItem {
+  @apply flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4;
+}
+
+.metaKey {
+  @apply text-[10px] font-mono uppercase tracking-[0.2em] text-slate-600 sm:w-24 shrink-0;
+}
+
+.metaValue {
+  @apply text-sm text-slate-400 m-0 leading-relaxed;
+}
+
 .projectDescription {
-  @apply text-base md:text-lg text-slate-400 leading-relaxed mb-8;
+  @apply text-base md:text-lg text-slate-300 leading-relaxed mb-6;
 }
 
 .tagsContainer {
-  @apply flex flex-wrap gap-3 mb-8;
+  @apply flex flex-wrap gap-3 mb-6;
 }
 
 .tag {
   @apply px-3.5 py-1.5 text-xs font-mono font-bold rounded-lg bg-[#00cc55]/5 text-[#00cc55] border border-[#00cc55]/10 tracking-wider;
 }
 
+/* ---------- Toggle de detalhes ---------- */
+
+.toggleButton {
+  @apply self-start inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
+         bg-transparent border border-slate-800 cursor-pointer
+         text-xs font-mono font-bold uppercase tracking-widest text-slate-400
+         transition-colors duration-200;
+}
+
+.toggleButton:hover {
+  @apply text-[#00cc55] border-[#00cc55]/30 bg-[#00cc55]/5;
+}
+
+.chevron {
+  @apply inline-block transition-transform duration-200;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* ---------- Detalhes ---------- */
+
+.details {
+  @apply mt-8 pt-8 border-t border-slate-900/60 flex flex-col gap-8;
+}
+
+.detailBlock {
+  @apply flex flex-col gap-4;
+}
+
+.detailTitle {
+  @apply text-xs font-mono uppercase tracking-[0.2em] text-[#00cc55] font-bold m-0;
+}
+
+.detailText {
+  @apply text-base text-slate-400 leading-relaxed m-0;
+}
+
+.detailList {
+  @apply flex flex-col gap-3 list-none p-0 m-0;
+}
+
+.detailItem {
+  @apply flex gap-3 text-base text-slate-400 leading-relaxed;
+}
+
+.stepNumber {
+  @apply font-mono text-xs font-bold text-[#00cc55]/50 pt-1 shrink-0;
+}
+
+.stepBullet {
+  @apply font-mono font-bold text-[#00cc55]/60 shrink-0;
+}
+
+/* ---------- Footer ---------- */
+
 .cardFooter {
-  @apply pt-5 border-t border-slate-900/40;
+  @apply mt-8 pt-5 border-t border-slate-900/40 flex flex-wrap gap-x-8 gap-y-3;
 }
 
 .projectLink {
@@ -89,6 +219,7 @@
 }
 
 @media (min-width: 1024px) {
-  .card { @apply flex-row; }
-  .imageWrapper { @apply w-1/2 aspect-auto border-b-0 border-r; }
+  .card { @apply flex-row items-stretch; }
+  .imageWrapper { @apply w-2/5 aspect-auto border-b-0 border-r shrink-0; }
+  .cardContent { @apply w-3/5; }
 }

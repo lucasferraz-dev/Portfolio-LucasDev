@@ -7,7 +7,7 @@ export default function Hero() {
       
       <div className={styles.textBlock}>
         <div className={styles.tagline}>
-          // database architecture & performance \\
+          // SOFTWARE DEVELOPMENT & PROBLEM SOLVING \\
         </div>
         
         <h1 className={styles.title}>
@@ -15,11 +15,11 @@ export default function Hero() {
         </h1>
         
         <h2 className={styles.subtitle}>
-          Modelando arquiteturas de dados robustas e otimizando consultas de alta performance.
+          Desenvolvedor de software que transforma problemas em soluções através de código, tecnologia e aprendizado contínuo.
         </h2>
         
         <p className={styles.description}>
-          Desenvolvedor de software focado em engenharia de dados, otimização de queries em sistemas relacionais e modelagem de ecossistemas escaláveis como o Save Point.
+          Estudante de Ciência da Computação, com experiência em desenvolvimento web, automação, bancos de dados e construção de projetos full-stack.
         </p>
         
         <div className={styles.ctaGroup}>
@@ -53,7 +53,7 @@ export default function Hero() {
                 <span className={styles.output}>&gt; Role:</span> <span className={styles.string}>'Software Developer'</span>
               </div>
               <div className={styles.dbLine}>
-                <span className={styles.output}>&gt; Focus:</span> <span className={styles.string}>'Database Architecture'</span>
+                <span className={styles.output}>&gt; Focus:</span> <span className={styles.string}>'Full Stack'</span>
               </div>
             </div>
           </div>
