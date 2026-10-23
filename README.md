@@ -1,32 +1,46 @@
 # Portfólio - Lucas Ferraz dos Santos
 
-Portfólio pessoal desenvolvido para apresentar minha trajetória acadêmica,
-experiências profissionais, projetos e conhecimentos na área de tecnologia.
+Portfólio pessoal com minha trajetória, projetos, experiência profissional e
+conhecimentos técnicos. Cada projeto é apresentado com o contexto, o problema,
+o processo e o que aprendi com ele.
 
 🌐 **Acesse:** https://ferrazdeveloper.com
 
+## 📂 Seções
+
+- **Início:** apresentação e foco atual
+- **Quem eu sou:** trajetória na faculdade e no estágio
+- **Projetos:** cards com filtro por categoria e painel de "processo e aprendizados"
+- **Conhecimento técnico:** tecnologias e onde cada uma foi usada
+- **Experiência profissional:** estágio de TI no Grande Oriente do Brasil - Paraná
+- **Formação:** Ciência da Computação na PUCPR, cursos e certificações
+- **Contato:** e-mail, LinkedIn, GitHub e WhatsApp
+
 ## 🚀 Tecnologias
 
-- React
+- React 19
 - Vite
-- Tailwind CSS
-- Framer Motion
+- Tailwind CSS 4 (via `@apply` em CSS Modules)
 - JavaScript
+- Vercel Analytics
 
-## ✨ Funcionalidades
+O visual segue um tema de terminal/SQL, com animações feitas em CSS.
 
-- Apresentação profissional
-- Seção de habilidades e tecnologias
-- Experiências profissionais
-- Projetos desenvolvidos
-- Links para GitHub e LinkedIn
-- Animações e transições de interface
-- Design responsivo para diferentes dispositivos
+## 🗂️ Estrutura
 
-## 🛠️ Desenvolvimento
+```
+src/
+├── assets/                 # imagens dos projetos, logos e foto de perfil
+├── components/
+│   ├── layout/Header.jsx   # navegação fixa e menu mobile
+│   └── sections/           # uma pasta por seção (componente + .module.css)
+├── App.jsx                 # ordem das seções
+└── index.css               # estilos globais
+```
 
-O projeto foi desenvolvido utilizando React com Vite, utilizando Tailwind CSS
-para estilização e Framer Motion para animações e transições da interface.
+O conteúdo de cada seção fica em um array no topo do próprio componente
+(por exemplo, `PROJECTS` em `Projects.jsx` e `EXPERIENCES` em `Experience.jsx`).
+Para adicionar um projeto, basta incluir um novo objeto no array.
 
 ## ▶️ Como executar
 
@@ -39,7 +53,7 @@ git clone https://github.com/lucasferraz-dev/Portfolio-LucasDev.git
 Entre na pasta:
 
 ```bash
-cd portfolio-LucasDev
+cd Portfolio-LucasDev
 ```
 
 Instale as dependências:
@@ -54,7 +68,13 @@ Execute o projeto:
 npm run dev
 ```
 
-O projeto estará disponivel no endereço informado pelo Vite no terminal.
+O projeto estará disponível no endereço informado pelo Vite no terminal.
+
+Para gerar a versão de produção:
+
+```bash
+npm run build
+```
 
 ## 📌 Autor
 

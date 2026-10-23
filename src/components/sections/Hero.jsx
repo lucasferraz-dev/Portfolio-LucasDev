@@ -11,7 +11,7 @@ export default function Hero() {
         </div>
         
         <h1 className={styles.title}>
-          Lucas Ferraz
+          Lucas Ferraz dos Santos
         </h1>
         
         <h2 className={styles.subtitle}>
@@ -34,7 +34,7 @@ export default function Hero() {
 
       <div className={styles.visualContainer}>
         <div className={styles.photoFrame}>
-          <img src={fotoPerfil} alt="Lucas Ferraz" className={styles.profilePhoto} />
+          <img src={fotoPerfil} alt="Lucas Ferraz dos Santos" className={styles.profilePhoto} />
         </div>
         
         <div className={styles.dbStatusCard}>
@@ -47,7 +47,7 @@ export default function Hero() {
             </div>
             <div className={styles.dbResult}>
               <div className={styles.dbLine}>
-                <span className={styles.output}>&gt; Name:</span> <span className={styles.string}>'Lucas Ferraz'</span>
+                <span className={styles.output}>&gt; Name:</span> <span className={styles.string}>'Lucas Ferraz dos Santos'</span>
               </div>
               <div className={styles.dbLine}>
                 <span className={styles.output}>&gt; Role:</span> <span className={styles.string}>'Estagiário de TI @ GOB-PR'</span>
