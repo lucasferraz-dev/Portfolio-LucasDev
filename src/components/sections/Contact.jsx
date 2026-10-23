@@ -18,7 +18,12 @@ export default function Contact() {
 
       <div className={styles.grid}>
         {CONTACT_METHODS.map((method) => (
-          <a key={method.id} href={method.url} target="_blank" rel="noreferrer" className={styles.card}>
+          <a
+            key={method.id}
+            href={method.url}
+            {...(method.url.startsWith('mailto:') ? {} : { target: '_blank', rel: 'noreferrer' })}
+            className={styles.card}
+          >
             <div className={styles.cardContent}>
               <span className={styles.label}>{method.label}</span>
               <span className={styles.value}>{method.value}</span>

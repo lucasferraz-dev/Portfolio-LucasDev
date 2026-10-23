@@ -5,10 +5,10 @@ const SKILL_SCHEMAS = [
     table: 'frontend_stack',
     type: 'Interface Layer',
     columns: [
-      { name: 'React', status: 'ACTIVE' },
-      { name: 'JavaScript', status: 'ACTIVE' },
-      { name: 'Tailwind CSS', status: 'STYLED' },
-      { name: 'HTML / CSS', status: 'RENDERED' }
+      { name: 'React', status: 'SAVE POINT · PORTFÓLIO' },
+      { name: 'JavaScript', status: 'SAVE POINT · PORTFÓLIO' },
+      { name: 'Tailwind CSS', status: 'PORTFÓLIO' },
+      { name: 'HTML / CSS', status: 'ESTÁGIO · PORTFÓLIO' }
     ]
   },
 
@@ -16,21 +16,22 @@ const SKILL_SCHEMAS = [
     table: 'backend_runtime',
     type: 'Application Layer',
     columns: [
-      { name: 'Node.js', status: 'ACTIVE' },
-      { name: 'Express', status: 'ACTIVE' },
-      { name: 'Python', status: 'ACTIVE' },
-      { name: 'REST APIs', status: 'CONNECTED' }
+      { name: 'Python', status: 'ESTÁGIO · HACKATHON' },
+      { name: 'Django', status: 'ESTÁGIO' },
+      { name: 'Node.js', status: 'SAVE POINT' },
+      { name: 'Express', status: 'SAVE POINT' },
+      { name: 'REST APIs', status: 'SAVE POINT · HACKATHON' }
     ]
   },
 
   {
-    table: 'data_storage',
-    type: 'Persistence Layer',
+    table: 'data_and_tools',
+    type: 'Persistence & Versioning',
     columns: [
-      { name: 'MySQL', status: 'PRIMARY KEY' },
-      { name: 'SQL Server', status: 'INDEXED' },
-      { name: 'SQLite', status: 'OPTIMIZED' },
-      { name: 'GitHub', status: 'MODELED' }
+      { name: 'MySQL', status: 'SAVE POINT' },
+      { name: 'SQL Server', status: 'SAVE POINT' },
+      { name: 'SQLite', status: 'FACULDADE' },
+      { name: 'Git / GitHub', status: 'TODOS OS PROJETOS' }
     ]
   }
 ];
@@ -59,7 +60,7 @@ export default function Skills() {
             <div className={styles.tableBody}>
               <div className={styles.columnsHeader}>
                 <span>COLUMN_NAME</span>
-                <span>ATTRIBUTES</span>
+                <span>USED_IN</span>
               </div>
               
               <div className={styles.rowsContainer}>

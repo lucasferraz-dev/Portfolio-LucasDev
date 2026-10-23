@@ -15,11 +15,11 @@ export default function Hero() {
         </h1>
         
         <h2 className={styles.subtitle}>
-          Desenvolvedor de software que transforma problemas em soluções através de código, tecnologia e aprendizado contínuo.
+          Desenvolvedor de software, com experiência em aplicações web, sistemas internos e automação de processos.
         </h2>
-        
+
         <p className={styles.description}>
-          Estudante de Ciência da Computação, com experiência em desenvolvimento web, automação, bancos de dados e construção de projetos full-stack.
+          Estudante de Ciência da Computação na PUCPR e estagiário de TI, trabalhando com Python, Django, React e bancos de dados.
         </p>
         
         <div className={styles.ctaGroup}>
@@ -50,10 +50,10 @@ export default function Hero() {
                 <span className={styles.output}>&gt; Name:</span> <span className={styles.string}>'Lucas Ferraz'</span>
               </div>
               <div className={styles.dbLine}>
-                <span className={styles.output}>&gt; Role:</span> <span className={styles.string}>'Software Developer'</span>
+                <span className={styles.output}>&gt; Role:</span> <span className={styles.string}>'Estagiário de TI @ GOB-PR'</span>
               </div>
               <div className={styles.dbLine}>
-                <span className={styles.output}>&gt; Focus:</span> <span className={styles.string}>'Full Stack'</span>
+                <span className={styles.output}>&gt; Focus:</span> <span className={styles.string}>'Python · Django · React'</span>
               </div>
             </div>
           </div>

@@ -9,17 +9,21 @@ const EXPERIENCES = [
     company: "Grande Oriente do Brasil - Paraná",
     period: "Out/2025 - Atualmente",
     description:
-      "Atuação em Tecnologia da Informação, desenvolvendo e automatizando soluções para processos internos, além de prestar suporte aos usuários e auxiliar na manutenção de sistemas e páginas web.",
+      "Entrei no suporte e na automação de planilhas e hoje desenvolvo o sistema interno que documenta as rotinas de trabalho de todas as secretarias, construído em Python/Django sobre os requisitos das normas ISO 9001 e ISO 37001.",
     activities: [
-      "Automação de processos utilizando planilhas e ferramentas digitais;",
-      "Desenvolvimento e manutenção de páginas web para processos internos;",
-      "Organização e manipulação de dados utilizados em processos administrativos;",
+      "Desenvolvimento do Sistema de Rotinas: cadastro, versionamento, fluxo de aprovação e mapa visual de cada processo, com versão para impressão;",
+      "Tradução dos requisitos da ISO 9001 e da ISO 37001 em regras do sistema: controle de documentos, histórico de versões, acesso por secretaria e autenticação em dois fatores;",
+      "Automação de etapas repetitivas de processos administrativos com planilhas e scripts, reduzindo preenchimento manual e retrabalho;",
+      "Desenvolvimento e manutenção de páginas web internas;",
+      "Suporte aos usuários e ajuste das ferramentas a partir do uso real da equipe.",
     ],
     technologies: [
-      "Excel",
+      "Python",
+      "Django",
+      "ISO 9001",
+      "ISO 37001",
       "Automação",
-      "Web",
-      "Banco de Dados",
+      "Excel",
       "Suporte",
     ],
   },
@@ -29,7 +33,7 @@ const Experience = () => {
   return (
     <section id="experience" className={styles.sectionContainer}>
       <div className={styles.header}>
-        <span className={styles.tagline}>Execute query_Experience</span>
+        <span className={styles.tagline}>SELECT * FROM experience;</span>
 
         <h2 className={styles.sectionTitle}>
           Experiência Profissional

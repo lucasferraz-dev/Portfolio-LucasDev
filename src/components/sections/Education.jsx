@@ -18,7 +18,6 @@ const EDUCATION = [
 ];
 
 const CERTIFICATIONS = [
-  { name: 'Ciência da Computação / Bacharelado', issuer: 'PUCPR - Pontificia Universidade Católica do Paraná', year: '2027' },
   { name: 'Curso de Python 3 do básico ao avançado - com projetos reais', issuer: 'Udemy', year: '2026' },
 ];
 
