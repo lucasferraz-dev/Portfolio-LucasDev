@@ -1,4 +1,5 @@
 import styles from './Contact.module.css';
+import { useLanguage } from '../../i18n/useLanguage';
 
 const CONTACT_METHODS = [
   { id: '01', label: 'PROTOCOL: SMTP', value: 'lucasferrazsantos@hotmail.com', url: 'mailto:lucasferrazsantos@hotmail.com' },
@@ -8,12 +9,14 @@ const CONTACT_METHODS = [
 ];
 
 export default function Contact() {
+  const { t } = useLanguage();
+
   return (
     <section id="contact" className={styles.sectionContainer}>
-      
+
       <div className={styles.header}>
         <span className={styles.tagline}>OPEN CONCURRENT_CONNECTIONS;</span>
-        <h2 className={styles.sectionTitle}>Entre em contato</h2>
+        <h2 className={styles.sectionTitle}>{t.contact.title}</h2>
       </div>
 
       <div className={styles.grid}>
@@ -39,7 +42,7 @@ export default function Contact() {
           <h3 className={styles.statusTitle}>CLUSTER STATUS: ONLINE</h3>
         </div>
         <p className={styles.statusText}>
-          Sempre aberto a novos desafios, projetos e oportunidades para aprender construindo.
+          {t.contact.statusText}
         </p>
       </div>
 

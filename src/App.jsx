@@ -7,14 +7,17 @@ import Experience from './components/sections/Experience';
 import Education from './components/sections/Education';
 import Contact from './components/sections/Contact';
 import { Analytics } from '@vercel/analytics/react';
+import { useLanguage } from './i18n/useLanguage';
 
 export default function App() {
+  const { t } = useLanguage();
+
   return (
     <div
       id="top"
       className="min-h-screen bg-[#06060a] text-slate-300 selection:bg-[#00cc55]/20 selection:text-[#00cc55]"
     >
-      <a href="#main" className="skip-link">Pular para o conteúdo</a>
+      <a href="#main" className="skip-link">{t.app.skipLink}</a>
 
       <Header />
 

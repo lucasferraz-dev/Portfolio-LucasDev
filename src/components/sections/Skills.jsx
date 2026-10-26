@@ -1,14 +1,15 @@
 import styles from './Skills.module.css';
+import { useLanguage } from '../../i18n/useLanguage';
 
 const SKILL_SCHEMAS = [
   {
     table: 'frontend_stack',
     type: 'Interface Layer',
     columns: [
-      { name: 'React', status: 'SAVE POINT · PORTFÓLIO' },
-      { name: 'JavaScript', status: 'SAVE POINT · PORTFÓLIO' },
-      { name: 'Tailwind CSS', status: 'PORTFÓLIO' },
-      { name: 'HTML / CSS', status: 'ESTÁGIO · PORTFÓLIO' }
+      { name: 'React', usedIn: ['savepoint', 'portfolio'] },
+      { name: 'JavaScript', usedIn: ['savepoint', 'portfolio'] },
+      { name: 'Tailwind CSS', usedIn: ['portfolio'] },
+      { name: 'HTML / CSS', usedIn: ['internship', 'portfolio'] }
     ]
   },
 
@@ -16,33 +17,35 @@ const SKILL_SCHEMAS = [
     table: 'backend_runtime',
     type: 'Application Layer',
     columns: [
-      { name: 'Python', status: 'ESTÁGIO · HACKATHON' },
-      { name: 'Django', status: 'ESTÁGIO' },
-      { name: 'Node.js', status: 'SAVE POINT' },
-      { name: 'Express', status: 'SAVE POINT' },
-      { name: 'REST APIs', status: 'SAVE POINT · HACKATHON' }
+      { name: 'Python', usedIn: ['internship', 'hackathon'] },
+      { name: 'Django', usedIn: ['internship'] },
+      { name: 'Node.js', usedIn: ['savepoint'] },
+      { name: 'Express', usedIn: ['savepoint'] },
+      { name: 'REST APIs', usedIn: ['savepoint', 'hackathon'] }
     ]
   },
 
   {
-    table: 'data_and_tools',
+    table: 'data_&_tools',
     type: 'Persistence & Versioning',
     columns: [
-      { name: 'MySQL', status: 'SAVE POINT' },
-      { name: 'SQL Server', status: 'SAVE POINT' },
-      { name: 'SQLite', status: 'FACULDADE' },
-      { name: 'Git / GitHub', status: 'TODOS OS PROJETOS' }
+      { name: 'MySQL', usedIn: ['savepoint'] },
+      { name: 'SQL Server', usedIn: ['savepoint'] },
+      { name: 'SQLite', usedIn: ['college'] },
+      { name: 'Git / GitHub', usedIn: ['all'] }
     ]
   }
 ];
 
 export default function Skills() {
+  const { t } = useLanguage();
+
   return (
     <section id="skills" className={styles.sectionContainer}>
-      
+
       <div className={styles.header}>
         <span className={styles.tagline}>SHOW SCHEMAS;</span>
-        <h2 className={styles.sectionTitle}>Conhecimento Técnico</h2>
+        <h2 className={styles.sectionTitle}>{t.skills.title}</h2>
       </div>
 
       <div className={styles.grid}>
@@ -67,7 +70,9 @@ export default function Skills() {
                 {schema.columns.map((col, colIndex) => (
                   <div key={colIndex} className={styles.row}>
                     <span className={styles.fieldName}>{col.name}</span>
-                    <span className={styles.fieldStatus}>{col.status}</span>
+                    <span className={styles.fieldStatus}>
+                      {col.usedIn.map((key) => t.skills.usedIn[key]).join(' · ')}
+                    </span>
                   </div>
                 ))}
               </div>

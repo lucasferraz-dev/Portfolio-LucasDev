@@ -1,7 +1,10 @@
 import styles from './Hero.module.css';
 import fotoPerfil from '../../assets/perfil.jfif'
+import { useLanguage } from '../../i18n/useLanguage';
 
 export default function Hero() {
+  const { t } = useLanguage();
+
   return (
     <section className={styles.heroContainer}>
       
@@ -15,19 +18,19 @@ export default function Hero() {
         </h1>
         
         <h2 className={styles.subtitle}>
-          Desenvolvedor de software, com experiência em aplicações web, sistemas internos e automação de processos.
+          {t.hero.subtitle}
         </h2>
 
         <p className={styles.description}>
-          Estudante de Ciência da Computação na PUCPR e estagiário de TI, trabalhando com Python, Django, React e bancos de dados.
+          {t.hero.description}
         </p>
-        
+
         <div className={styles.ctaGroup}>
           <a href="#projects" className={styles.primaryBtn}>
-            Ver Projetos
+            {t.hero.ctaProjects}
           </a>
           <a href="#contact" className={styles.secondaryBtn}>
-            Contato
+            {t.hero.ctaContact}
           </a>
         </div>
       </div>
@@ -50,7 +53,7 @@ export default function Hero() {
                 <span className={styles.output}>&gt; Name:</span> <span className={styles.string}>'Lucas Ferraz dos Santos'</span>
               </div>
               <div className={styles.dbLine}>
-                <span className={styles.output}>&gt; Role:</span> <span className={styles.string}>'Estagiário de TI @ GOB-PR'</span>
+                <span className={styles.output}>&gt; Role:</span> <span className={styles.string}>'{t.hero.role}'</span>
               </div>
               <div className={styles.dbLine}>
                 <span className={styles.output}>&gt; Focus:</span> <span className={styles.string}>'Python · Django · React'</span>

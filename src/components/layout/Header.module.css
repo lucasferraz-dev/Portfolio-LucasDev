@@ -29,7 +29,40 @@
 }
 
 .navbar {
-  @apply hidden lg:flex items-center gap-7 xl:gap-10 font-mono text-sm xl:text-base;
+  @apply hidden lg:flex items-center gap-5 xl:gap-8 2xl:gap-10 font-mono text-sm xl:text-base;
+}
+
+.actions {
+  @apply flex items-center gap-3 shrink-0;
+}
+
+.langSwitcher {
+  @apply items-center font-mono text-xs font-bold rounded-lg overflow-hidden border border-slate-900;
+}
+
+.langSwitcherHeader {
+  @apply hidden sm:flex;
+}
+
+.langSwitcherMobile {
+  @apply flex sm:hidden self-start mb-3 text-sm;
+}
+
+.langButton {
+  @apply px-2.5 py-2 text-slate-500 bg-transparent cursor-pointer tracking-wider transition-colors duration-200;
+}
+
+.langSwitcherMobile .langButton {
+  @apply px-4 py-2.5;
+}
+
+.langButton:hover {
+  @apply text-white;
+}
+
+.langActive,
+.langActive:hover {
+  @apply text-[#00cc55] bg-[#00cc55]/10;
 }
 
 .navLink {

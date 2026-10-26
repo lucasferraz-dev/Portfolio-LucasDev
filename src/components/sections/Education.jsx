@@ -1,19 +1,12 @@
 import styles from './Education.module.css';
 import logoPucpr from '../../assets/pucpr.png';
+import { useLanguage } from '../../i18n/useLanguage';
 
 const EDUCATION = [
   {
     id: 'EDU_01',
-    degree: 'Bacharelado em Ciência da Computação',
-    institution: 'PUCPR - Pontifícia Universidade Católica do Paraná',
-    period: '2024 - 2027 (em andamento)',
     status: 'IN_PROGRESS',
     logo: logoPucpr,
-    highlights: [
-      'Desenvolvimento de software e programação orientada a objetos;',
-      'Banco de dados, desenvolvimento web e arquitetura de sistemas;',
-      'Inteligência Artificial, Machine Learning e programação distribuída.',
-    ],
   },
 ];
 
@@ -22,21 +15,28 @@ const CERTIFICATIONS = [
 ];
 
 export default function Education() {
+  const { t } = useLanguage();
+
+  const education = EDUCATION.map((item) => ({
+    ...item,
+    ...t.education.items[item.id],
+  }));
+
   return (
     <section id="education" className={styles.sectionContainer}>
       <div className={styles.header}>
         <span className={styles.tagline}>SELECT * FROM education;</span>
-        <h2 className={styles.sectionTitle}>Formação</h2>
+        <h2 className={styles.sectionTitle}>{t.education.title}</h2>
       </div>
 
       <div className={styles.list}>
-        {EDUCATION.map((item) => (
+        {education.map((item) => (
           <div key={item.id} className={styles.card}>
             <div className={styles.cardHeader}>
               <div className={styles.institutionBlock}>
                 <div className={styles.logo}>
                   {item.logo ? (
-                    <img src={item.logo} alt={`Logo ${item.institution}`} />
+                    <img src={item.logo} alt={t.education.logoAlt(item.institution)} />
                   ) : (
                     <span className={styles.logoFallback}>EDU</span>
                   )}
@@ -72,7 +72,7 @@ export default function Education() {
 
       {CERTIFICATIONS.length > 0 && (
         <div className={styles.certBlock}>
-          <h3 className={styles.certTitle}>Cursos e certificações</h3>
+          <h3 className={styles.certTitle}>{t.education.certTitle}</h3>
           <div className={styles.certGrid}>
             {CERTIFICATIONS.map((cert) => (
               <div key={cert.name} className={styles.certCard}>
