@@ -5,7 +5,7 @@
 }
 
 .scrolled {
-  @apply bg-[#06060a]/90 backdrop-blur-md border-slate-900/80 shadow-lg py-0;
+  @apply bg-base/90 backdrop-blur-md border-slate-900/80 shadow-lg py-0;
 }
 
 .navWrapper {
@@ -17,11 +17,11 @@
 }
 
 .logo:hover {
-  @apply text-[#00cc55];
+  @apply text-accent;
 }
 
 .logoPrefix, .logoSuffix {
-  @apply text-[#00cc55] font-bold;
+  @apply text-accent font-bold;
 }
 
 .logoSuffix {
@@ -29,7 +29,7 @@
 }
 
 .navbar {
-  @apply hidden lg:flex items-center gap-5 xl:gap-8 2xl:gap-10 font-mono text-sm xl:text-base;
+  @apply hidden xl:flex items-center gap-5 2xl:gap-10 font-mono text-sm 2xl:text-base;
 }
 
 .actions {
@@ -38,6 +38,22 @@
 
 .langSwitcher {
   @apply items-center font-mono text-xs font-bold rounded-lg overflow-hidden border border-slate-900;
+}
+
+.themeButton {
+  @apply flex items-center justify-center w-9 h-9 rounded-lg border border-slate-900 bg-transparent
+         text-slate-400 cursor-pointer transition-colors duration-200;
+}
+
+.themeButton:hover {
+  @apply text-accent border-accent/40;
+}
+
+.themeButton svg {
+  @apply w-[18px] h-[18px] fill-none stroke-current;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .langSwitcherHeader {
@@ -62,7 +78,7 @@
 
 .langActive,
 .langActive:hover {
-  @apply text-[#00cc55] bg-[#00cc55]/10;
+  @apply text-accent bg-accent/10;
 }
 
 .navLink {
@@ -78,16 +94,16 @@
 }
 
 .navLink:hover .linkLine {
-  @apply text-[#00cc55];
+  @apply text-accent;
 }
 
 .menuButton {
-  @apply lg:hidden flex flex-col justify-center gap-1.5 w-11 h-11 p-2.5 rounded-lg
+  @apply xl:hidden flex flex-col justify-center gap-1.5 w-11 h-11 p-2.5 rounded-lg
          bg-transparent border border-slate-900 cursor-pointer transition-colors duration-200;
 }
 
 .menuButton:hover {
-  @apply border-[#00cc55]/40;
+  @apply border-accent/40;
 }
 
 .menuBar {
@@ -107,8 +123,8 @@
 }
 
 .mobileMenu {
-  @apply lg:hidden flex flex-col gap-1 px-6 pb-8 pt-2
-         bg-[#06060a]/98 backdrop-blur-md border-t border-slate-900/80;
+  @apply xl:hidden flex flex-col gap-1 px-6 pb-8 pt-2
+         bg-base/98 backdrop-blur-md border-t border-slate-900/80;
 }
 
 .mobileLink {
@@ -118,5 +134,5 @@
 
 .mobileLink:hover,
 .mobileLink:focus-visible {
-  @apply text-[#00cc55];
+  @apply text-accent;
 }

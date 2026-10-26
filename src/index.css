@@ -1,13 +1,53 @@
 @import "tailwindcss";
 
+@theme {
+  --color-base: #06060a;
+  --color-surface: #0c0c14;
+  --color-surface-alt: #08080e;
+  --color-surface-deep: #0a0a11;
+  --color-accent: #00cc55;
+  --color-accent-strong: #00b34a;
+  --color-accent-hover: #00993e;
+  --color-on-accent: #ffffff;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --color-base: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-surface-alt: #fbfcfd;
+  --color-surface-deep: #f1f3f6;
+  --color-accent: #00863a;
+  --color-accent-strong: #00863a;
+  --color-accent-hover: #006b2e;
+
+  --color-white: #0b0f19;
+  --color-slate-50: #020617;
+  --color-slate-100: #0f172a;
+  --color-slate-200: #0f172a;
+  --color-slate-300: #1e293b;
+  --color-slate-400: #334155;
+  --color-slate-500: #475569;
+  --color-slate-600: #64748b;
+  --color-slate-700: #94a3b8;
+  --color-slate-800: #cbd5e1;
+  --color-slate-900: #e2e8f0;
+  --color-slate-950: #eef1f5;
+}
+
+:root {
+  color-scheme: dark;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background-color: #06060a;
-  color: #ffffff;
+  background-color: var(--color-base);
+  color: var(--color-white);
   font-family: system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -21,7 +61,7 @@ section[id] {
 /* Foco visível — necessário para navegação por teclado */
 a:focus-visible,
 button:focus-visible {
-  outline: 2px solid #00cc55;
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -32,8 +72,8 @@ button:focus-visible {
   left: -9999px;
   top: 0;
   z-index: 100;
-  background: #00cc55;
-  color: #06060a;
+  background: var(--color-accent);
+  color: var(--color-base);
   padding: 12px 20px;
   font-family: ui-monospace, monospace;
   font-weight: 700;

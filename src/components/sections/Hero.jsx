@@ -1,13 +1,16 @@
 import styles from './Hero.module.css';
 import fotoPerfil from '../../assets/perfil.jfif'
 import { useLanguage } from '../../i18n/useLanguage';
+import ParticleSphere from '../effects/ParticleSphere';
+import Typewriter from '../effects/Typewriter';
 
 export default function Hero() {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   return (
     <section className={styles.heroContainer}>
-      
+      <ParticleSphere className={styles.particles} />
+
       <div className={styles.textBlock}>
         <div className={styles.tagline}>
           // SOFTWARE DEVELOPMENT & PROBLEM SOLVING \\
@@ -16,7 +19,17 @@ export default function Hero() {
         <h1 className={styles.title}>
           Lucas Ferraz dos Santos
         </h1>
-        
+
+        <p className={styles.typed}>
+          <span className={styles.typedPrompt}>&gt;</span> {t.hero.typedPrefix}{' '}
+          <Typewriter
+            key={lang}
+            phrases={t.hero.typedPhrases}
+            className={styles.typedWord}
+            cursorClassName={styles.cursor}
+          />
+        </p>
+
         <h2 className={styles.subtitle}>
           {t.hero.subtitle}
         </h2>

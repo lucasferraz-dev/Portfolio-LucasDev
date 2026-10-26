@@ -23,9 +23,13 @@ export default {
     openMenu: 'Abrir menu',
     closeMenu: 'Fechar menu',
     language: 'Idioma',
+    lightMode: 'Ativar modo claro',
+    darkMode: 'Ativar modo escuro',
   },
 
   hero: {
+    typedPrefix: 'eu construo',
+    typedPhrases: ['sistemas web', 'sistemas internos', 'automações', 'APIs REST', 'soluções para problemas reais'],
     subtitle:
       'Desenvolvedor de software, com experiência em aplicações web, sistemas internos e automação de processos.',
     description:

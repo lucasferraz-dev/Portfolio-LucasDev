@@ -9,7 +9,7 @@
 }
 
 .tagline {
-  @apply text-sm font-mono tracking-widest text-[#00cc55] uppercase block mb-4;
+  @apply text-sm font-mono tracking-widest text-accent uppercase block mb-4;
 }
 
 .sectionTitle {
@@ -32,7 +32,7 @@
 
 .filterButton {
   @apply px-4 py-2 text-xs font-mono font-bold tracking-widest uppercase rounded-lg
-         border border-slate-900 bg-[#0c0c14] text-slate-500 cursor-pointer
+         border border-slate-900 bg-surface text-slate-500 cursor-pointer
          transition-colors duration-200;
 }
 
@@ -41,7 +41,7 @@
 }
 
 .filterActive {
-  @apply bg-[#00cc55]/10 text-[#00cc55] border-[#00cc55]/30;
+  @apply bg-accent/10 text-accent border-accent/30;
 }
 
 /* ---------- Card ---------- */
@@ -51,11 +51,11 @@
 }
 
 .card {
-  @apply bg-[#0c0c14] border border-slate-900 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-2xl w-full;
+  @apply bg-surface border border-slate-900 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-2xl w-full;
 }
 
 .card:hover {
-  @apply border-[#00cc55]/20;
+  @apply border-accent/20;
 }
 
 /* Imagem + conteúdo; não muda de altura quando os detalhes abrem */
@@ -76,7 +76,7 @@
 }
 
 .imagePlaceholder {
-  @apply w-full h-full flex flex-col items-center justify-center gap-3 bg-[#08080e];
+  @apply w-full h-full flex flex-col items-center justify-center gap-3 bg-surface-alt;
   background-image:
     linear-gradient(rgba(0, 204, 85, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 204, 85, 0.04) 1px, transparent 1px);
@@ -84,7 +84,7 @@
 }
 
 .placeholderText {
-  @apply font-mono text-sm md:text-base font-bold tracking-widest text-[#00cc55]/70 text-center px-6;
+  @apply font-mono text-sm md:text-base font-bold tracking-widest text-accent/70 text-center px-6;
 }
 
 .placeholderSub {
@@ -104,7 +104,7 @@
 }
 
 .projectId {
-  @apply text-sm font-mono text-[#00cc55]/60 font-bold;
+  @apply text-sm font-mono text-accent/60 font-bold;
 }
 
 .projectTitle {
@@ -135,7 +135,7 @@
 }
 
 .metaHighlight {
-  @apply text-[#00cc55] font-semibold;
+  @apply text-accent font-semibold;
 }
 
 .projectDescription {
@@ -147,7 +147,7 @@
 }
 
 .tag {
-  @apply px-3.5 py-1.5 text-xs font-mono font-bold rounded-lg bg-[#00cc55]/5 text-[#00cc55] border border-[#00cc55]/10 tracking-wider;
+  @apply px-3.5 py-1.5 text-xs font-mono font-bold rounded-lg bg-accent/5 text-accent border border-accent/10 tracking-wider;
 }
 
 /* ---------- Toggle de detalhes ---------- */
@@ -160,7 +160,7 @@
 }
 
 .toggleButton:hover {
-  @apply text-[#00cc55] border-[#00cc55]/30 bg-[#00cc55]/5;
+  @apply text-accent border-accent/30 bg-accent/5;
 }
 
 .chevron {
@@ -175,7 +175,7 @@
 
 /* Painel que abre embaixo do card inteiro, na largura toda */
 .details {
-  @apply w-full p-8 md:p-10 border-t border-slate-900/60 bg-[#0a0a11]
+  @apply w-full p-8 md:p-10 border-t border-slate-900/60 bg-surface-deep
          grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10;
   animation: detailsOpen 0.25s ease-out;
 }
@@ -190,7 +190,7 @@
 }
 
 .detailTitle {
-  @apply text-xs font-mono uppercase tracking-[0.2em] text-[#00cc55] font-bold m-0;
+  @apply text-xs font-mono uppercase tracking-[0.2em] text-accent font-bold m-0;
 }
 
 .detailText {
@@ -206,11 +206,11 @@
 }
 
 .stepNumber {
-  @apply font-mono text-xs font-bold text-[#00cc55]/50 pt-1 shrink-0;
+  @apply font-mono text-xs font-bold text-accent/50 pt-1 shrink-0;
 }
 
 .stepBullet {
-  @apply font-mono font-bold text-[#00cc55]/60 shrink-0;
+  @apply font-mono font-bold text-accent/60 shrink-0;
 }
 
 /* ---------- Footer ---------- */
@@ -220,11 +220,11 @@
 }
 
 .projectLink {
-  @apply inline-flex items-center gap-2 text-sm font-mono uppercase tracking-widest font-extrabold text-[#00cc55] transition-colors;
+  @apply inline-flex items-center gap-2 text-sm font-mono uppercase tracking-widest font-extrabold text-accent transition-colors;
 }
 
 .projectLink:hover {
-  @apply text-[#00b34a];
+  @apply text-accent-strong;
 }
 
 .arrow {

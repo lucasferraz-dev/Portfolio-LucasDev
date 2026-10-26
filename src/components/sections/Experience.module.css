@@ -9,7 +9,7 @@
 }
 
 .tagline {
-  @apply text-sm font-mono tracking-widest text-[#00cc55] uppercase block mb-4;
+  @apply text-sm font-mono tracking-widest text-accent uppercase block mb-4;
 }
 
 .sectionTitle {
@@ -21,11 +21,11 @@
 }
 
 .experienceCard {
-  @apply bg-[#0c0c14] border border-slate-900 rounded-2xl p-8 md:p-10 transition-all duration-300 shadow-2xl w-full;
+  @apply bg-surface border border-slate-900 rounded-2xl p-8 md:p-10 transition-all duration-300 shadow-2xl w-full;
 }
 
 .experienceCard:hover {
-  @apply border-[#00cc55]/20;
+  @apply border-accent/20;
 }
 
 .experienceHeader {
@@ -53,7 +53,7 @@
 }
 
 .experienceId {
-  @apply text-sm font-mono font-bold text-[#00cc55]/60 tracking-wider;
+  @apply text-sm font-mono font-bold text-accent/60 tracking-wider;
   transform: translateY(7px);
 }
 
@@ -91,7 +91,7 @@
 
 .activity::before {
   content: ">";
-  @apply text-[#00cc55] font-mono font-bold;
+  @apply text-accent font-mono font-bold;
 }
 
 .technologies {
@@ -99,9 +99,9 @@
 }
 
 .technology {
-  @apply px-3.5 py-1.5 text-xs font-mono font-bold rounded-lg bg-[#00cc55]/5 text-[#00cc55] border border-[#00cc55]/10 tracking-wider;
+  @apply px-3.5 py-1.5 text-xs font-mono font-bold rounded-lg bg-accent/5 text-accent border border-accent/10 tracking-wider;
 }
 
 .technology:hover {
-  @apply border-[#00cc55]/30;
+  @apply border-accent/30;
 }

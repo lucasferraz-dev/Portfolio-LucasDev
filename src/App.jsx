@@ -15,7 +15,7 @@ export default function App() {
   return (
     <div
       id="top"
-      className="min-h-screen bg-[#06060a] text-slate-300 selection:bg-[#00cc55]/20 selection:text-[#00cc55]"
+      className="min-h-screen bg-base text-slate-300 selection:bg-accent/20 selection:text-accent"
     >
       <a href="#main" className="skip-link">{t.app.skipLink}</a>
 

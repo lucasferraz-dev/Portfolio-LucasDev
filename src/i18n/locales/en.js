@@ -23,9 +23,13 @@ export default {
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
     language: 'Language',
+    lightMode: 'Switch to light mode',
+    darkMode: 'Switch to dark mode',
   },
 
   hero: {
+    typedPrefix: 'i build',
+    typedPhrases: ['web systems', 'internal tools', 'automations', 'REST APIs', 'solutions to real problems'],
     subtitle:
       'Software developer with experience in web applications, internal systems and process automation.',
     description:

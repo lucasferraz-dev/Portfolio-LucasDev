@@ -9,7 +9,7 @@
 }
 
 .tagline {
-  @apply text-sm font-mono tracking-widest text-[#00cc55] uppercase block mb-4;
+  @apply text-sm font-mono tracking-widest text-accent uppercase block mb-4;
 }
 
 .sectionTitle {
@@ -21,11 +21,11 @@
 }
 
 .card {
-  @apply bg-[#0c0c14] border border-slate-900 rounded-2xl p-8 md:p-10 transition-all duration-300 shadow-2xl w-full;
+  @apply bg-surface border border-slate-900 rounded-2xl p-8 md:p-10 transition-all duration-300 shadow-2xl w-full;
 }
 
 .card:hover {
-  @apply border-[#00cc55]/20;
+  @apply border-accent/20;
 }
 
 .cardHeader {
@@ -80,7 +80,7 @@
 }
 
 .rowId {
-  @apply text-sm font-mono font-bold text-[#00cc55]/60 tracking-wider;
+  @apply text-sm font-mono font-bold text-accent/60 tracking-wider;
   transform: translateY(7px);
 }
 
@@ -98,7 +98,7 @@
 
 .status {
   @apply px-3 py-1 text-[10px] font-mono font-bold tracking-widest uppercase rounded-md
-         bg-[#00cc55]/5 text-[#00cc55] border border-[#00cc55]/20 shrink-0;
+         bg-accent/5 text-accent border border-accent/20 shrink-0;
 }
 
 .divider {
@@ -114,7 +114,7 @@
 }
 
 .bullet {
-  @apply text-[#00cc55] font-mono font-bold shrink-0;
+  @apply text-accent font-mono font-bold shrink-0;
 }
 
 /* ---------- Certificações ---------- */
@@ -132,11 +132,11 @@
 }
 
 .certCard {
-  @apply bg-[#0c0c14] border border-slate-900 rounded-xl p-5 flex flex-col gap-2 transition-colors duration-300;
+  @apply bg-surface border border-slate-900 rounded-xl p-5 flex flex-col gap-2 transition-colors duration-300;
 }
 
 .certCard:hover {
-  @apply border-[#00cc55]/20;
+  @apply border-accent/20;
 }
 
 .certName {
