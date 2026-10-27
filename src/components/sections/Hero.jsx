@@ -1,5 +1,5 @@
 import styles from './Hero.module.css';
-import fotoPerfil from '../../assets/perfil.jfif'
+import fotoPerfil from '../../assets/perfil.jpg'
 import { useLanguage } from '../../i18n/useLanguage';
 import ParticleSphere from '../effects/ParticleSphere';
 import Typewriter from '../effects/Typewriter';

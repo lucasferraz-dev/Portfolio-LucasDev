@@ -5,10 +5,7 @@ const DELETE_DELAY = 35;
 const HOLD_DELAY = 1800;
 const NEXT_DELAY = 400;
 
-const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
 export default function Typewriter({ phrases, className, cursorClassName }) {
-  const [reduceMotion] = useState(prefersReducedMotion);
   const [index, setIndex] = useState(0);
   const [length, setLength] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -16,8 +13,6 @@ export default function Typewriter({ phrases, className, cursorClassName }) {
   const phrase = phrases[index];
 
   useEffect(() => {
-    if (reduceMotion) return;
-
     const isFull = !isDeleting && length === phrase.length;
     const isEmpty = isDeleting && length === 0;
 
@@ -37,9 +32,9 @@ export default function Typewriter({ phrases, className, cursorClassName }) {
     }, delay);
 
     return () => clearTimeout(timer);
-  }, [length, isDeleting, phrase, phrases.length, reduceMotion]);
+  }, [length, isDeleting, phrase, phrases.length]);
 
-  const visibleText = reduceMotion ? phrases[0] : phrase.slice(0, length);
+  const visibleText = phrase.slice(0, length);
 
   return (
     <>

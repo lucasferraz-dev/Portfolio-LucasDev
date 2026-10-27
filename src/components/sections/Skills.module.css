@@ -29,7 +29,7 @@
 }
 
 .tableHeader {
-  @apply bg-base border-b border-slate-900 px-6 py-5 flex items-center justify-between;
+  @apply bg-page border-b border-slate-900 px-6 py-5 flex items-center justify-between;
 }
 
 .titleGroup {
@@ -61,7 +61,7 @@
 }
 
 .row {
-  @apply flex justify-between items-center py-4 px-5 rounded-xl bg-base border border-slate-900/80 transition-all duration-200 shadow-inner;
+  @apply flex justify-between items-center py-4 px-5 rounded-xl bg-page border border-slate-900/80 transition-all duration-200 shadow-inner;
 }
 
 .row:hover {

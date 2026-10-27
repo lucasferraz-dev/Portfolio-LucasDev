@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-base: #06060a;
+  --color-page: #06060a;
   --color-surface: #0c0c14;
   --color-surface-alt: #08080e;
   --color-surface-deep: #0a0a11;
@@ -9,18 +9,35 @@
   --color-accent-strong: #00b34a;
   --color-accent-hover: #00993e;
   --color-on-accent: #ffffff;
+  --color-accent-alt: #22d3ee;
+
+  --font-display: "Poppins", system-ui, sans-serif;
+
+  --color-white: #ffffff;
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #020617;
 }
 
 :root[data-theme="light"] {
   color-scheme: light;
 
-  --color-base: #f6f7f9;
+  --color-page: #f6f7f9;
   --color-surface: #ffffff;
   --color-surface-alt: #fbfcfd;
   --color-surface-deep: #f1f3f6;
   --color-accent: #00863a;
   --color-accent-strong: #00863a;
   --color-accent-hover: #006b2e;
+  --color-accent-alt: #0e7490;
 
   --color-white: #0b0f19;
   --color-slate-50: #020617;
@@ -46,11 +63,17 @@ html {
 
 body {
   margin: 0;
-  background-color: var(--color-base);
-  color: var(--color-white);
+  background-color: var(--color-page, #06060a);
+  color: var(--color-white, #ffffff);
   font-family: system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
 }
 
 /* Header é fixo: sem isso o título da seção fica escondido ao clicar no menu */
@@ -73,7 +96,7 @@ button:focus-visible {
   top: 0;
   z-index: 100;
   background: var(--color-accent);
-  color: var(--color-base);
+  color: var(--color-page);
   padding: 12px 20px;
   font-family: ui-monospace, monospace;
   font-weight: 700;
@@ -82,18 +105,4 @@ button:focus-visible {
 
 .skip-link:focus {
   left: 0;
-}
-
-/* Respeita quem desativou animações no sistema (iOS/macOS: Reduzir Movimento) */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
 }

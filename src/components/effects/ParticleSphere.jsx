@@ -49,17 +49,14 @@ export default function ParticleSphere({ className }) {
   const canvasRef = useRef(null);
   const { theme } = useTheme();
   const colorRef = useRef(COLORS[theme]);
-  const redrawStaticRef = useRef(null);
 
   useEffect(() => {
     colorRef.current = COLORS[theme];
-    redrawStaticRef.current?.();
   }, [theme]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const start = performance.now();
 
     let width = 0;
@@ -160,8 +157,6 @@ export default function ParticleSphere({ className }) {
 
       const count = width < 640 ? 1000 : 2200;
       if (points.length !== count) points = createPoints(count);
-
-      if (reduceMotion) draw(0);
     };
 
     const loop = (now) => {
@@ -170,15 +165,13 @@ export default function ParticleSphere({ className }) {
     };
 
     const startLoop = () => {
-      if (!frameId && !reduceMotion) frameId = requestAnimationFrame(loop);
+      if (!frameId) frameId = requestAnimationFrame(loop);
     };
 
     const stopLoop = () => {
       cancelAnimationFrame(frameId);
       frameId = null;
     };
-
-    redrawStaticRef.current = reduceMotion ? () => draw(0) : null;
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(canvas);
@@ -195,7 +188,6 @@ export default function ParticleSphere({ className }) {
       stopLoop();
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
-      redrawStaticRef.current = null;
     };
   }, []);
 

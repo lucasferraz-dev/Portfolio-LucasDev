@@ -29,13 +29,17 @@
   @apply font-mono text-lg md:text-2xl text-slate-400 min-h-[1.75em];
 }
 
-.typedPrompt,
-.typedWord {
+.typedPrompt {
   @apply text-accent font-bold;
 }
 
+.typedWord {
+  @apply font-bold bg-linear-to-r from-accent to-accent-alt bg-clip-text text-transparent;
+  -webkit-background-clip: text;
+}
+
 .cursor {
-  @apply text-accent font-bold;
+  @apply text-accent-alt font-bold;
   animation: blink 1s step-end infinite;
 }
 
@@ -97,7 +101,7 @@
 }
 
 .dbStatusCard {
-  @apply bg-base border border-slate-900 rounded-2xl p-8 shadow-xl font-mono text-sm md:text-base;
+  @apply bg-page border border-slate-900 rounded-2xl p-8 shadow-xl font-mono text-sm md:text-base;
 }
 
 .dbHeader {
