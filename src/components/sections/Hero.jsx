@@ -3,6 +3,7 @@ import fotoPerfil from '../../assets/perfil.jpg'
 import { useLanguage } from '../../i18n/useLanguage';
 import ParticleSphere from '../effects/ParticleSphere';
 import Typewriter from '../effects/Typewriter';
+import RichText from '../common/RichText';
 
 export default function Hero() {
   const { lang, t } = useLanguage();
@@ -35,12 +36,18 @@ export default function Hero() {
         </h2>
 
         <p className={styles.description}>
-          {t.hero.description}
+          <RichText text={t.hero.description} />
         </p>
 
         <div className={styles.ctaGroup}>
           <a href="#projects" className={styles.primaryBtn}>
             {t.hero.ctaProjects}
+          </a>
+          <a href={t.hero.resumeFile} target="_blank" rel="noreferrer" className={styles.secondaryBtn}>
+            <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.btnIcon}>
+              <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
+            </svg>
+            {t.hero.ctaResume}
           </a>
           <a href="#contact" className={styles.secondaryBtn}>
             {t.hero.ctaContact}

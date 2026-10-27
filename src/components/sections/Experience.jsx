@@ -2,6 +2,7 @@ import styles from "./Experience.module.css";
 
 import fotoPerfil from "../../assets/GOBPR.jpg";
 import { useLanguage } from "../../i18n/useLanguage";
+import RichText from "../common/RichText";
 
 const EXPERIENCES = [
   {
@@ -65,7 +66,7 @@ const Experience = () => {
             <div className={styles.divider} />
 
             <p className={styles.description}>
-              {experience.description}
+              <RichText text={experience.description} />
             </p>
 
             <h5 className={styles.activitiesTitle}>
@@ -78,7 +79,7 @@ const Experience = () => {
                   key={activity}
                   className={styles.activity}
                 >
-                  {activity}
+                  <RichText text={activity} />
                 </div>
               ))}
             </div>

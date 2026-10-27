@@ -79,6 +79,13 @@
   @apply w-full sm:w-auto text-center px-8 py-4 text-base font-bold rounded-xl border border-slate-800 text-slate-300 transition-colors;
 }
 
+.btnIcon {
+  @apply inline-block w-[18px] h-[18px] mr-2 -mt-0.5 fill-none stroke-current align-middle;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .secondaryBtn:hover {
   @apply bg-slate-900/50 text-white;
 }

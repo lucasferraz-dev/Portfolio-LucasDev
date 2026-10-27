@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './Projects.module.css';
+import RichText, { OPEN_PROJECT_EVENT } from '../common/RichText';
 import FotoSave from '../../assets/savepoint.png';
 import FotoRotinas from '../../assets/rotinas-gobpr.png';
 import FotoHackathon from '../../assets/hackathon-localiza.jpg';
@@ -33,13 +34,20 @@ const PROJECTS = [
   },
 ];
 
-function ProjectCard({ project }) {
+function ProjectCard({ project, openRequest }) {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const cardRef = useRef(null);
   const panelId = `${project.id}-details`;
 
+  useEffect(() => {
+    if (!openRequest) return;
+    setIsOpen(true);
+    cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [openRequest]);
+
   return (
-    <article className={styles.card}>
+    <article ref={cardRef} id={`project-${project.id}`} className={styles.card}>
       <div className={styles.cardMain}>
         <div className={styles.imageWrapper}>
           {project.image ? (
@@ -82,7 +90,7 @@ function ProjectCard({ project }) {
             )}
           </dl>
 
-          <p className={styles.projectDescription}>{project.description}</p>
+          <p className={styles.projectDescription}><RichText text={project.description} /></p>
 
           <div className={styles.tagsContainer}>
             {project.tags.map((tag) => (
@@ -124,7 +132,7 @@ function ProjectCard({ project }) {
           {project.problem && (
             <div className={styles.detailBlock}>
               <h4 className={styles.detailTitle}>{t.projects.problemTitle}</h4>
-              <p className={styles.detailText}>{project.problem}</p>
+              <p className={styles.detailText}><RichText text={project.problem} /></p>
             </div>
           )}
 
@@ -135,7 +143,7 @@ function ProjectCard({ project }) {
                 {project.process.map((step, i) => (
                   <li key={step} className={styles.detailItem}>
                     <span className={styles.stepNumber}>{String(i + 1).padStart(2, '0')}</span>
-                    {step}
+                    <RichText text={step} />
                   </li>
                 ))}
               </ul>
@@ -149,7 +157,7 @@ function ProjectCard({ project }) {
                 {project.learnings.map((item) => (
                   <li key={item} className={styles.detailItem}>
                     <span className={styles.stepBullet}>&gt;</span>
-                    {item}
+                    <RichText text={item} />
                   </li>
                 ))}
               </ul>
@@ -164,6 +172,22 @@ function ProjectCard({ project }) {
 export default function Projects() {
   const { t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState('todos');
+  const [openRequest, setOpenRequest] = useState(null);
+
+  useEffect(() => {
+    const openProject = (id) => {
+      setActiveCategory('todos');
+      setOpenRequest({ id, at: Date.now() });
+    };
+
+    const handleOpenProject = (event) => openProject(event.detail);
+    window.addEventListener(OPEN_PROJECT_EVENT, handleOpenProject);
+
+    const linkedProject = window.location.hash.match(/^#project-(.+)$/)?.[1];
+    if (linkedProject) openProject(linkedProject);
+
+    return () => window.removeEventListener(OPEN_PROJECT_EVENT, handleOpenProject);
+  }, []);
 
   const projects = PROJECTS.map((project) => ({
     ...project,
@@ -209,7 +233,11 @@ export default function Projects() {
 
       <div className={styles.grid}>
         {filtered.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <ProjectCard
+            key={project.id}
+            project={project}
+            openRequest={openRequest?.id === project.id ? openRequest : null}
+          />
         ))}
       </div>
     </section>

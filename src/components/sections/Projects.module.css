@@ -51,7 +51,7 @@
 }
 
 .card {
-  @apply bg-surface border border-slate-900 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-2xl w-full;
+  @apply bg-surface border border-slate-900 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-2xl w-full scroll-mt-28;
 }
 
 .card:hover {

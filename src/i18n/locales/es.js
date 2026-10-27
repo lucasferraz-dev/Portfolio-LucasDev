@@ -36,6 +36,8 @@ export default {
       'Estudiante de Ciencias de la Computación en la PUCPR y pasante de TI, trabajando con Python, Django, React y bases de datos.',
     ctaProjects: 'Ver Proyectos',
     ctaContact: 'Contacto',
+    ctaResume: 'Descargar CV',
+    resumeFile: '/cv/Curriculo_LucasF_ES.pdf',
     role: 'Pasante de TI @ GOB-PR',
   },
 
@@ -43,8 +45,8 @@ export default {
     title: 'Quién soy',
     lead: 'Empecé a programar porque quería entender cómo funcionaban por dentro las cosas que usaba todos los días. Hoy lo que más me atrapa es el otro lado: descubrir por qué un proceso no funciona antes de decidir qué construir.',
     paragraphs: [
-      'Estudio Ciencias de la Computación en la PUCPR desde 2024 y, en octubre de 2025, entré como pasante de TI en el Grande Oriente do Brasil - Paraná. Empecé en soporte y en la automatización de planillas, y hoy desarrollo el sistema que guarda las rutinas de trabajo de cada secretaría, para que el conocimiento no se vaya cuando alguien deja el equipo. Fue pensado a partir de las normas ISO 9001 e ISO 37001, lo que me enseñó a transformar un requisito escrito en una regla del sistema.',
-      'Más allá del código, lo que más he desarrollado es la planificación: dividir un problema grande en partes, priorizar lo que importa y organizar el trabajo de un equipo. Ahora estoy estudiando inteligencia artificial y machine learning en la universidad, con el objetivo de entender no solo cómo usarlos, sino cuándo vale la pena hacerlo.',
+      'Estudio Ciencias de la Computación en la PUCPR desde 2024 y, en octubre de 2025, entré como pasante de TI en el Grande Oriente do Brasil - Paraná. Empecé en soporte y en la automatización de planillas, y hoy desarrollo [el sistema que guarda las rutinas de trabajo de cada secretaría](#project-ROW_01), para que el conocimiento no se vaya cuando alguien deja el equipo. Fue pensado a partir de las normas ISO 9001 e ISO 37001, lo que me enseñó a transformar un requisito escrito en una regla del sistema.',
+      'Más allá del código, lo que más he desarrollado es la planificación: dividir un problema grande en partes, priorizar lo que importa y [organizar el trabajo de un equipo](#project-ROW_02). Ahora estoy estudiando inteligencia artificial y machine learning en la universidad, con el objetivo de entender no solo cómo usarlos, sino cuándo vale la pena hacerlo.',
     ],
     valuesTitle: 'Cómo trabajo',
     values: [
@@ -195,7 +197,7 @@ export default {
         role: 'Pasante de TI',
         period: 'Oct/2025 - Actualidad',
         description:
-          'Entré en soporte y en la automatización de planillas, y hoy desarrollo el sistema interno que documenta las rutinas de trabajo de todas las secretarías, construido en Python/Django sobre los requisitos de las normas ISO 9001 e ISO 37001.',
+          'Entré en soporte y en la automatización de planillas, y hoy desarrollo [el sistema interno](#project-ROW_01) que documenta las rutinas de trabajo de todas las secretarías, construido en Python/Django sobre los requisitos de las normas ISO 9001 e ISO 37001.',
         activities: [
           'Desarrollo del Sistema de Rutinas: registro, versionado, flujo de aprobación y mapa visual de cada proceso, con versión para imprimir;',
           'Traducción de los requisitos de la ISO 9001 y de la ISO 37001 en reglas del sistema: control de documentos, historial de versiones, acceso por secretaría y autenticación de dos factores;',

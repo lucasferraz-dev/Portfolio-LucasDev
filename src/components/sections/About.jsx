@@ -1,5 +1,6 @@
 import styles from './About.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
+import RichText from '../common/RichText';
 
 export default function About() {
   const { t } = useLanguage();
@@ -15,12 +16,12 @@ export default function About() {
       <div className={styles.layout}>
         <div className={styles.textColumn}>
           <p className={styles.lead}>
-            {t.about.lead}
+            <RichText text={t.about.lead} />
           </p>
 
           {t.about.paragraphs.map((paragraph) => (
             <p key={paragraph} className={styles.paragraph}>
-              {paragraph}
+              <RichText text={paragraph} />
             </p>
           ))}
 
@@ -30,7 +31,7 @@ export default function About() {
               {t.about.values.map((value) => (
                 <li key={value} className={styles.valueItem}>
                   <span className={styles.bullet}>&gt;</span>
-                  {value}
+                  <RichText text={value} />
                 </li>
               ))}
             </ul>

@@ -36,6 +36,8 @@ export default {
       'Computer Science student at PUCPR and IT intern, working with Python, Django, React and databases.',
     ctaProjects: 'View Projects',
     ctaContact: 'Contact',
+    ctaResume: 'Download Resume',
+    resumeFile: '/cv/Curriculo_LucasF_EN.pdf',
     role: 'IT Intern @ GOB-PR',
   },
 
@@ -43,8 +45,8 @@ export default {
     title: 'Who I am',
     lead: 'I started programming because I wanted to understand how the things I used every day worked behind the scenes. Today, what grips me most is the other side: figuring out why a process isn’t working before deciding what to build.',
     paragraphs: [
-      'I’ve been studying Computer Science at PUCPR since 2024, and in October 2025 I joined Grande Oriente do Brasil - Paraná as an IT intern. I started in user support and spreadsheet automation, and today I develop the system that stores each department’s work routines, so that knowledge doesn’t walk out the door when someone leaves the team. It was designed around the ISO 9001 and ISO 37001 standards, which taught me how to turn written requirements into system rules.',
-      'Beyond code, the skill I’ve been developing the most is planning: breaking a big problem into parts, prioritizing what matters and organizing a team’s work. I’m now studying artificial intelligence and machine learning in college, aiming to understand not only how to use them, but when they’re worth using.',
+      'I’ve been studying Computer Science at PUCPR since 2024, and in October 2025 I joined Grande Oriente do Brasil - Paraná as an IT intern. I started in user support and spreadsheet automation, and today I develop [the system that stores each department’s work routines](#project-ROW_01), so that knowledge doesn’t walk out the door when someone leaves the team. It was designed around the ISO 9001 and ISO 37001 standards, which taught me how to turn written requirements into system rules.',
+      'Beyond code, the skill I’ve been developing the most is planning: breaking a big problem into parts, prioritizing what matters and [organizing a team’s work](#project-ROW_02). I’m now studying artificial intelligence and machine learning in college, aiming to understand not only how to use them, but when they’re worth using.',
     ],
     valuesTitle: 'How I work',
     values: [
@@ -195,7 +197,7 @@ export default {
         role: 'IT Intern',
         period: 'Oct/2025 - Present',
         description:
-          'I started in user support and spreadsheet automation, and today I develop the internal system that documents the work routines of every department, built with Python/Django on the requirements of the ISO 9001 and ISO 37001 standards.',
+          'I started in user support and spreadsheet automation, and today I develop [the internal system](#project-ROW_01) that documents the work routines of every department, built with Python/Django on the requirements of the ISO 9001 and ISO 37001 standards.',
         activities: [
           'Development of the Routines System: registration, versioning, approval flow and a visual map of each process, with a printable version;',
           'Translating ISO 9001 and ISO 37001 requirements into system rules: document control, version history, per-department access and two-factor authentication;',

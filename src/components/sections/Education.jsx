@@ -1,6 +1,7 @@
 import styles from './Education.module.css';
 import logoPucpr from '../../assets/pucpr.png';
 import { useLanguage } from '../../i18n/useLanguage';
+import RichText from '../common/RichText';
 
 const EDUCATION = [
   {
@@ -62,7 +63,7 @@ export default function Education() {
               {item.highlights.map((h) => (
                 <li key={h} className={styles.highlight}>
                   <span className={styles.bullet}>&gt;</span>
-                  {h}
+                  <RichText text={h} />
                 </li>
               ))}
             </ul>

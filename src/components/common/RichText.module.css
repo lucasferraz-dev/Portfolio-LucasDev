@@ -1,0 +1,9 @@
+@reference "../../index.css";
+
+.keyword {
+  @apply text-accent font-medium underline decoration-accent/30 underline-offset-4 transition-colors duration-200;
+}
+
+.keyword:hover {
+  @apply decoration-accent;
+}

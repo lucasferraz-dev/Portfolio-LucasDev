@@ -36,6 +36,8 @@ export default {
       'Estudante de Ciência da Computação na PUCPR e estagiário de TI, trabalhando com Python, Django, React e bancos de dados.',
     ctaProjects: 'Ver Projetos',
     ctaContact: 'Contato',
+    ctaResume: 'Baixar Currículo',
+    resumeFile: '/cv/Curriculo_LucasF_PT.pdf',
     role: 'Estagiário de TI @ GOB-PR',
   },
 
@@ -43,8 +45,8 @@ export default {
     title: 'Quem eu sou',
     lead: 'Comecei a programar querendo entender como as coisas que eu usava todos os dias funcionavam por trás. Hoje o que mais me prende é o outro lado: descobrir por que um processo não funciona antes de decidir o que construir.',
     paragraphs: [
-      'Estudo Ciência da Computação na PUCPR desde 2024 e, em outubro de 2025, entrei como estagiário de TI no Grande Oriente do Brasil - Paraná. Comecei no suporte e na automação de planilhas e hoje desenvolvo o sistema que guarda as rotinas de trabalho de cada secretaria, para que o conhecimento não vá embora quando alguém sai da equipe. Ele foi pensado a partir das normas ISO 9001 e ISO 37001, o que me ensinou a transformar requisito escrito em regra de sistema.',
-      'Fora do código, a parte que mais tenho desenvolvido é a de planejamento: quebrar um problema grande em partes, priorizar o que importa e organizar o trabalho de uma equipe. Agora estou estudando inteligência artificial e machine learning na faculdade, querendo entender não só como usar, mas quando vale a pena usar.',
+      'Estudo Ciência da Computação na PUCPR desde 2024 e, em outubro de 2025, entrei como estagiário de TI no Grande Oriente do Brasil - Paraná. Comecei no suporte e na automação de planilhas e hoje desenvolvo [o sistema que guarda as rotinas de trabalho de cada secretaria](#project-ROW_01), para que o conhecimento não vá embora quando alguém sai da equipe. Ele foi pensado a partir das normas ISO 9001 e ISO 37001, o que me ensinou a transformar requisito escrito em regra de sistema.',
+      'Fora do código, a parte que mais tenho desenvolvido é a de planejamento: quebrar um problema grande em partes, priorizar o que importa e [organizar o trabalho de uma equipe](#project-ROW_02). Agora estou estudando inteligência artificial e machine learning na faculdade, querendo entender não só como usar, mas quando vale a pena usar.',
     ],
     valuesTitle: 'Como eu trabalho',
     values: [
@@ -195,7 +197,7 @@ export default {
         role: 'Estagiário de TI',
         period: 'Out/2025 - Atualmente',
         description:
-          'Entrei no suporte e na automação de planilhas e hoje desenvolvo o sistema interno que documenta as rotinas de trabalho de todas as secretarias, construído em Python/Django sobre os requisitos das normas ISO 9001 e ISO 37001.',
+          'Entrei no suporte e na automação de planilhas e hoje desenvolvo [o sistema interno](#project-ROW_01) que documenta as rotinas de trabalho de todas as secretarias, construído em Python/Django sobre os requisitos das normas ISO 9001 e ISO 37001.',
         activities: [
           'Desenvolvimento do Sistema de Rotinas: cadastro, versionamento, fluxo de aprovação e mapa visual de cada processo, com versão para impressão;',
           'Tradução dos requisitos da ISO 9001 e da ISO 37001 em regras do sistema: controle de documentos, histórico de versões, acesso por secretaria e autenticação em dois fatores;',
