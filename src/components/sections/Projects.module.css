@@ -47,36 +47,86 @@
 /* ---------- Card ---------- */
 
 .grid {
-  @apply flex flex-col gap-10 w-full;
+  @apply flex flex-col gap-10 lg:gap-16 w-full max-w-6xl mx-auto;
+}
+
+.row {
+  @apply flex flex-col lg:grid lg:items-stretch lg:gap-8;
+}
+
+.rowRight {
+  @apply lg:grid-cols-[1fr_2fr];
+}
+
+.rowLeft {
+  @apply lg:grid-cols-[2fr_1fr];
+}
+
+.rail {
+  @apply relative hidden lg:block;
+}
+
+.rowLeft .rail {
+  @apply order-2;
+}
+
+.railLine {
+  @apply absolute top-0 bottom-0 left-1/2 w-px bg-linear-to-b from-transparent via-slate-800 to-transparent;
+}
+
+.railDot {
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full
+         bg-page border-2 border-accent transition-colors duration-300;
+}
+
+.row:hover .railDot,
+.row:focus-within .railDot {
+  @apply bg-accent;
+}
+
+.railLabel {
+  @apply absolute top-1/2 -translate-y-1/2 flex flex-col gap-1;
+}
+
+.rowRight .railLabel {
+  @apply items-end text-right;
+  right: calc(50% + 2rem);
+}
+
+.rowLeft .railLabel {
+  @apply items-start text-left;
+  left: calc(50% + 2rem);
+}
+
+.railIndex {
+  @apply font-mono text-6xl font-bold leading-none text-slate-800 transition-colors duration-300;
+}
+
+.row:hover .railIndex,
+.row:focus-within .railIndex {
+  @apply text-accent/40;
+}
+
+.railMeta {
+  @apply font-mono text-xs tracking-widest uppercase text-slate-500;
 }
 
 .card {
-  @apply bg-surface border border-slate-900 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-2xl w-full scroll-mt-28;
+  @apply relative flex flex-col bg-surface border border-slate-900 rounded-2xl overflow-hidden shadow-2xl
+         transition-colors duration-300 w-full scroll-mt-28;
 }
 
-.card:hover {
-  @apply border-accent/20;
+.card:hover,
+.card:focus-within {
+  @apply border-accent/30;
 }
 
-/* Imagem + conteúdo; não muda de altura quando os detalhes abrem */
-.cardMain {
-  @apply flex flex-col w-full;
-}
-
-.imageWrapper {
-  @apply relative isolate w-full aspect-video overflow-hidden border-b border-slate-900/60 bg-slate-950 flex items-center justify-center p-4 md:p-6;
-}
-
-.imageBackdrop {
-  @apply absolute inset-0 -z-10 w-full h-full object-cover blur-2xl scale-125 opacity-40;
+.media {
+  @apply relative w-full overflow-hidden bg-slate-950;
 }
 
 .image {
-  @apply max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl transition-transform duration-500;
-}
-
-.card:hover .image {
-  transform: scale(1.02);
+  @apply absolute inset-0 w-full h-full object-cover transition-transform duration-700;
 }
 
 .imagePlaceholder {
@@ -95,24 +145,181 @@
   @apply font-mono text-[10px] tracking-[0.25em] text-slate-700 uppercase;
 }
 
-.cardContent {
-  @apply p-8 md:p-10 flex flex-col flex-1;
+.overlay {
+  @apply absolute inset-x-0 bottom-0 flex flex-col items-start gap-2 p-6 md:p-8 pt-20
+         bg-linear-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300;
 }
 
-.cardHeader {
-  @apply flex flex-wrap items-baseline justify-between gap-4 mb-5 border-b border-slate-900/40 pb-4;
+.overlayBadge {
+  @apply px-3 py-1 text-[10px] font-mono font-bold tracking-widest uppercase rounded-md border backdrop-blur-sm;
+  color: #e2e8f0;
+  border-color: rgb(255 255 255 / 0.25);
+  background-color: rgb(0 0 0 / 0.35);
 }
 
-.titleRow {
-  @apply flex items-baseline gap-4;
+.overlayTitle {
+  @apply text-2xl md:text-4xl font-bold tracking-tight leading-tight;
+  color: #ffffff;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.6);
+}
+
+.overlayPeriod {
+  @apply font-mono text-xs tracking-widest uppercase;
+  color: rgb(255 255 255 / 0.8);
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.6);
+}
+
+.hoverHint {
+  @apply absolute top-4 right-4 hidden items-center gap-2 px-3 py-1.5 rounded-full border backdrop-blur-sm
+         font-mono text-[11px] font-bold tracking-widest uppercase transition-opacity duration-300;
+  color: #ffffff;
+  border-color: rgb(255 255 255 / 0.25);
+  background-color: rgb(0 0 0 / 0.55);
+}
+
+.hoverHintIcon {
+  @apply w-3.5 h-3.5;
+  fill: currentColor;
+}
+
+.panel {
+  @apply flex flex-col gap-5 p-6 md:p-8 bg-surface;
+}
+
+.panelHeader {
+  @apply hidden;
 }
 
 .projectId {
-  @apply text-sm font-mono text-accent/60 font-bold;
+  @apply text-xs font-mono text-accent/70 font-bold tracking-widest;
 }
 
-.projectTitle {
-  @apply text-2xl md:text-3xl font-bold text-white tracking-tight;
+.panelTitle {
+  @apply text-xl md:text-2xl font-bold text-white tracking-tight leading-snug;
+}
+
+.summary {
+  @apply text-sm md:text-base text-slate-400 leading-relaxed;
+}
+
+.tagsContainer {
+  @apply flex flex-wrap gap-2;
+}
+
+.tag {
+  @apply px-3 py-1 text-xs font-mono font-bold rounded-lg bg-accent/5 text-accent border border-accent/10 tracking-wider;
+}
+
+.actions {
+  @apply flex flex-wrap gap-3 pt-1;
+}
+
+.processButton {
+  @apply inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border-0 bg-accent-strong text-on-accent
+         text-xs font-mono font-bold uppercase tracking-widest cursor-pointer transition-colors duration-200;
+}
+
+.processButton:hover {
+  @apply bg-accent-hover;
+}
+
+.linkButton {
+  @apply inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-800 text-slate-300
+         text-xs font-mono font-bold uppercase tracking-widest transition-colors duration-200;
+}
+
+.linkButton:hover {
+  @apply border-accent/40 text-accent;
+}
+
+.arrow {
+  @apply transition-transform duration-200 inline-block font-bold;
+}
+
+.linkButton:hover .arrow,
+.projectLink:hover .arrow {
+  transform: translateX(4px);
+}
+
+@media (hover: hover) and (min-width: 768px) {
+  .panel {
+    @apply absolute top-0 right-0 h-full w-3/5 justify-center overflow-y-auto
+           border-l border-slate-900 bg-surface/90 backdrop-blur-md;
+    transform: translateX(100%);
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .panelHeader {
+    @apply flex flex-col gap-2;
+  }
+
+  .card:hover .panel,
+  .card:focus-within .panel {
+    transform: translateX(0);
+  }
+
+  .hoverHint {
+    @apply flex;
+  }
+
+  .card:hover .overlay,
+  .card:focus-within .overlay,
+  .card:hover .hoverHint,
+  .card:focus-within .hoverHint {
+    @apply opacity-0;
+  }
+
+  .card:hover .image,
+  .card:focus-within .image {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.modal {
+  @apply p-0 m-auto w-[min(920px,calc(100%-2rem))] max-h-[90vh] rounded-2xl border border-slate-800
+         bg-surface text-slate-300 shadow-2xl overflow-hidden;
+}
+
+.modal[open] {
+  animation: modalIn 0.25s ease-out;
+}
+
+.modal::backdrop {
+  background-color: rgb(0 0 0 / 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  @apply relative max-h-[90vh] overflow-y-auto;
+}
+
+.closeButton {
+  @apply absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center
+         text-2xl leading-none cursor-pointer border transition-colors duration-200;
+  color: #ffffff;
+  background-color: rgb(0 0 0 / 0.55);
+  border-color: rgb(255 255 255 / 0.2);
+}
+
+.closeButton:hover {
+  background-color: rgb(0 0 0 / 0.8);
+}
+
+.modalImage {
+  @apply block w-full h-auto;
+}
+
+.modalBody {
+  @apply flex flex-col gap-8 p-6 md:p-10;
+}
+
+.modalHeader {
+  @apply flex flex-col items-start gap-3;
 }
 
 .categoryBadge {
@@ -120,10 +327,14 @@
          border border-slate-800 text-slate-500;
 }
 
+.modalTitle {
+  @apply text-2xl md:text-4xl font-bold text-white tracking-tight leading-tight;
+}
+
 /* ---------- Meta (onde / quando / papel) ---------- */
 
 .metaGrid {
-  @apply flex flex-col gap-2.5 mb-6 m-0;
+  @apply flex flex-col gap-2.5 m-0;
 }
 
 .metaItem {
@@ -143,51 +354,10 @@
 }
 
 .projectDescription {
-  @apply text-base md:text-lg text-slate-300 leading-relaxed mb-6;
-}
-
-.tagsContainer {
-  @apply flex flex-wrap gap-3 mb-6;
-}
-
-.tag {
-  @apply px-3.5 py-1.5 text-xs font-mono font-bold rounded-lg bg-accent/5 text-accent border border-accent/10 tracking-wider;
-}
-
-/* ---------- Toggle de detalhes ---------- */
-
-.toggleButton {
-  @apply self-start inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
-         bg-transparent border border-slate-800 cursor-pointer
-         text-xs font-mono font-bold uppercase tracking-widest text-slate-400
-         transition-colors duration-200;
-}
-
-.toggleButton:hover {
-  @apply text-accent border-accent/30 bg-accent/5;
-}
-
-.chevron {
-  @apply inline-block transition-transform duration-200;
-}
-
-.chevronOpen {
-  transform: rotate(180deg);
+  @apply text-base md:text-lg text-slate-300 leading-relaxed;
 }
 
 /* ---------- Detalhes ---------- */
-
-/* Painel que abre embaixo do card inteiro, na largura toda */
-.details {
-  @apply w-full p-8 md:p-10 border-t border-slate-900/60 bg-surface-deep
-         grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10;
-  animation: detailsOpen 0.25s ease-out;
-}
-
-@keyframes detailsOpen {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
 .detailBlock {
   @apply flex flex-col gap-4;
@@ -219,8 +389,8 @@
 
 /* ---------- Footer ---------- */
 
-.cardFooter {
-  @apply mt-8 pt-5 border-t border-slate-900/40 flex flex-wrap gap-x-8 gap-y-3;
+.modalLinks {
+  @apply pt-6 border-t border-slate-900/60 flex flex-wrap gap-x-8 gap-y-3;
 }
 
 .projectLink {
@@ -229,18 +399,4 @@
 
 .projectLink:hover {
   @apply text-accent-strong;
-}
-
-.arrow {
-  @apply transition-transform duration-200 inline-block font-bold;
-}
-
-.projectLink:hover .arrow {
-  transform: translateX(6px);
-}
-
-@media (min-width: 1024px) {
-  .cardMain { @apply flex-row items-stretch; }
-  .imageWrapper { @apply w-2/5 aspect-auto border-b-0 border-r shrink-0; }
-  .cardContent { @apply w-3/5; }
 }

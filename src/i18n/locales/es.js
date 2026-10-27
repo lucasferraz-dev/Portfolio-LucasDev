@@ -85,8 +85,9 @@ export default {
       role: 'mi rol',
       result: 'resultado',
     },
-    showDetails: 'VER PROCESO Y APRENDIZAJES',
-    hideDetails: 'CERRAR DETALLES',
+    viewProcess: 'Ver proceso',
+    hoverHint: 'Pasa el cursor para ver más',
+    close: 'Cerrar',
     problemTitle: 'El problema',
     processTitle: 'Cómo fue el proceso',
     learningsTitle: 'Lo que aprendí',
@@ -101,6 +102,8 @@ export default {
         period: 'Sep/2026 - Actualidad',
         context: 'Grande Oriente do Brasil - Paraná - Pasantía en TI',
         role: 'Desarrollador full-stack - modelado, back-end en Django e interfaz',
+        summary:
+          'Quería que el conocimiento de cómo funciona cada proceso no quedara solo en la cabeza de las personas. Construí en Django un sistema que documenta, versiona y publica las rutinas de cada secretaría, siguiendo las normas ISO 9001 e ISO 37001.',
         description:
           'Sistema web para registrar, versionar y consultar las rutinas de trabajo de cada secretaría, presentando cada proceso como un mapa visual de etapas con entradas y salidas. Desarrollado con base en los requisitos de las normas ISO 9001 (gestión de la calidad) e ISO 37001 (sistema de gestión antisoborno).',
         problem:
@@ -131,6 +134,8 @@ export default {
         role: 'Líder del equipo (5 personas) y responsable de la planificación y la estrategia',
         result:
           'Top 10 general, con cerca de 35 mil puntos (el 1.º lugar tuvo cerca de 37 mil); llegamos a estar en el top 4',
+        summary:
+          'El desafío era dimensionar la recarga de autos eléctricos gastando lo mínimo, con cada prueba en el simulador oficial costando caro. Lideré al equipo en la construcción de un motor propio en Python para probar configuraciones antes de enviarlas, y terminamos en el top 10.',
         description:
           'Motor de simulación en Python que estimaba la puntuación de cada configuración de agencias ficticias de alquiler de autos eléctricos (cargadores, acometida eléctrica, demanda contratada y política de recarga) antes de enviarla al simulador oficial del evento.',
         problem:
@@ -158,6 +163,8 @@ export default {
         period: 'Mar/2026 - Actualidad',
         context: 'Proyecto académico - Ciencias de la Computación (PUCPR) - ejecutado localmente',
         role: 'Desarrollador full-stack - modelado de la base de datos, API e interfaz',
+        summary:
+          'Quería un lugar único para organizar el backlog de juegos repartidos entre plataformas. Modelé la base de datos en MySQL, creé una API REST con Node.js/Express y la interfaz en React.',
         description:
           'Plataforma full-stack para que los gamers organicen su backlog, gestionen sus perfiles y comparen la experiencia de distintos juegos y versiones.',
         problem:

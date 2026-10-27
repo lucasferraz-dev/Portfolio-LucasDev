@@ -85,8 +85,9 @@ export default {
       role: 'my role',
       result: 'result',
     },
-    showDetails: 'SEE PROCESS AND LEARNINGS',
-    hideDetails: 'HIDE DETAILS',
+    viewProcess: 'See process',
+    hoverHint: 'Hover for details',
+    close: 'Close',
     problemTitle: 'The problem',
     processTitle: 'How the process went',
     learningsTitle: 'What I learned',
@@ -101,6 +102,8 @@ export default {
         period: 'Sep/2026 - Present',
         context: 'Grande Oriente do Brasil - Paraná - IT Internship',
         role: 'Full-stack developer - data modeling, Django back end and interface',
+        summary:
+          'I wanted the knowledge of how each process works to stop living only in people’s heads. I built a Django system that documents, versions and publishes each department’s routines, following the ISO 9001 and ISO 37001 standards.',
         description:
           'Web system for registering, versioning and looking up each department’s work routines, presenting every process as a visual map of steps with inputs and outputs. Built on the requirements of the ISO 9001 (quality management) and ISO 37001 (anti-bribery management system) standards.',
         problem:
@@ -131,6 +134,8 @@ export default {
         role: 'Team leader (5 people), responsible for planning and strategy',
         result:
           'Top 10 overall, with about 35k points (1st place had about 37k); we reached the top 4 at one point',
+        summary:
+          'The challenge was sizing EV charging at the lowest cost, with every test on the official simulator being expensive. I led the team in building our own Python engine to test configurations before submitting, and we finished in the top 10.',
         description:
           'Python simulation engine that estimated the score of each configuration of fictional electric car rental branches (chargers, power supply, contracted demand and charging policy) before submitting it to the event’s official simulator.',
         problem:
@@ -158,6 +163,8 @@ export default {
         period: 'Mar/2026 - Present',
         context: 'Academic project - Computer Science (PUCPR) - runs locally',
         role: 'Full-stack developer - database modeling, API and interface',
+        summary:
+          'I wanted a single place to organize a game backlog spread across platforms. I modeled the MySQL database, built a REST API with Node.js/Express and the React interface.',
         description:
           'Full-stack platform for gamers to organize their backlog, manage their profiles and compare the experience across different games and versions.',
         problem:

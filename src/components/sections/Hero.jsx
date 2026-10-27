@@ -57,7 +57,7 @@ export default function Hero() {
 
       <div className={styles.visualContainer}>
         <div className={styles.photoFrame}>
-          <img src={fotoPerfil} alt="Lucas Ferraz dos Santos" className={styles.profilePhoto} />
+          <img src={fotoPerfil} alt="Lucas Ferraz dos Santos" className={styles.profilePhoto} fetchPriority="high" />
         </div>
         
         <div className={styles.dbStatusCard}>

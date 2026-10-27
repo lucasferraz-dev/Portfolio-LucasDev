@@ -49,7 +49,7 @@ function TimelineItem({ item, index }) {
         </div>
 
         <div className={styles.heading}>
-          {item.logo && <img src={item.logo} alt="" className={styles.logo} />}
+          {item.logo && <img src={item.logo} alt="" className={styles.logo} loading="lazy" decoding="async" />}
           <div>
             <h3 className={styles.title}>{content.title}</h3>
             <p className={styles.org}>{content.org}</p>

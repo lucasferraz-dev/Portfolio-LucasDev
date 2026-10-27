@@ -37,7 +37,7 @@ export default {
     ctaContact: 'Contato',
     ctaResume: 'Baixar Currículo',
     resumeFile: '/cv/Curriculo_LucasF_PT.pdf',
-    scrollHint: 'Role para explorar',
+    scrollHint: 'Role para me conhecer',
     role: 'Estagiário de TI @ GOB-PR',
   },
 
@@ -85,8 +85,9 @@ export default {
       role: 'meu papel',
       result: 'resultado',
     },
-    showDetails: 'VER PROCESSO E APRENDIZADOS',
-    hideDetails: 'FECHAR DETALHES',
+    viewProcess: 'Ver processo',
+    hoverHint: 'Passe o mouse para detalhes',
+    close: 'Fechar',
     problemTitle: 'O problema',
     processTitle: 'Como foi o processo',
     learningsTitle: 'O que eu aprendi',
@@ -101,6 +102,8 @@ export default {
         period: 'Set/2026 - Atualmente',
         context: 'Grande Oriente do Brasil - Paraná - Estágio em TI',
         role: 'Desenvolvedor full-stack - modelagem, back-end em Django e interface',
+        summary:
+          'Queria que o conhecimento de como cada processo funciona não ficasse só na cabeça das pessoas. Construí em Django um sistema que documenta, versiona e publica as rotinas de cada secretaria, seguindo as normas ISO 9001 e ISO 37001.',
         description:
           'Sistema web para cadastrar, versionar e consultar as rotinas de trabalho de cada secretaria, apresentando cada processo como um mapa visual de etapas com entradas e saídas. Desenvolvido com base nos requisitos das normas ISO 9001 (gestão da qualidade) e ISO 37001 (sistema de gestão antissuborno).',
         problem:
@@ -131,6 +134,8 @@ export default {
         role: 'Líder da equipe (5 pessoas) e responsável pelo planejamento e estratégia',
         result:
           'Top 10 geral, com cerca de 35 mil pontos (1º lugar com cerca de 37 mil); chegamos a ficar no top 4',
+        summary:
+          'O desafio era dimensionar a recarga de carros elétricos gastando o mínimo, com cada teste no simulador oficial custando caro. Liderei a equipe na construção de um motor próprio em Python para testar configurações antes de enviar, e terminamos no top 10.',
         description:
           'Motor de simulação em Python que estimava a nota de cada configuração de agências fictícias de aluguel de carros elétricos (carregadores, entrada elétrica, demanda contratada e política de recarga) antes de enviá-la ao simulador oficial do evento.',
         problem:
@@ -158,6 +163,8 @@ export default {
         period: 'Mar/2026 - Atualmente',
         context: 'Projeto acadêmico - Ciência da Computação (PUCPR) - executado localmente',
         role: 'Desenvolvedor full-stack - modelagem do banco, API e interface',
+        summary:
+          'Queria um lugar único para organizar o backlog de jogos espalhados entre plataformas. Modelei o banco em MySQL, criei uma API REST com Node.js/Express e a interface em React.',
         description:
           'Plataforma full-stack para gamers organizarem seu backlog, gerenciarem seus perfis e compararem a experiência de diferentes jogos e versões.',
         problem:

@@ -1,18 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './Projects.module.css';
 import RichText, { OPEN_PROJECT_EVENT } from '../common/RichText';
-import FotoSave from '../../assets/savepoint.png';
-import FotoRotinas from '../../assets/rotinas-gobpr.png';
+import FotoSave from '../../assets/savepoint.webp';
+import FotoRotinas from '../../assets/rotinas-gobpr.webp';
 import FotoHackathon from '../../assets/hackathon-localiza.jpg';
 import { useLanguage } from '../../i18n/useLanguage';
 
 const CATEGORY_IDS = ['todos', 'software', 'hackathon', 'academico', 'social', 'experimento'];
+
+const DEFAULT_RATIO = 16 / 9;
+const MIN_RATIO = 16 / 10;
+const MAX_RATIO = 16 / 9;
 
 const PROJECTS = [
   {
     id: 'ROW_01',
     category: 'software',
     image: FotoRotinas,
+    imagePosition: 'top',
     links: [],
   },
 
@@ -20,6 +25,7 @@ const PROJECTS = [
     id: 'ROW_02',
     category: 'hackathon',
     image: FotoHackathon,
+    imagePosition: 'center',
     links: [],
   },
 
@@ -27,6 +33,7 @@ const PROJECTS = [
     id: 'ROW_03',
     category: 'academico',
     image: FotoSave,
+    imagePosition: 'center',
     links: [
       { labelKey: 'demo', url: 'https://youtu.be/WEJ--3yszYM' },
       { labelKey: 'repo', url: 'https://github.com/lucasferraz-dev/save_point' },
@@ -34,153 +41,221 @@ const PROJECTS = [
   },
 ];
 
-function ProjectCard({ project, openRequest }) {
+function ProjectLinks({ project, className }) {
   const { t } = useLanguage();
-  const [isOpen, setIsOpen] = useState(false);
-  const cardRef = useRef(null);
-  const panelId = `${project.id}-details`;
 
-  useEffect(() => {
-    if (!openRequest) return;
-    setIsOpen(true);
-    cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [openRequest]);
+  return project.links.map((link) => (
+    <a key={link.url} href={link.url} target="_blank" rel="noreferrer" className={className}>
+      {t.projects.links[link.labelKey]} <span className={styles.arrow}>→</span>
+    </a>
+  ));
+}
+
+function ProjectCard({ project, onOpenProcess }) {
+  const { t } = useLanguage();
+  const [ratio, setRatio] = useState(DEFAULT_RATIO);
+
+  const handleImageLoad = (event) => {
+    const { naturalWidth, naturalHeight } = event.currentTarget;
+    if (!naturalWidth || !naturalHeight) return;
+    setRatio(Math.min(Math.max(naturalWidth / naturalHeight, MIN_RATIO), MAX_RATIO));
+  };
 
   return (
-    <article ref={cardRef} id={`project-${project.id}`} className={styles.card}>
-      <div className={styles.cardMain}>
-        <div className={styles.imageWrapper}>
-          {project.image ? (
-            <>
-              <img src={project.image} alt="" aria-hidden="true" className={styles.imageBackdrop} />
-              <img src={project.image} alt={t.projects.imageAlt(project.title)} className={styles.image} />
-            </>
-          ) : (
-            <div className={styles.imagePlaceholder}>
-              <span className={styles.placeholderText}>[ {project.title.toUpperCase()} ]</span>
-              <span className={styles.placeholderSub}>NO_PREVIEW_AVAILABLE</span>
-            </div>
-          )}
-        </div>
-
-        <div className={styles.cardContent}>
-          <div className={styles.cardHeader}>
-            <div className={styles.titleRow}>
-              <span className={styles.projectId}>{project.id}</span>
-              <h3 className={styles.projectTitle}>{project.title}</h3>
-            </div>
-            <span className={styles.categoryBadge}>{project.categoryLabel}</span>
+    <article id={`project-${project.id}`} className={styles.card}>
+      <div className={styles.media} style={{ aspectRatio: ratio }}>
+        {project.image ? (
+          <img
+            src={project.image}
+            alt={t.projects.imageAlt(project.title)}
+            className={styles.image}
+            style={{ objectPosition: project.imagePosition }}
+            loading="lazy"
+            decoding="async"
+            onLoad={handleImageLoad}
+          />
+        ) : (
+          <div className={styles.imagePlaceholder}>
+            <span className={styles.placeholderText}>[ {project.title.toUpperCase()} ]</span>
+            <span className={styles.placeholderSub}>NO_PREVIEW_AVAILABLE</span>
           </div>
+        )}
 
-          <dl className={styles.metaGrid}>
-            <div className={styles.metaItem}>
-              <dt className={styles.metaKey}>{t.projects.meta.where}</dt>
-              <dd className={styles.metaValue}>{project.context}</dd>
-            </div>
-            <div className={styles.metaItem}>
-              <dt className={styles.metaKey}>{t.projects.meta.when}</dt>
-              <dd className={styles.metaValue}>{project.period}</dd>
-            </div>
-            <div className={styles.metaItem}>
-              <dt className={styles.metaKey}>{t.projects.meta.role}</dt>
-              <dd className={styles.metaValue}>{project.role}</dd>
-            </div>
-            {project.result && (
-              <div className={styles.metaItem}>
-                <dt className={styles.metaKey}>{t.projects.meta.result}</dt>
-                <dd className={`${styles.metaValue} ${styles.metaHighlight}`}>{project.result}</dd>
-              </div>
-            )}
-          </dl>
+        <span className={styles.hoverHint} aria-hidden="true">
+          <svg viewBox="0 0 24 24" className={styles.hoverHintIcon}>
+            <path d="M4 3l7 17 2.5-7.5L21 10z" />
+          </svg>
+          {t.projects.hoverHint}
+        </span>
 
-          <p className={styles.projectDescription}><RichText text={project.description} /></p>
-
-          <div className={styles.tagsContainer}>
-            {project.tags.map((tag) => (
-              <span key={tag} className={styles.tag}>{tag}</span>
-            ))}
-          </div>
-
-          <button
-            type="button"
-            className={styles.toggleButton}
-            onClick={() => setIsOpen((prev) => !prev)}
-            aria-expanded={isOpen}
-            aria-controls={panelId}
-          >
-            {isOpen ? t.projects.hideDetails : t.projects.showDetails}
-            <span className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}>▾</span>
-          </button>
-
-          {project.links?.length > 0 && (
-            <div className={styles.cardFooter}>
-              {project.links.map((link) => (
-                <a
-                  key={link.url}
-                  href={link.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={styles.projectLink}
-                >
-                  {t.projects.links[link.labelKey]} <span className={styles.arrow}>→</span>
-                </a>
-              ))}
-            </div>
-          )}
+        <div className={styles.overlay}>
+          <span className={styles.overlayBadge}>{project.categoryLabel}</span>
+          <h3 className={styles.overlayTitle}>{project.title}</h3>
+          <span className={styles.overlayPeriod}>{project.period}</span>
         </div>
       </div>
 
-      {isOpen && (
-        <div id={panelId} className={styles.details}>
-          {project.problem && (
-            <div className={styles.detailBlock}>
-              <h4 className={styles.detailTitle}>{t.projects.problemTitle}</h4>
-              <p className={styles.detailText}><RichText text={project.problem} /></p>
-            </div>
+      <div className={styles.panel}>
+        <div className={styles.panelHeader}>
+          <span className={styles.projectId}>{project.id}</span>
+          <h4 className={styles.panelTitle}>{project.title}</h4>
+        </div>
+
+        <p className={styles.summary}>
+          <RichText text={project.summary} />
+        </p>
+
+        <div className={styles.tagsContainer}>
+          {project.tags.map((tag) => (
+            <span key={tag} className={styles.tag}>{tag}</span>
+          ))}
+        </div>
+
+        <div className={styles.actions}>
+          <button type="button" className={styles.processButton} onClick={() => onOpenProcess(project.id)}>
+            {t.projects.viewProcess}
+          </button>
+          <ProjectLinks project={project} className={styles.linkButton} />
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function ProjectModal({ project, onClose }) {
+  const { t } = useLanguage();
+  const dialogRef = useRef(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+
+    if (project) {
+      if (!dialog.open) dialog.showModal();
+      document.documentElement.style.overflow = 'hidden';
+    } else if (dialog.open) {
+      dialog.close();
+    }
+
+    return () => {
+      document.documentElement.style.overflow = '';
+    };
+  }, [project]);
+
+  const handleBackdropClick = (event) => {
+    if (event.target === dialogRef.current) onClose();
+  };
+
+  return (
+    <dialog
+      ref={dialogRef}
+      className={styles.modal}
+      onClose={onClose}
+      onClick={handleBackdropClick}
+      aria-labelledby="project-modal-title"
+    >
+      {project && (
+        <div className={styles.modalContent}>
+          <button type="button" className={styles.closeButton} onClick={onClose} aria-label={t.projects.close}>
+            ×
+          </button>
+
+          {project.image && (
+            <img src={project.image} alt="" className={styles.modalImage} decoding="async" />
           )}
 
-          {project.process?.length > 0 && (
-            <div className={styles.detailBlock}>
-              <h4 className={styles.detailTitle}>{t.projects.processTitle}</h4>
-              <ul className={styles.detailList}>
-                {project.process.map((step, i) => (
-                  <li key={step} className={styles.detailItem}>
-                    <span className={styles.stepNumber}>{String(i + 1).padStart(2, '0')}</span>
-                    <RichText text={step} />
-                  </li>
-                ))}
-              </ul>
+          <div className={styles.modalBody}>
+            <div className={styles.modalHeader}>
+              <span className={styles.categoryBadge}>{project.categoryLabel}</span>
+              <h3 id="project-modal-title" className={styles.modalTitle}>{project.title}</h3>
             </div>
-          )}
 
-          {project.learnings?.length > 0 && (
-            <div className={styles.detailBlock}>
-              <h4 className={styles.detailTitle}>{t.projects.learningsTitle}</h4>
-              <ul className={styles.detailList}>
-                {project.learnings.map((item) => (
-                  <li key={item} className={styles.detailItem}>
-                    <span className={styles.stepBullet}>&gt;</span>
-                    <RichText text={item} />
-                  </li>
-                ))}
-              </ul>
+            <dl className={styles.metaGrid}>
+              <div className={styles.metaItem}>
+                <dt className={styles.metaKey}>{t.projects.meta.where}</dt>
+                <dd className={styles.metaValue}>{project.context}</dd>
+              </div>
+              <div className={styles.metaItem}>
+                <dt className={styles.metaKey}>{t.projects.meta.when}</dt>
+                <dd className={styles.metaValue}>{project.period}</dd>
+              </div>
+              <div className={styles.metaItem}>
+                <dt className={styles.metaKey}>{t.projects.meta.role}</dt>
+                <dd className={styles.metaValue}>{project.role}</dd>
+              </div>
+              {project.result && (
+                <div className={styles.metaItem}>
+                  <dt className={styles.metaKey}>{t.projects.meta.result}</dt>
+                  <dd className={`${styles.metaValue} ${styles.metaHighlight}`}>{project.result}</dd>
+                </div>
+              )}
+            </dl>
+
+            <p className={styles.projectDescription}>
+              <RichText text={project.description} />
+            </p>
+
+            {project.problem && (
+              <div className={styles.detailBlock}>
+                <h4 className={styles.detailTitle}>{t.projects.problemTitle}</h4>
+                <p className={styles.detailText}><RichText text={project.problem} /></p>
+              </div>
+            )}
+
+            {project.process?.length > 0 && (
+              <div className={styles.detailBlock}>
+                <h4 className={styles.detailTitle}>{t.projects.processTitle}</h4>
+                <ul className={styles.detailList}>
+                  {project.process.map((step, i) => (
+                    <li key={step} className={styles.detailItem}>
+                      <span className={styles.stepNumber}>{String(i + 1).padStart(2, '0')}</span>
+                      <RichText text={step} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {project.learnings?.length > 0 && (
+              <div className={styles.detailBlock}>
+                <h4 className={styles.detailTitle}>{t.projects.learningsTitle}</h4>
+                <ul className={styles.detailList}>
+                  {project.learnings.map((item) => (
+                    <li key={item} className={styles.detailItem}>
+                      <span className={styles.stepBullet}>&gt;</span>
+                      <RichText text={item} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className={styles.tagsContainer}>
+              {project.tags.map((tag) => (
+                <span key={tag} className={styles.tag}>{tag}</span>
+              ))}
             </div>
-          )}
+
+            {project.links.length > 0 && (
+              <div className={styles.modalLinks}>
+                <ProjectLinks project={project} className={styles.projectLink} />
+              </div>
+            )}
+          </div>
         </div>
       )}
-    </article>
+    </dialog>
   );
 }
 
 export default function Projects() {
   const { t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState('todos');
-  const [openRequest, setOpenRequest] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     const openProject = (id) => {
       setActiveCategory('todos');
-      setOpenRequest({ id, at: Date.now() });
+      setSelectedId(id);
     };
 
     const handleOpenProject = (event) => openProject(event.detail);
@@ -192,10 +267,19 @@ export default function Projects() {
     return () => window.removeEventListener(OPEN_PROJECT_EVENT, handleOpenProject);
   }, []);
 
+  const closeProject = () => {
+    setSelectedId(null);
+    if (window.location.hash.startsWith('#project-')) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  };
+
   const projects = PROJECTS.map((project) => ({
     ...project,
     ...t.projects.items[project.id],
   }));
+
+  const selectedProject = projects.find((p) => p.id === selectedId) ?? null;
 
   const visibleCategories = CATEGORY_IDS
     .filter((id) => id === 'todos' || projects.some((p) => p.category === id))
@@ -235,14 +319,26 @@ export default function Projects() {
       )}
 
       <div className={styles.grid}>
-        {filtered.map((project) => (
-          <ProjectCard
+        {filtered.map((project, index) => (
+          <div
             key={project.id}
-            project={project}
-            openRequest={openRequest?.id === project.id ? openRequest : null}
-          />
+            className={`${styles.row} ${index % 2 === 0 ? styles.rowRight : styles.rowLeft}`}
+          >
+            <div className={styles.rail} aria-hidden="true">
+              <span className={styles.railLine} />
+              <span className={styles.railDot} />
+              <div className={styles.railLabel}>
+                <span className={styles.railIndex}>{String(index + 1).padStart(2, '0')}</span>
+                <span className={styles.railMeta}>{project.categoryLabel}</span>
+              </div>
+            </div>
+
+            <ProjectCard project={project} onOpenProcess={setSelectedId} />
+          </div>
         ))}
       </div>
+
+      <ProjectModal project={selectedProject} onClose={closeProject} />
     </section>
   );
 }
