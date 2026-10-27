@@ -51,7 +51,10 @@ function ProjectCard({ project, openRequest }) {
       <div className={styles.cardMain}>
         <div className={styles.imageWrapper}>
           {project.image ? (
-            <img src={project.image} alt={t.projects.imageAlt(project.title)} className={styles.image} />
+            <>
+              <img src={project.image} alt="" aria-hidden="true" className={styles.imageBackdrop} />
+              <img src={project.image} alt={t.projects.imageAlt(project.title)} className={styles.image} />
+            </>
           ) : (
             <div className={styles.imagePlaceholder}>
               <span className={styles.placeholderText}>[ {project.title.toUpperCase()} ]</span>

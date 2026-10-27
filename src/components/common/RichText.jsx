@@ -5,10 +5,10 @@ const PROJECT_HASH = /^#project-(.+)$/;
 
 export const OPEN_PROJECT_EVENT = 'open-project';
 
-function KeywordLink({ href, children }) {
+export function KeywordLink({ href, children, className = styles.keyword }) {
   if (href.startsWith('http')) {
     return (
-      <a href={href} target="_blank" rel="noreferrer" className={styles.keyword}>
+      <a href={href} target="_blank" rel="noreferrer" className={className}>
         {children}
       </a>
     );
@@ -24,7 +24,7 @@ function KeywordLink({ href, children }) {
   };
 
   return (
-    <a href={href} className={styles.keyword} onClick={handleClick}>
+    <a href={href} className={className} onClick={handleClick}>
       {children}
     </a>
   );

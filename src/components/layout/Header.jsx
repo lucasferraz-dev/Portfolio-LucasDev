@@ -3,7 +3,7 @@ import styles from './Header.module.css';
 import { LANGUAGES, useLanguage } from '../../i18n/useLanguage';
 import { useTheme } from '../../theme/useTheme';
 
-const NAV_SECTIONS = ['about', 'projects', 'skills', 'experience', 'education', 'contact'];
+const NAV_SECTIONS = ['about', 'projects', 'skills', 'journey', 'contact'];
 
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();

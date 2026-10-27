@@ -14,8 +14,7 @@ export default {
       about: 'Sobre',
       projects: 'Projetos',
       skills: 'Skills',
-      experience: 'Experiência',
-      education: 'Formação',
+      journey: 'Trajetória',
       contact: 'Contato',
     },
     mainNav: 'Navegação principal',
@@ -38,6 +37,7 @@ export default {
     ctaContact: 'Contato',
     ctaResume: 'Baixar Currículo',
     resumeFile: '/cv/Curriculo_LucasF_PT.pdf',
+    scrollHint: 'Role para explorar',
     role: 'Estagiário de TI @ GOB-PR',
   },
 
@@ -189,41 +189,74 @@ export default {
     },
   },
 
-  experience: {
-    title: 'Experiência Profissional',
-    activitiesTitle: 'Principais atividades',
+  timeline: {
+    title: 'Trajetória',
+    subtitle: 'Do início da faculdade até hoje: estudo, trabalho e os projetos que marcaram cada etapa.',
+    types: {
+      education: 'Formação',
+      work: 'Experiência',
+      project: 'Projeto',
+      course: 'Curso',
+      hackathon: 'Hackathon',
+    },
+    ongoing: 'Em andamento',
+    viewProject: 'Ver projeto',
     items: {
-      ROW_01: {
-        role: 'Estagiário de TI',
-        period: 'Out/2025 - Atualmente',
+      pucpr: {
+        date: '2024 – 2027',
+        title: 'Bacharelado em Ciência da Computação',
+        org: 'PUCPR - Pontifícia Universidade Católica do Paraná',
+        description:
+          'Início da graduação, com base em desenvolvimento de software, banco de dados e arquitetura de sistemas. Hoje no 6º semestre, estudando Inteligência Artificial, Machine Learning e programação distribuída.',
+        tags: ['Programação OO', 'Banco de Dados', 'Desenvolvimento Web', 'IA / ML'],
+      },
+      gobpr: {
+        date: 'Out/2025 – Atual',
+        title: 'Estagiário de TI',
+        org: 'Grande Oriente do Brasil - Paraná',
         description:
           'Entrei no suporte e na automação de planilhas e hoje desenvolvo [o sistema interno](#project-ROW_01) que documenta as rotinas de trabalho de todas as secretarias, construído em Python/Django sobre os requisitos das normas ISO 9001 e ISO 37001.',
-        activities: [
+        highlights: [
           'Desenvolvimento do Sistema de Rotinas: cadastro, versionamento, fluxo de aprovação e mapa visual de cada processo, com versão para impressão;',
           'Tradução dos requisitos da ISO 9001 e da ISO 37001 em regras do sistema: controle de documentos, histórico de versões, acesso por secretaria e autenticação em dois fatores;',
           'Automação de etapas repetitivas de processos administrativos com planilhas e scripts, reduzindo preenchimento manual e retrabalho;',
+          'Implantação e configuração do GLPI, além de servidores de teste para aplicações;',
           'Desenvolvimento e manutenção de páginas web internas;',
           'Suporte aos usuários e ajuste das ferramentas a partir do uso real da equipe.',
         ],
-        technologies: ['Python', 'Django', 'ISO 9001', 'ISO 37001', 'Automação', 'Excel', 'Suporte'],
+        tags: ['Python', 'Django', 'ISO 9001', 'ISO 37001', 'Automação', 'GLPI', 'Suporte'],
       },
-    },
-  },
-
-  education: {
-    title: 'Formação',
-    certTitle: 'Cursos e certificações',
-    logoAlt: (institution) => `Logo ${institution}`,
-    items: {
-      EDU_01: {
-        degree: 'Bacharelado em Ciência da Computação',
-        institution: 'PUCPR - Pontifícia Universidade Católica do Paraná',
-        period: '2024 - 2027 (em andamento)',
-        highlights: [
-          'Desenvolvimento de software e programação orientada a objetos;',
-          'Banco de dados, desenvolvimento web e arquitetura de sistemas;',
-          'Inteligência Artificial, Machine Learning e programação distribuída.',
-        ],
+      savepoint: {
+        date: 'Mar/2026',
+        title: 'Save Point',
+        org: 'Projeto acadêmico - PUCPR',
+        description:
+          'Plataforma full-stack para gamers organizarem o backlog de jogos, com API REST em Node.js/Express, banco MySQL e interface em React.',
+        tags: ['React', 'Node.js', 'Express', 'MySQL'],
+      },
+      python: {
+        date: '2026',
+        title: 'Curso de Python 3 do básico ao avançado - com projetos reais',
+        org: 'Udemy',
+        description:
+          'Curso com projetos reais para aprofundar Python, a linguagem que uso no estágio e que depois foi a base do hackathon.',
+        tags: ['Python'],
+      },
+      rotinas: {
+        date: 'Set/2026 – Atual',
+        title: 'Sistema de Rotinas - GOB/PR Digital',
+        org: 'GOB-PR - Estágio em TI',
+        description:
+          'Sistema web em Django que documenta, versiona e publica as rotinas de trabalho de cada secretaria, construído sobre os requisitos das normas ISO 9001 e ISO 37001.',
+        tags: ['Python', 'Django', 'ISO 9001', 'ISO 37001'],
+      },
+      hackathon: {
+        date: 'Out/2026',
+        title: 'Hackathon Recarga Inteligente - Localiza&Co',
+        org: 'Processo seletivo de estágio da Localiza&Co',
+        description:
+          'Liderei uma equipe de 5 pessoas no planejamento e na estratégia de um motor de simulação em Python. Terminamos no top 10 geral.',
+        tags: ['Python', 'Liderança', 'Simulação'],
       },
     },
   },

@@ -14,8 +14,7 @@ export default {
       about: 'About',
       projects: 'Projects',
       skills: 'Skills',
-      experience: 'Experience',
-      education: 'Education',
+      journey: 'Journey',
       contact: 'Contact',
     },
     mainNav: 'Main navigation',
@@ -38,6 +37,7 @@ export default {
     ctaContact: 'Contact',
     ctaResume: 'Download Resume',
     resumeFile: '/cv/Curriculo_LucasF_EN.pdf',
+    scrollHint: 'Scroll to explore',
     role: 'IT Intern @ GOB-PR',
   },
 
@@ -189,41 +189,74 @@ export default {
     },
   },
 
-  experience: {
-    title: 'Professional Experience',
-    activitiesTitle: 'Key activities',
+  timeline: {
+    title: 'Journey',
+    subtitle: 'From the start of college to today: studies, work and the projects that marked each stage.',
+    types: {
+      education: 'Education',
+      work: 'Experience',
+      project: 'Project',
+      course: 'Course',
+      hackathon: 'Hackathon',
+    },
+    ongoing: 'In progress',
+    viewProject: 'View project',
     items: {
-      ROW_01: {
-        role: 'IT Intern',
-        period: 'Oct/2025 - Present',
+      pucpr: {
+        date: '2024 – 2027',
+        title: 'Bachelor’s in Computer Science',
+        org: 'PUCPR - Pontifical Catholic University of Paraná',
+        description:
+          'Start of my degree, built on software development, databases and systems architecture. Now in the 6th semester, studying Artificial Intelligence, Machine Learning and distributed programming.',
+        tags: ['OOP', 'Databases', 'Web Development', 'AI / ML'],
+      },
+      gobpr: {
+        date: 'Oct/2025 – Present',
+        title: 'IT Intern',
+        org: 'Grande Oriente do Brasil - Paraná',
         description:
           'I started in user support and spreadsheet automation, and today I develop [the internal system](#project-ROW_01) that documents the work routines of every department, built with Python/Django on the requirements of the ISO 9001 and ISO 37001 standards.',
-        activities: [
+        highlights: [
           'Development of the Routines System: registration, versioning, approval flow and a visual map of each process, with a printable version;',
           'Translating ISO 9001 and ISO 37001 requirements into system rules: document control, version history, per-department access and two-factor authentication;',
           'Automating repetitive steps of administrative processes with spreadsheets and scripts, reducing manual data entry and rework;',
+          'Deployment and configuration of GLPI, plus test servers for applications;',
           'Development and maintenance of internal web pages;',
           'User support and tool adjustments based on how the team actually uses them.',
         ],
-        technologies: ['Python', 'Django', 'ISO 9001', 'ISO 37001', 'Automation', 'Excel', 'Support'],
+        tags: ['Python', 'Django', 'ISO 9001', 'ISO 37001', 'Automation', 'GLPI', 'Support'],
       },
-    },
-  },
-
-  education: {
-    title: 'Education',
-    certTitle: 'Courses and certifications',
-    logoAlt: (institution) => `${institution} logo`,
-    items: {
-      EDU_01: {
-        degree: 'Bachelor’s in Computer Science',
-        institution: 'PUCPR - Pontifical Catholic University of Paraná',
-        period: '2024 - 2027 (in progress)',
-        highlights: [
-          'Software development and object-oriented programming;',
-          'Databases, web development and systems architecture;',
-          'Artificial Intelligence, Machine Learning and distributed programming.',
-        ],
+      savepoint: {
+        date: 'Mar/2026',
+        title: 'Save Point',
+        org: 'Academic project - PUCPR',
+        description:
+          'Full-stack platform for gamers to organize their game backlog, with a REST API in Node.js/Express, a MySQL database and a React interface.',
+        tags: ['React', 'Node.js', 'Express', 'MySQL'],
+      },
+      python: {
+        date: '2026',
+        title: 'Curso de Python 3 do básico ao avançado - com projetos reais',
+        org: 'Udemy',
+        description:
+          'Course with real projects to deepen my Python, the language I use at my internship and that later powered the hackathon.',
+        tags: ['Python'],
+      },
+      rotinas: {
+        date: 'Sep/2026 – Present',
+        title: 'Routines System - GOB/PR Digital',
+        org: 'GOB-PR - IT Internship',
+        description:
+          'Django web system that documents, versions and publishes each department’s work routines, built on the requirements of the ISO 9001 and ISO 37001 standards.',
+        tags: ['Python', 'Django', 'ISO 9001', 'ISO 37001'],
+      },
+      hackathon: {
+        date: 'Oct/2026',
+        title: 'Smart Charging Hackathon - Localiza&Co',
+        org: 'Localiza&Co internship selection process',
+        description:
+          'I led a team of 5 in the planning and strategy of a Python simulation engine. We finished in the overall top 10.',
+        tags: ['Python', 'Leadership', 'Simulation'],
       },
     },
   },
