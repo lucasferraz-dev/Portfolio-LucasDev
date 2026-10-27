@@ -125,6 +125,30 @@
 
 .dbLine {
   @apply tracking-wide leading-relaxed;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.pending {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.prompt {
+  @apply text-slate-600 mr-2;
+}
+
+.caret {
+  @apply inline-block w-0;
+}
+
+.caret::after {
+  content: "▋";
+  @apply text-accent;
+  animation: blink 1s step-end infinite;
+}
+
+.dbFooter {
+  @apply text-xs text-slate-600 pt-1;
 }
 
 .dbResult {

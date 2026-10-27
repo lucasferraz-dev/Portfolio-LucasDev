@@ -61,7 +61,7 @@ export default {
       { key: 'atuacao', value: 'Estagiário de TI no GOB-PR (desde out/2025)' },
       { key: 'foco_atual', value: 'Python/Django, full stack e bancos de dados' },
       { key: 'aprendendo', value: 'Inteligência Artificial • Machine Learning' },
-      { key: 'idiomas', value: 'Português (nativo) • Inglês (técnico)' },
+      { key: 'idiomas', value: 'Português (nativo) • Inglês (técnico) • Espanhol (básico)' },
     ],
   },
 

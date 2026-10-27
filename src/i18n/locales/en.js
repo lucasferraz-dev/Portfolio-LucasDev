@@ -61,7 +61,7 @@ export default {
       { key: 'position', value: 'IT Intern at GOB-PR (since Oct/2025)' },
       { key: 'current_focus', value: 'Python/Django, full stack and databases' },
       { key: 'learning', value: 'Artificial Intelligence • Machine Learning' },
-      { key: 'languages', value: 'Portuguese (native) • English (technical)' },
+      { key: 'languages', value: 'Portuguese (native) • English (technical) • Spanish (basic)' },
     ],
   },
 

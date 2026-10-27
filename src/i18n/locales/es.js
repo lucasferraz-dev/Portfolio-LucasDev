@@ -61,7 +61,7 @@ export default {
       { key: 'puesto', value: 'Pasante de TI en GOB-PR (desde oct/2025)' },
       { key: 'enfoque_actual', value: 'Python/Django, full stack y bases de datos' },
       { key: 'aprendiendo', value: 'Inteligencia Artificial • Machine Learning' },
-      { key: 'idiomas', value: 'Portugués (nativo) • Inglés (técnico)' },
+      { key: 'idiomas', value: 'Portugués (nativo) • Inglés (técnico) • Español (básico)' },
     ],
   },
 

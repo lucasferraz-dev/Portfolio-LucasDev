@@ -1,10 +1,51 @@
 import styles from './About.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
 import RichText from '../common/RichText';
+import TypedText from '../effects/TypedText';
+import useInView from '../effects/useInView';
+import useTypingProgress, { tokensLength } from '../effects/useTypingProgress';
+
+function ProfileRecord({ facts }) {
+  const [cardRef, inView] = useInView(0.3);
+
+  const rows = facts.map((fact) => [
+    { text: `"${fact.key}"`, className: styles.factKey },
+    { text: ':', className: styles.colon },
+    { text: `"${fact.value}"`, className: styles.factValue },
+  ]);
+  const total = rows.reduce((sum, tokens) => sum + tokensLength(tokens), 0);
+  const typed = useTypingProgress(total, { active: inView, startDelay: 400, charDelay: 18 });
+  const isDone = typed >= total;
+
+  let offset = 0;
+
+  return (
+    <aside ref={cardRef} className={styles.factsCard}>
+      <div className={styles.factsHeader}>
+        <span className={styles.factsFile}>profile_record.json</span>
+      </div>
+
+      <p className="sr-only">{facts.map((fact) => `${fact.key}: ${fact.value}`).join(', ')}</p>
+
+      <div className={styles.factsBody} aria-hidden="true">
+        <span className={styles.brace}>{'{'}</span>
+        {rows.map((tokens, i) => {
+          const rowOffset = offset;
+          offset += tokensLength(tokens);
+          return (
+            <div key={facts[i].key} className={styles.factRow}>
+              <TypedText tokens={tokens} typed={typed} offset={rowOffset} showCaret={!isDone} />
+            </div>
+          );
+        })}
+        <span className={`${styles.brace} ${isDone ? '' : styles.pending}`}>{'}'}</span>
+      </div>
+    </aside>
+  );
+}
 
 export default function About() {
-  const { t } = useLanguage();
-  const FACTS = t.about.facts;
+  const { lang, t } = useLanguage();
 
   return (
     <section id="about" className={styles.sectionContainer}>
@@ -38,22 +79,7 @@ export default function About() {
           </div>
         </div>
 
-        <aside className={styles.factsCard}>
-          <div className={styles.factsHeader}>
-            <span className={styles.factsFile}>profile_record.json</span>
-          </div>
-          <div className={styles.factsBody}>
-            <span className={styles.brace}>{'{'}</span>
-            {FACTS.map((fact) => (
-              <div key={fact.key} className={styles.factRow}>
-                <span className={styles.factKey}>&quot;{fact.key}&quot;</span>
-                <span className={styles.colon}>:</span>
-                <span className={styles.factValue}>&quot;{fact.value}&quot;</span>
-              </div>
-            ))}
-            <span className={styles.brace}>{'}'}</span>
-          </div>
-        </aside>
+        <ProfileRecord key={lang} facts={t.about.facts} />
       </div>
     </section>
   );
