@@ -65,21 +65,23 @@ export default function About() {
               <RichText text={paragraph} />
             </p>
           ))}
-
-          <div className={styles.valuesBlock}>
-            <h3 className={styles.valuesTitle}>{t.about.valuesTitle}</h3>
-            <ul className={styles.valuesList}>
-              {t.about.values.map((value) => (
-                <li key={value} className={styles.valueItem}>
-                  <span className={styles.bullet}>&gt;</span>
-                  <RichText text={value} />
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
         <ProfileRecord key={lang} facts={t.about.facts} />
+      </div>
+
+      <div className={styles.valuesBlock}>
+        <h3 className={styles.valuesTitle}>{t.about.valuesTitle}</h3>
+        <ol className={styles.valuesGrid}>
+          {t.about.values.map((value, i) => (
+            <li key={value} className={styles.valueCard}>
+              <span className={styles.valueNumber}>{String(i + 1).padStart(2, '0')}</span>
+              <p className={styles.valueText}>
+                <RichText text={value} />
+              </p>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

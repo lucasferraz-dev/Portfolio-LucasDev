@@ -25,7 +25,7 @@
 }
 
 .lead {
-  @apply text-lg md:text-xl text-slate-200 leading-relaxed mb-6 font-medium;
+  @apply text-lg md:text-xl text-slate-200 leading-relaxed mb-8 font-medium border-l-2 border-accent pl-5 md:pl-6;
 }
 
 .paragraph {
@@ -33,23 +33,35 @@
 }
 
 .valuesBlock {
-  @apply mt-10 pt-8 border-t border-slate-900/60;
+  @apply mt-16;
 }
 
 .valuesTitle {
   @apply text-xs font-mono uppercase tracking-widest text-slate-500 font-bold mb-5;
 }
 
-.valuesList {
-  @apply flex flex-col gap-3 list-none p-0 m-0;
+.valuesGrid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 list-none p-0 m-0;
 }
 
-.valueItem {
-  @apply flex gap-3 text-base text-slate-400 leading-relaxed;
+.valueCard {
+  @apply flex flex-col gap-4 p-6 rounded-2xl bg-surface border border-slate-900 transition-colors duration-300;
 }
 
-.bullet {
-  @apply text-accent font-mono font-bold shrink-0;
+.valueCard:hover {
+  @apply border-accent/30;
+}
+
+.valueNumber {
+  @apply font-mono text-3xl font-bold leading-none text-slate-800 transition-colors duration-300;
+}
+
+.valueCard:hover .valueNumber {
+  @apply text-accent/50;
+}
+
+.valueText {
+  @apply text-sm md:text-base text-slate-400 leading-relaxed;
 }
 
 .factsCard {

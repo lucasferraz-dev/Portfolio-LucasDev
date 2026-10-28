@@ -56,7 +56,7 @@ export default {
       'Construyo pensando en quien lo va a usar sin necesidad de llamarme.',
     ],
     facts: [
-      { key: 'ubicacion', value: 'Curitiba, Paraná — Brasil' },
+      { key: 'ubicacion', value: 'São José dos Pinhais · Gran Curitiba, PR' },
       { key: 'formacion', value: 'Ciencias de la Computación (en curso)' },
       { key: 'puesto', value: 'Pasante de TI en GOB-PR (desde oct/2025)' },
       { key: 'enfoque_actual', value: 'Python/Django, full stack y bases de datos' },
@@ -284,7 +284,7 @@ export default {
     copied: '¡Correo copiado!',
     ping: [
       ['estado', 'abierto a nuevas oportunidades'],
-      ['ubicación', 'Curitiba, PR · UTC-3'],
+      ['ubicación', 'Gran Curitiba, PR · UTC-3'],
       ['idiomas', 'PT · EN · ES'],
     ],
   },

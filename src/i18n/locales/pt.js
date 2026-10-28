@@ -56,7 +56,7 @@ export default {
       'Construo pensando em quem vai usar sem precisar me chamar.',
     ],
     facts: [
-      { key: 'localizacao', value: 'Curitiba, Paraná — Brasil' },
+      { key: 'localizacao', value: 'São José dos Pinhais · Grande Curitiba, PR' },
       { key: 'formacao', value: 'Ciência da Computação (em andamento)' },
       { key: 'atuacao', value: 'Estagiário de TI no GOB-PR (desde out/2025)' },
       { key: 'foco_atual', value: 'Python/Django, full stack e bancos de dados' },
@@ -284,7 +284,7 @@ export default {
     copied: 'E-mail copiado!',
     ping: [
       ['status', 'aberto a novas oportunidades'],
-      ['local', 'Curitiba, PR · UTC-3'],
+      ['local', 'Grande Curitiba, PR · UTC-3'],
       ['idiomas', 'PT · EN · ES'],
     ],
   },

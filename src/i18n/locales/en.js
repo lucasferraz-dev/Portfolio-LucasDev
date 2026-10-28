@@ -56,7 +56,7 @@ export default {
       'I build for people who should be able to use it without having to call me.',
     ],
     facts: [
-      { key: 'location', value: 'Curitiba, Paraná — Brazil' },
+      { key: 'location', value: 'São José dos Pinhais · Greater Curitiba, PR' },
       { key: 'education', value: 'Computer Science (in progress)' },
       { key: 'position', value: 'IT Intern at GOB-PR (since Oct/2025)' },
       { key: 'current_focus', value: 'Python/Django, full stack and databases' },
@@ -284,7 +284,7 @@ export default {
     copied: 'Email copied!',
     ping: [
       ['status', 'open to new opportunities'],
-      ['location', 'Curitiba, PR · UTC-3'],
+      ['location', 'Greater Curitiba, PR · UTC-3'],
       ['languages', 'PT · EN · ES'],
     ],
   },
