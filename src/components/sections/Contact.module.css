@@ -1,11 +1,15 @@
 @reference "../../index.css";
 
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
 .sectionContainer {
   @apply py-24 max-w-none w-full px-6 md:px-16 lg:px-24 border-t border-slate-900/60;
 }
 
 .header {
-  @apply text-center mb-20;
+  @apply text-center mb-12;
 }
 
 .tagline {
@@ -13,58 +17,115 @@
 }
 
 .sectionTitle {
-  @apply text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white;
+  @apply text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-white;
 }
 
-.grid {
-  @apply grid grid-cols-1 md:grid-cols-2 gap-6 w-full mb-10;
+.subtitle {
+  @apply mt-6 text-base md:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed;
 }
 
-.card {
-  @apply bg-surface border border-slate-900 rounded-2xl p-8 flex items-center justify-between transition-all duration-300 shadow-xl;
+.actions {
+  @apply flex flex-col items-center gap-4 mb-14;
 }
 
-.card:hover {
-  @apply border-accent/20;
-  transform: translateY(-3px);
+.emailButton {
+  @apply inline-flex items-center gap-3 max-w-full px-5 md:px-7 py-4 rounded-2xl cursor-pointer
+         border border-accent/30 bg-accent/10 text-accent font-mono text-sm md:text-lg font-bold
+         transition-colors duration-200;
 }
 
-.cardContent {
-  @apply flex flex-col gap-2;
+.emailButton:hover {
+  @apply bg-accent/20 border-accent/50;
 }
 
-.label {
-  @apply text-xs md:text-sm font-mono text-slate-500 uppercase tracking-widest font-bold;
+.emailText {
+  @apply truncate;
 }
 
-.value {
-  @apply text-base md:text-lg lg:text-xl font-bold text-white tracking-wide break-all;
+.strokeIcon {
+  @apply w-5 h-5 shrink-0 fill-none stroke-current;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.arrow {
-  @apply text-slate-700 transition-colors duration-200 text-xl font-black pl-4;
+.copyIcon {
+  @apply opacity-60;
 }
 
-.card:hover .arrow {
+.copied {
+  @apply h-5 font-mono text-xs tracking-widest uppercase text-accent opacity-0 transition-opacity duration-200;
+}
+
+.copiedVisible {
+  @apply opacity-100;
+}
+
+.links {
+  @apply flex flex-wrap items-center justify-center gap-3;
+}
+
+.link {
+  @apply inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-900 bg-surface
+         font-mono text-xs font-bold uppercase tracking-widest text-slate-400 transition-colors duration-200;
+}
+
+.link:hover {
+  @apply text-accent border-accent/30;
+}
+
+.linkIcon {
+  @apply w-4 h-4 shrink-0;
+}
+
+.terminal {
+  @apply max-w-xl mx-auto rounded-2xl border border-slate-900 bg-page shadow-2xl overflow-hidden font-mono text-sm;
+}
+
+.terminalHeader {
+  @apply flex items-center gap-2 px-5 py-3 border-b border-slate-900/60 bg-surface;
+}
+
+.terminalDot {
+  @apply w-2.5 h-2.5 rounded-full bg-slate-800;
+}
+
+.terminalTitle {
+  @apply ml-2 text-xs uppercase tracking-widest text-slate-600;
+}
+
+.terminalBody {
+  @apply flex flex-col gap-2 p-5 md:p-6;
+}
+
+.terminalLine {
+  @apply flex flex-wrap gap-x-3 leading-relaxed text-slate-300;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.pending {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.prompt {
+  @apply text-accent font-bold;
+}
+
+.pingKey {
+  @apply text-slate-500 min-w-24;
+}
+
+.pingValue {
+  @apply text-slate-200;
+}
+
+.caret {
+  @apply inline-block w-0;
+}
+
+.caret::after {
+  content: "▋";
   @apply text-accent;
-}
-
-.statusCard {
-  @apply bg-surface border border-slate-900 rounded-2xl p-8 w-full shadow-xl text-left;
-}
-
-.statusHeader {
-  @apply flex items-center gap-3 mb-3;
-}
-
-.dot {
-  @apply w-3 h-3 rounded-full bg-accent animate-pulse;
-}
-
-.statusTitle {
-  @apply text-base font-mono font-bold text-white tracking-wide;
-}
-
-.statusText {
-  @apply text-sm md:text-base text-slate-400 leading-relaxed pl-6;
+  animation: blink 1s step-end infinite;
 }

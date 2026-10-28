@@ -186,6 +186,15 @@ export default {
 
   skills: {
     title: 'Conhecimento Técnico',
+    hint: 'Passe o mouse ou toque em uma tecnologia para ver onde usei.',
+    usedInLabel: 'Usado em',
+    groups: {
+      languages: 'Linguagens',
+      frontend: 'Front-end',
+      backend: 'Back-end',
+      data: 'Dados & ML',
+      tools: 'Ferramentas',
+    },
     usedIn: {
       savepoint: 'SAVE POINT',
       portfolio: 'PORTFÓLIO',
@@ -269,7 +278,14 @@ export default {
   },
 
   contact: {
-    title: 'Entre em contato',
-    statusText: 'Sempre aberto a novos desafios, projetos e oportunidades para aprender construindo.',
+    title: 'Bora construir algo juntos?',
+    subtitle: 'Aberto a oportunidades de estágio, projetos e boas conversas sobre tecnologia.',
+    copyEmail: 'Copiar e-mail',
+    copied: 'E-mail copiado!',
+    ping: [
+      ['status', 'aberto a novas oportunidades'],
+      ['local', 'Curitiba, PR · UTC-3'],
+      ['idiomas', 'PT · EN · ES'],
+    ],
   },
 };

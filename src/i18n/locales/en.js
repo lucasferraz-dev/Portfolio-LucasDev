@@ -186,6 +186,15 @@ export default {
 
   skills: {
     title: 'Technical Skills',
+    hint: 'Hover or tap a technology to see where I used it.',
+    usedInLabel: 'Used in',
+    groups: {
+      languages: 'Languages',
+      frontend: 'Front-end',
+      backend: 'Back-end',
+      data: 'Data & ML',
+      tools: 'Tools',
+    },
     usedIn: {
       savepoint: 'SAVE POINT',
       portfolio: 'PORTFOLIO',
@@ -269,7 +278,14 @@ export default {
   },
 
   contact: {
-    title: 'Get in touch',
-    statusText: 'Always open to new challenges, projects and opportunities to learn by building.',
+    title: 'Let’s build something together?',
+    subtitle: 'Open to internship opportunities, projects and good conversations about tech.',
+    copyEmail: 'Copy email',
+    copied: 'Email copied!',
+    ping: [
+      ['status', 'open to new opportunities'],
+      ['location', 'Curitiba, PR · UTC-3'],
+      ['languages', 'PT · EN · ES'],
+    ],
   },
 };
