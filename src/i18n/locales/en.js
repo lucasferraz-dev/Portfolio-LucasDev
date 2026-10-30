@@ -88,6 +88,14 @@ export default {
     viewProcess: 'See process',
     hoverHint: 'Hover for details',
     close: 'Close',
+    gallery: {
+      label: (title) => `Image gallery of the ${title} project`,
+      imageAlt: (title, n, total) => `Interface of the ${title} project (image ${n} of ${total})`,
+      prev: 'Previous image',
+      next: 'Next image',
+      goTo: (n) => `View image ${n}`,
+      count: (n) => `${n} photos`,
+    },
     problemTitle: 'The problem',
     processTitle: 'How the process went',
     learningsTitle: 'What I learned',
@@ -180,6 +188,41 @@ export default {
           'Integrating third-party APIs means treating failures and rate limits as the rule, not the exception.',
         ],
         tags: ['React', 'Node.js', 'MySQL', 'Express', 'API Integration'],
+      },
+
+      ROW_04: {
+        title: 'Skinomics - Steam Market Price Forecasting',
+        categoryLabel: 'Full Stack',
+        period: 'Aug–Nov/2026 · 12 weeks',
+        when: 'Aug–Nov/2026, 12 weeks (Go-Live on 11/13/2026)',
+        context:
+          'Academic project at PUCPR - team of 4, with a full management plan (WBS, schedule, 4 increments)',
+        role: 'In charge of data and back-end; ended up implementing the whole system (API, database, model, front-end and deploy) using Claude Code as a pair programmer',
+        result:
+          'Model with 8.1% MAPE on the test set (target ≤ 15%), 21% less error than the naive baseline; site live with Steam login',
+        summary:
+          'Web platform that collects the price history of Team Fortress 2 items and uses machine learning to forecast next week\'s price. I was in charge of data and back-end and ended up building the system end to end, from database to deploy, with a model that makes 21% less error than the naive forecast.',
+        description:
+          'Platform for Steam item market investors: it stores daily price and volume history, shows trends and forecasts each item\'s price for the next 7 days, with a custom interface inspired by the look of Valve\'s games.',
+        problem:
+          'The Steam market trades items worth anything from cents to hundreds of dollars, but Steam itself only shows a simple chart. People buying to resell decide on gut feeling. The challenge was turning a noisy history, with barely traded items, manipulation spikes and sudden regime changes, into useful and honest forecasts.',
+        process: [
+          'We started by testing CS2 and TF2. The model did worse on CS2, so we decided to focus on TF2 only and do one market well instead of two poorly;',
+          'I built the historical base in PostgreSQL with versioned migrations (~90k daily prices for 37 items, some since 2012), with idempotent imports, deduplication and dropping the partial collection day;',
+          'In the model, every feature is relative to the current price (returns, distance from moving averages, volatility, market context), so a US$ 0.15 item can be compared with a US$ 10 one. I validated with a temporal split and a 4-semester walk-forward, never with a random split;',
+          'Calendar features (month, day of year) improved training but broke on the test set: the model was memorizing old seasonality. I removed them on purpose and arrived at a combination of Gradient Boosting and an exponential moving average, which beat the naive baseline on 32 of 36 items;',
+          'With coding starting 2 weeks before Go-Live, I prioritized the main flow (data → API → screens → deploy) and used Claude Code to speed up implementation, reviewing every decision and keeping automated tests on the back-end;',
+          'I shipped it with the front-end on Vercel, the API in Docker on Render and the database on Neon, and implemented Steam login via OpenID, with signature validation, protection against forged logins and sessions stored only as hashes.',
+        ],
+        learnings: [
+          'A better model in training is not a better model: the features that "helped" the most were the ones memorizing the past, and only date-based validation revealed it;',
+          'A strong baseline is mandatory: a simple "revert to the 10-day average" already beat the naive one, and it was the yardstick for whether ML was worth it;',
+          'Cutting scope is engineering too: one market done well, and the main flow before secondary modules, is what got the project live on time;',
+          'Login security is full of details: with OpenID, it is not enough for Steam to say "valid", you have to check which fields are inside the signature;',
+          'Programming with AI pays off when whoever is driving understands what is being done: decisions and review are still engineering work.',
+        ],
+        cardTags: ['Python', 'FastAPI', 'PostgreSQL', 'React + TypeScript', 'Machine Learning', 'Docker'],
+        tags: ['Python', 'FastAPI', 'PostgreSQL', 'scikit-learn', 'React + TypeScript', 'Docker', 'Steam OpenID'],
       },
     },
   },

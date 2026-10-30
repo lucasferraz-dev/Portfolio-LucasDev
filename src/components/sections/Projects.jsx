@@ -4,6 +4,9 @@ import RichText, { OPEN_PROJECT_EVENT } from '../common/RichText';
 import FotoSave from '../../assets/savepoint.webp';
 import FotoRotinas from '../../assets/rotinas-gobpr.webp';
 import FotoHackathon from '../../assets/hackathon-localiza.jpg';
+import FotoSkinomicsLanding from '../../assets/skinomics-landing.webp';
+import FotoSkinomicsExplorar from '../../assets/skinomics-explorar.webp';
+import FotoSkinomicsItem from '../../assets/skinomics-item.webp';
 import { useLanguage } from '../../i18n/useLanguage';
 
 const CATEGORY_IDS = ['todos', 'software', 'hackathon', 'academico', 'social', 'experimento'];
@@ -16,7 +19,7 @@ const PROJECTS = [
   {
     id: 'ROW_01',
     category: 'software',
-    image: FotoRotinas,
+    images: [FotoRotinas],
     imagePosition: 'top',
     links: [],
   },
@@ -24,7 +27,7 @@ const PROJECTS = [
   {
     id: 'ROW_02',
     category: 'hackathon',
-    image: FotoHackathon,
+    images: [FotoHackathon],
     imagePosition: 'center',
     links: [],
   },
@@ -32,14 +35,24 @@ const PROJECTS = [
   {
     id: 'ROW_03',
     category: 'academico',
-    image: FotoSave,
+    images: [FotoSave],
     imagePosition: 'center',
     links: [
       { labelKey: 'demo', url: 'https://youtu.be/WEJ--3yszYM' },
       { labelKey: 'repo', url: 'https://github.com/lucasferraz-dev/save_point' },
     ],
   },
+
+  {
+    id: 'ROW_04',
+    category: 'academico',
+    images: [FotoSkinomicsLanding, FotoSkinomicsExplorar, FotoSkinomicsItem],
+    imagePosition: 'center',
+    links: [],
+  },
 ];
+
+const SWIPE_THRESHOLD = 40;
 
 function ProjectLinks({ project, className }) {
   const { t } = useLanguage();
@@ -61,12 +74,14 @@ function ProjectCard({ project, onOpenProcess }) {
     setRatio(Math.min(Math.max(naturalWidth / naturalHeight, MIN_RATIO), MAX_RATIO));
   };
 
+  const cover = project.images[0];
+
   return (
     <article id={`project-${project.id}`} className={styles.card}>
       <div className={styles.media} style={{ aspectRatio: ratio }}>
-        {project.image ? (
+        {cover ? (
           <img
-            src={project.image}
+            src={cover}
             alt={t.projects.imageAlt(project.title)}
             className={styles.image}
             style={{ objectPosition: project.imagePosition }}
@@ -88,6 +103,16 @@ function ProjectCard({ project, onOpenProcess }) {
           {t.projects.hoverHint}
         </span>
 
+        {project.images.length > 1 && (
+          <span className={styles.photoCount}>
+            <svg viewBox="0 0 24 24" className={styles.photoCountIcon} aria-hidden="true">
+              <rect x="3" y="6" width="14" height="12" rx="2" />
+              <path d="M7 3h12a2 2 0 0 1 2 2v10" />
+            </svg>
+            {t.projects.gallery.count(project.images.length)}
+          </span>
+        )}
+
         <div className={styles.overlay}>
           <span className={styles.overlayBadge}>{project.categoryLabel}</span>
           <h3 className={styles.overlayTitle}>{project.title}</h3>
@@ -106,7 +131,7 @@ function ProjectCard({ project, onOpenProcess }) {
         </p>
 
         <div className={styles.tagsContainer}>
-          {project.tags.map((tag) => (
+          {(project.cardTags ?? project.tags).map((tag) => (
             <span key={tag} className={styles.tag}>{tag}</span>
           ))}
         </div>
@@ -119,6 +144,97 @@ function ProjectCard({ project, onOpenProcess }) {
         </div>
       </div>
     </article>
+  );
+}
+
+function ProjectGallery({ images, title }) {
+  const { t } = useLanguage();
+  const [index, setIndex] = useState(0);
+  const touchStartX = useRef(null);
+
+  if (images.length === 0) return null;
+
+  if (images.length === 1) {
+    return <img src={images[0]} alt="" className={styles.modalImage} decoding="async" />;
+  }
+
+  const go = (step) => setIndex((current) => (current + step + images.length) % images.length);
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'ArrowRight') go(1);
+    else if (event.key === 'ArrowLeft') go(-1);
+  };
+
+  const handleTouchStart = (event) => {
+    touchStartX.current = event.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (event) => {
+    if (touchStartX.current === null) return;
+    const delta = event.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) > SWIPE_THRESHOLD) go(delta < 0 ? 1 : -1);
+  };
+
+  return (
+    <div
+      className={styles.gallery}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label={t.projects.gallery.label(title)}
+      onKeyDown={handleKeyDown}
+    >
+      <div className={styles.galleryViewport} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+        <div className={styles.galleryTrack} style={{ transform: `translateX(-${index * 100}%)` }}>
+          {images.map((src, i) => (
+            <img
+              key={src}
+              src={src}
+              alt={t.projects.gallery.imageAlt(title, i + 1, images.length)}
+              aria-hidden={i !== index}
+              className={styles.gallerySlide}
+              decoding="async"
+            />
+          ))}
+        </div>
+
+        <button
+          type="button"
+          className={`${styles.galleryNav} ${styles.galleryPrev}`}
+          onClick={() => go(-1)}
+          aria-label={t.projects.gallery.prev}
+        >
+          ‹
+        </button>
+        <button
+          type="button"
+          className={`${styles.galleryNav} ${styles.galleryNext}`}
+          onClick={() => go(1)}
+          aria-label={t.projects.gallery.next}
+        >
+          ›
+        </button>
+
+        <span className={styles.galleryCounter} aria-live="polite">
+          {String(index + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
+        </span>
+      </div>
+
+      <div className={styles.galleryThumbs}>
+        {images.map((src, i) => (
+          <button
+            key={src}
+            type="button"
+            className={`${styles.galleryThumb} ${i === index ? styles.galleryThumbActive : ''}`}
+            onClick={() => setIndex(i)}
+            aria-label={t.projects.gallery.goTo(i + 1)}
+            aria-current={i === index}
+          >
+            <img src={src} alt="" decoding="async" />
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -159,9 +275,7 @@ function ProjectModal({ project, onClose }) {
             ×
           </button>
 
-          {project.image && (
-            <img src={project.image} alt="" className={styles.modalImage} decoding="async" />
-          )}
+          <ProjectGallery key={project.id} images={project.images} title={project.title} />
 
           <div className={styles.modalBody}>
             <div className={styles.modalHeader}>
@@ -176,7 +290,7 @@ function ProjectModal({ project, onClose }) {
               </div>
               <div className={styles.metaItem}>
                 <dt className={styles.metaKey}>{t.projects.meta.when}</dt>
-                <dd className={styles.metaValue}>{project.period}</dd>
+                <dd className={styles.metaValue}>{project.when ?? project.period}</dd>
               </div>
               <div className={styles.metaItem}>
                 <dt className={styles.metaKey}>{t.projects.meta.role}</dt>

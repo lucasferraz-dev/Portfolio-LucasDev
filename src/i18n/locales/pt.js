@@ -88,6 +88,14 @@ export default {
     viewProcess: 'Ver processo',
     hoverHint: 'Passe o mouse para detalhes',
     close: 'Fechar',
+    gallery: {
+      label: (title) => `Galeria de imagens do projeto ${title}`,
+      imageAlt: (title, n, total) => `Interface do projeto ${title} (imagem ${n} de ${total})`,
+      prev: 'Imagem anterior',
+      next: 'Próxima imagem',
+      goTo: (n) => `Ver imagem ${n}`,
+      count: (n) => `${n} fotos`,
+    },
     problemTitle: 'O problema',
     processTitle: 'Como foi o processo',
     learningsTitle: 'O que eu aprendi',
@@ -180,6 +188,41 @@ export default {
           'Integrar API de terceiros exige tratar falha e limite de requisição como regra, não como exceção.',
         ],
         tags: ['React', 'Node.js', 'MySQL', 'Express', 'API Integration'],
+      },
+
+      ROW_04: {
+        title: 'Skinomics - Previsão de Preços do Mercado da Steam',
+        categoryLabel: 'Full Stack',
+        period: 'Ago–Nov/2026 · 12 semanas',
+        when: 'Ago–Nov/2026, 12 semanas (Go-Live em 13/11/2026)',
+        context:
+          'Projeto acadêmico da PUCPR - equipe de 4 pessoas, com plano de gestão completo (EAP, cronograma, 4 incrementos)',
+        role: 'Responsável por dados e back-end; acabei implementando o sistema inteiro (API, banco, modelo, front-end e deploy) usando o Claude Code como par de programação',
+        result:
+          'Modelo com MAPE de 8,1% no teste (meta ≤ 15%), 21% menos erro que o baseline ingênuo; site no ar com login pela Steam',
+        summary:
+          'Plataforma web que coleta o histórico de preços de itens de Team Fortress 2 e usa machine learning para prever o preço da próxima semana. Fui responsável por dados e back-end e acabei construindo o sistema de ponta a ponta, do banco ao deploy, com um modelo que erra 21% menos que a previsão ingênua.',
+        description:
+          'Plataforma para investidores do mercado de itens da Steam: guarda o histórico diário de preço e volume, mostra tendências e prevê o preço de cada item para os próximos 7 dias, com uma interface própria inspirada no visual dos jogos da Valve.',
+        problem:
+          'O mercado da Steam movimenta itens que valem de centavos a centenas de dólares, mas o próprio site da Steam só mostra um gráfico simples. Quem compra para revender decide no achismo. O desafio era transformar um histórico ruidoso, com itens que mal são negociados, picos de manipulação e mudanças bruscas de regime, em previsões úteis e honestas.',
+        process: [
+          'Começamos testando CS2 e TF2. O modelo foi pior no CS2, então decidimos focar só em TF2 e fazer bem um mercado, em vez de mal os dois;',
+          'Montei a base histórica em PostgreSQL com migrações versionadas (~90 mil preços diários de 37 itens, alguns desde 2012), com importação idempotente, deduplicação e descarte do dia parcial da coleta;',
+          'No modelo, cada feature é relativa ao preço atual (retornos, distância de médias móveis, volatilidade, contexto do mercado), para comparar itens de US$ 0,15 e de US$ 10. Validei com split temporal e walk-forward de 4 semestres, nunca com divisão aleatória;',
+          'Features de calendário (mês, dia do ano) melhoravam o treino mas quebravam no teste: o modelo decorava a sazonalidade antiga. Removi de propósito e cheguei a uma combinação de Gradient Boosting com média móvel exponencial, que ganhou do baseline ingênuo em 32 de 36 itens;',
+          'Com o código começando a 2 semanas do Go-Live, priorizei o fluxo principal (dados → API → telas → deploy) e usei o Claude Code para acelerar a implementação, revisando cada decisão e mantendo testes automatizados no back-end;',
+          'Coloquei no ar com front na Vercel, API em Docker no Render e banco no Neon, e implementei o login com a Steam via OpenID, com validação de assinatura, proteção contra login forjado e sessões guardadas só como hash.',
+        ],
+        learnings: [
+          'Um modelo melhor no treino não é um modelo melhor: as features que mais "ajudavam" eram as que decoravam o passado, e só a validação por data mostrou isso;',
+          'Baseline forte é obrigatório: a simples "volta para a média de 10 dias" já ganhava do ingênuo, e foi a régua para saber se o ML valia a pena;',
+          'Cortar escopo também é engenharia: um mercado bem feito, e o fluxo principal antes dos módulos secundários, foi o que deixou o projeto no ar dentro do prazo;',
+          'Segurança de login é cheia de detalhes: no OpenID, não basta a Steam dizer "válido", é preciso conferir quais campos estão dentro da assinatura;',
+          'Programar com IA rende muito quando quem pilota entende o que está sendo feito: as decisões e a revisão continuam sendo trabalho de engenharia.',
+        ],
+        cardTags: ['Python', 'FastAPI', 'PostgreSQL', 'React + TypeScript', 'Machine Learning', 'Docker'],
+        tags: ['Python', 'FastAPI', 'PostgreSQL', 'scikit-learn', 'React + TypeScript', 'Docker', 'Steam OpenID'],
       },
     },
   },
