@@ -10,6 +10,7 @@ const TIMELINE = [
   { id: 'gobpr', type: 'work', logo: logoGobpr, ongoing: true },
   { id: 'savepoint', type: 'project', projectId: 'ROW_03' },
   { id: 'python', type: 'course' },
+  { id: 'skinomics', type: 'project', projectId: 'ROW_04', ongoing: true },
   { id: 'rotinas', type: 'project', projectId: 'ROW_01', ongoing: true },
   { id: 'hackathon', type: 'hackathon', projectId: 'ROW_02' },
 ];

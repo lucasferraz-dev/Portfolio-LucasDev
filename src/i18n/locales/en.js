@@ -46,7 +46,7 @@ export default {
     lead: 'I started programming because I wanted to understand how the things I used every day worked behind the scenes. Today, what grips me most is the other side: figuring out why a process isn’t working before deciding what to build.',
     paragraphs: [
       'I’ve been studying Computer Science at PUCPR since 2024, and in October 2025 I joined Grande Oriente do Brasil - Paraná as an IT intern. I started in user support and spreadsheet automation, and today I develop [the system that stores each department’s work routines](#project-ROW_01), so that knowledge doesn’t walk out the door when someone leaves the team. It was designed around the ISO 9001 and ISO 37001 standards, which taught me how to turn written requirements into system rules.',
-      'Beyond code, the skill I’ve been developing the most is planning: breaking a big problem into parts, prioritizing what matters and [organizing a team’s work](#project-ROW_02). I’m now studying artificial intelligence and machine learning in college, aiming to understand not only how to use them, but when they’re worth using.',
+      'Beyond code, the skill I’ve been developing the most is planning: breaking a big problem into parts, prioritizing what matters and [organizing a team’s work](#project-ROW_02). I’m now studying artificial intelligence and machine learning in college, aiming to understand not only how to use them, but when they’re worth using, and I’ve already applied it in [a price forecasting model](#project-ROW_04).',
     ],
     valuesTitle: 'How I work',
     values: [
@@ -240,6 +240,7 @@ export default {
     },
     usedIn: {
       savepoint: 'SAVE POINT',
+      skinomics: 'SKINOMICS',
       portfolio: 'PORTFOLIO',
       internship: 'INTERNSHIP',
       hackathon: 'HACKATHON',
@@ -300,6 +301,14 @@ export default {
         description:
           'Course with real projects to deepen my Python, the language I use at my internship and that later powered the hackathon.',
         tags: ['Python'],
+      },
+      skinomics: {
+        date: 'Aug/2026 – Nov/2026',
+        title: 'Skinomics - Steam Market Price Forecasting',
+        org: 'Academic project - PUCPR',
+        description:
+          'Platform that stores the price history of Team Fortress 2 items and forecasts next week\'s price with machine learning. In charge of data and back-end, I built the system end to end, with a model that makes 21% less error than the naive forecast.',
+        tags: ['Python', 'FastAPI', 'PostgreSQL', 'scikit-learn', 'Docker'],
       },
       rotinas: {
         date: 'Sep/2026 – Present',

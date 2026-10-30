@@ -46,7 +46,7 @@ export default {
     lead: 'Empecé a programar porque quería entender cómo funcionaban por dentro las cosas que usaba todos los días. Hoy lo que más me atrapa es el otro lado: descubrir por qué un proceso no funciona antes de decidir qué construir.',
     paragraphs: [
       'Estudio Ciencias de la Computación en la PUCPR desde 2024 y, en octubre de 2025, entré como pasante de TI en el Grande Oriente do Brasil - Paraná. Empecé en soporte y en la automatización de planillas, y hoy desarrollo [el sistema que guarda las rutinas de trabajo de cada secretaría](#project-ROW_01), para que el conocimiento no se vaya cuando alguien deja el equipo. Fue pensado a partir de las normas ISO 9001 e ISO 37001, lo que me enseñó a transformar un requisito escrito en una regla del sistema.',
-      'Más allá del código, lo que más he desarrollado es la planificación: dividir un problema grande en partes, priorizar lo que importa y [organizar el trabajo de un equipo](#project-ROW_02). Ahora estoy estudiando inteligencia artificial y machine learning en la universidad, con el objetivo de entender no solo cómo usarlos, sino cuándo vale la pena hacerlo.',
+      'Más allá del código, lo que más he desarrollado es la planificación: dividir un problema grande en partes, priorizar lo que importa y [organizar el trabajo de un equipo](#project-ROW_02). Ahora estoy estudiando inteligencia artificial y machine learning en la universidad, con el objetivo de entender no solo cómo usarlos, sino cuándo vale la pena hacerlo, y ya lo apliqué en [un modelo de previsión de precios](#project-ROW_04).',
     ],
     valuesTitle: 'Cómo trabajo',
     values: [
@@ -240,6 +240,7 @@ export default {
     },
     usedIn: {
       savepoint: 'SAVE POINT',
+      skinomics: 'SKINOMICS',
       portfolio: 'PORTAFOLIO',
       internship: 'PASANTÍA',
       hackathon: 'HACKATHON',
@@ -300,6 +301,14 @@ export default {
         description:
           'Curso con proyectos reales para profundizar en Python, el lenguaje que uso en la pasantía y que luego fue la base del hackathon.',
         tags: ['Python'],
+      },
+      skinomics: {
+        date: 'Ago/2026 – Nov/2026',
+        title: 'Skinomics - Previsión de Precios del Mercado de Steam',
+        org: 'Proyecto académico - PUCPR',
+        description:
+          'Plataforma que guarda el historial de precios de ítems de Team Fortress 2 y prevé el precio de la próxima semana con machine learning. Responsable de datos y back-end, construí el sistema de punta a punta, con un modelo que se equivoca 21% menos que la previsión ingenua.',
+        tags: ['Python', 'FastAPI', 'PostgreSQL', 'scikit-learn', 'Docker'],
       },
       rotinas: {
         date: 'Sep/2026 – Actualidad',
