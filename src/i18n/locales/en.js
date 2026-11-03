@@ -101,6 +101,7 @@ export default {
     learningsTitle: 'What I learned',
     links: {
       demo: 'WATCH DEMO',
+      site: 'VISIT SITE',
       repo: 'REPOSITORY',
     },
     items: {

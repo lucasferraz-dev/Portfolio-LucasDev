@@ -48,7 +48,10 @@ const PROJECTS = [
     category: 'academico',
     images: [FotoSkinomicsLanding, FotoSkinomicsExplorar, FotoSkinomicsItem],
     imagePosition: 'center',
-    links: [],
+    links: [
+      { labelKey: 'site', url: 'https://skinomics.ferrazdeveloper.com/' },
+      { labelKey: 'repo', url: 'https://github.com/lucasferraz-dev/skinomics' },
+    ],
   },
 ];
 
