@@ -36,122 +36,83 @@ import {
 } from 'simple-icons';
 import styles from './Skills.module.css';
 import useInView from '../effects/useInView';
+import SkillArt from './SkillArt';
 import { useLanguage } from '../../i18n/useLanguage';
 
+// glow: os mascotes ganham card preto com o ícone branco e um brilho na cor da marca.
 const SKILL_GROUPS = [
   {
     id: 'languages',
     skills: [
-      { name: 'Python', icon: siPython, anim: 'slither', usedIn: ['internship', 'hackathon', 'skinomics'] },
-      { name: 'JavaScript', icon: siJavascript, anim: 'pop', usedIn: ['savepoint', 'portfolio'] },
-      { name: 'TypeScript', icon: siTypescript, anim: 'flip', usedIn: ['skinomics'] },
-      { name: 'Java', icon: siOpenjdk, anim: 'chirp', usedIn: ['college'] },
-      { name: 'C', icon: siC, anim: 'flip', usedIn: ['college'] },
-      { name: 'C++', icon: siCplusplus, anim: 'flip', usedIn: ['college'] },
-      { name: 'PHP', icon: siPhp, anim: 'swing', usedIn: ['college'] },
+      { name: 'Python', icon: siPython, glow: '#4B8BBE', usedIn: ['internship', 'hackathon', 'skinomics'] },
+      { name: 'JavaScript', icon: siJavascript, usedIn: ['savepoint', 'portfolio'] },
+      { name: 'TypeScript', icon: siTypescript, usedIn: ['skinomics'] },
+      { name: 'Java', icon: siOpenjdk, glow: '#E76F00', usedIn: ['college'] },
+      { name: 'C', icon: siC, usedIn: ['college'] },
+      { name: 'C++', icon: siCplusplus, usedIn: ['college'] },
+      { name: 'PHP', icon: siPhp, usedIn: ['college'] },
     ],
   },
   {
     id: 'frontend',
     skills: [
-      { name: 'React', icon: siReact, anim: 'spin', usedIn: ['savepoint', 'portfolio', 'skinomics'] },
-      { name: 'HTML', icon: siHtml5, anim: 'drop', usedIn: ['internship', 'portfolio'] },
-      { name: 'CSS', icon: siCss, anim: 'jelly', usedIn: ['internship', 'portfolio'] },
-      { name: 'Tailwind CSS', icon: siTailwindcss, anim: 'wave', usedIn: ['portfolio'] },
-      { name: 'Vite', icon: siVite, anim: 'zap', usedIn: ['portfolio'] },
+      { name: 'React', icon: siReact, usedIn: ['savepoint', 'portfolio', 'skinomics'] },
+      { name: 'HTML', icon: siHtml5, usedIn: ['internship', 'portfolio'] },
+      { name: 'CSS', icon: siCss, usedIn: ['internship', 'portfolio'] },
+      { name: 'Tailwind CSS', icon: siTailwindcss, usedIn: ['portfolio'] },
+      { name: 'Vite', icon: siVite, usedIn: ['portfolio'] },
     ],
   },
   {
     id: 'backend',
     skills: [
-      { name: 'Node.js', icon: siNodedotjs, anim: 'bounce', usedIn: ['savepoint'] },
-      { name: 'Express', icon: siExpress, anim: 'zap', usedIn: ['savepoint'] },
-      { name: 'Django', icon: siDjango, anim: 'drop', usedIn: ['internship'] },
-      { name: 'FastAPI', icon: siFastapi, anim: 'zap', usedIn: ['skinomics'] },
-      { name: 'REST APIs', monogram: 'API', anim: 'type', usedIn: ['savepoint', 'hackathon', 'skinomics'] },
+      { name: 'Node.js', icon: siNodedotjs, usedIn: ['savepoint'] },
+      { name: 'Express', icon: siExpress, usedIn: ['savepoint'] },
+      { name: 'Django', icon: siDjango, usedIn: ['internship'] },
+      { name: 'FastAPI', icon: siFastapi, usedIn: ['skinomics'] },
+      { name: 'REST APIs', monogram: 'API', usedIn: ['savepoint', 'hackathon', 'skinomics'] },
     ],
   },
   {
     id: 'data',
     skills: [
-      { name: 'PostgreSQL', icon: siPostgresql, anim: 'trumpet', usedIn: ['skinomics'] },
-      { name: 'MySQL', icon: siMysql, anim: 'leap', usedIn: ['savepoint'] },
-      { name: 'SQL Server', monogram: 'SQL', anim: 'type', usedIn: ['savepoint'] },
-      { name: 'SQLite', icon: siSqlite, anim: 'stack', usedIn: ['college'] },
-      { name: 'SQLAlchemy', icon: siSqlalchemy, anim: 'flip', usedIn: ['college'] },
-      { name: 'pandas', icon: siPandas, anim: 'bounce', usedIn: ['hackathon'] },
-      { name: 'NumPy', icon: siNumpy, anim: 'grow', usedIn: ['hackathon'] },
-      { name: 'scikit-learn', icon: siScikitlearn, anim: 'pop', usedIn: ['skinomics', 'hackathon'] },
-      { name: 'matplotlib', monogram: 'plt', anim: 'type', usedIn: ['hackathon'] },
+      { name: 'PostgreSQL', icon: siPostgresql, glow: '#4169E1', usedIn: ['skinomics'] },
+      { name: 'MySQL', icon: siMysql, glow: '#F29111', usedIn: ['savepoint'] },
+      { name: 'SQL Server', monogram: 'SQL', usedIn: ['savepoint'] },
+      { name: 'SQLite', icon: siSqlite, usedIn: ['college'] },
+      { name: 'SQLAlchemy', icon: siSqlalchemy, usedIn: ['college'] },
+      { name: 'pandas', icon: siPandas, usedIn: ['hackathon'] },
+      { name: 'NumPy', icon: siNumpy, usedIn: ['hackathon'] },
+      { name: 'scikit-learn', icon: siScikitlearn, usedIn: ['skinomics', 'hackathon'] },
+      { name: 'matplotlib', monogram: 'plt', usedIn: ['hackathon'] },
     ],
   },
   {
     id: 'tools',
     skills: [
-      { name: 'Git', icon: siGit, anim: 'branch', usedIn: ['all'] },
-      { name: 'GitHub', icon: siGithub, anim: 'pop', usedIn: ['all'] },
-      { name: 'Docker', icon: siDocker, anim: 'spout', usedIn: ['skinomics'] },
-      { name: 'Vercel', icon: siVercel, anim: 'drop', usedIn: ['portfolio', 'skinomics'] },
-      { name: 'Render', icon: siRender, anim: 'grow', usedIn: ['skinomics'] },
-      { name: 'Neon', icon: siNeon, anim: 'pulse', usedIn: ['skinomics'] },
-      { name: 'Excel', monogram: 'XLS', anim: 'type', usedIn: ['internship'] },
-      { name: 'GLPI', monogram: 'GLPI', anim: 'type', usedIn: ['internship'] },
-      { name: 'Linear', icon: siLinear, anim: 'spin', usedIn: ['internship'] },
-      { name: 'Wiki.js', icon: siWikidotjs, anim: 'page', usedIn: ['internship'] },
-      { name: 'Contentful', icon: siContentful, anim: 'pop', usedIn: ['internship'] },
-      { name: 'Zabbix', monogram: 'ZBX', anim: 'pulse', usedIn: ['internship'] },
-      { name: 'Grafana', icon: siGrafana, anim: 'grow', usedIn: ['internship'] },
+      { name: 'Git', icon: siGit, usedIn: ['all'] },
+      { name: 'GitHub', icon: siGithub, glow: '#8B949E', usedIn: ['all'] },
+      { name: 'Docker', icon: siDocker, glow: '#2496ED', usedIn: ['skinomics'] },
+      { name: 'Vercel', icon: siVercel, usedIn: ['portfolio', 'skinomics'] },
+      { name: 'Render', icon: siRender, usedIn: ['skinomics'] },
+      { name: 'Neon', icon: siNeon, usedIn: ['skinomics'] },
+      { name: 'Excel', monogram: 'XLS', usedIn: ['internship'] },
+      { name: 'GLPI', monogram: 'GLPI', usedIn: ['internship'] },
+      { name: 'Linear', icon: siLinear, usedIn: ['internship'] },
+      { name: 'Wiki.js', icon: siWikidotjs, glow: '#1976D2', usedIn: ['internship'] },
+      { name: 'Contentful', icon: siContentful, usedIn: ['internship'] },
+      { name: 'Zabbix', monogram: 'ZBX', usedIn: ['internship'] },
+      { name: 'Grafana', icon: siGrafana, usedIn: ['internship'] },
+      { name: 'Azure', monogram: 'AZ', usedIn: ['internship'] },
     ],
   },
 ];
-
-const isDarkColor = (hex) => {
-  const r = parseInt(hex.slice(0, 2), 16);
-  const g = parseInt(hex.slice(2, 4), 16);
-  const b = parseInt(hex.slice(4, 6), 16);
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b < 70;
-};
-
-function SkillIcon({ skill }) {
-  if (!skill.icon) return <span className={styles.monogram}>{skill.monogram}</span>;
-
-  const isDark = isDarkColor(skill.icon.hex);
-
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className={`${styles.icon} ${isDark ? styles.iconDark : ''}`}
-      style={isDark ? undefined : { color: `#${skill.icon.hex}` }}
-      aria-hidden="true"
-    >
-      <path d={skill.icon.path} fill="currentColor" />
-    </svg>
-  );
-}
-
-const ANIMAL_FX = {
-  trumpet: { className: 'fxTrumpet', marks: ['', '', ''] },
-  chirp: { className: 'fxChirp', marks: ['♪', '♫'] },
-  spout: { className: 'fxSpout', marks: ['', '', ''] },
-};
-
-function AnimalFx({ anim }) {
-  const fx = ANIMAL_FX[anim];
-  if (!fx) return null;
-
-  return (
-    <span className={`${styles.fx} ${styles[fx.className]}`} aria-hidden="true">
-      {fx.marks.map((mark, i) => (
-        <i key={i} style={{ '--i': i }}>{mark}</i>
-      ))}
-    </span>
-  );
-}
 
 function SkillCard({ skill, index }) {
   const { t } = useLanguage();
   const [isFlipped, setIsFlipped] = useState(false);
   const usedIn = skill.usedIn.map((key) => t.skills.usedIn[key]);
+  const spotlight = Boolean(skill.glow);
 
   return (
     <button
@@ -162,13 +123,11 @@ function SkillCard({ skill, index }) {
       aria-label={`${skill.name}. ${t.skills.usedInLabel}: ${usedIn.join(', ')}`}
     >
       <span className={styles.inner}>
-        <span className={`${styles.face} ${styles.front}`}>
-          <span className={styles.iconStage}>
-            <span className={`${styles.iconWrap} ${styles[`anim-${skill.anim}`]}`}>
-              <SkillIcon skill={skill} />
-            </span>
-            <AnimalFx anim={skill.anim} />
-          </span>
+        <span
+          className={`${styles.face} ${styles.front} ${spotlight ? styles.spotlight : ''}`}
+          style={spotlight ? { '--glow': skill.glow } : undefined}
+        >
+          <SkillArt skill={skill} />
           <span className={styles.name}>{skill.name}</span>
         </span>
 
@@ -187,7 +146,7 @@ function SkillGroup({ group, title }) {
   const [ref, inView] = useInView(0.15);
 
   return (
-    <div ref={ref} className={`${styles.group} ${inView ? styles.revealed : ''}`}>
+    <div ref={ref} className={`${styles.group} ${inView ? `${styles.revealed} is-revealed` : ''}`}>
       <h3 className={styles.groupTitle}>
         <span className={styles.groupPrefix}>[TB]</span> {title}
       </h3>
