@@ -45,7 +45,7 @@ const SKILL_GROUPS = [
       { name: 'Python', icon: siPython, anim: 'slither', usedIn: ['internship', 'hackathon', 'skinomics'] },
       { name: 'JavaScript', icon: siJavascript, anim: 'pop', usedIn: ['savepoint', 'portfolio'] },
       { name: 'TypeScript', icon: siTypescript, anim: 'flip', usedIn: ['skinomics'] },
-      { name: 'Java', icon: siOpenjdk, anim: 'steam', usedIn: ['college'] },
+      { name: 'Java', icon: siOpenjdk, anim: 'chirp', usedIn: ['college'] },
       { name: 'C', icon: siC, anim: 'flip', usedIn: ['college'] },
       { name: 'C++', icon: siCplusplus, anim: 'flip', usedIn: ['college'] },
       { name: 'PHP', icon: siPhp, anim: 'swing', usedIn: ['college'] },
@@ -74,8 +74,8 @@ const SKILL_GROUPS = [
   {
     id: 'data',
     skills: [
-      { name: 'PostgreSQL', icon: siPostgresql, anim: 'stack', usedIn: ['skinomics'] },
-      { name: 'MySQL', icon: siMysql, anim: 'swing', usedIn: ['savepoint'] },
+      { name: 'PostgreSQL', icon: siPostgresql, anim: 'trumpet', usedIn: ['skinomics'] },
+      { name: 'MySQL', icon: siMysql, anim: 'leap', usedIn: ['savepoint'] },
       { name: 'SQL Server', monogram: 'SQL', anim: 'type', usedIn: ['savepoint'] },
       { name: 'SQLite', icon: siSqlite, anim: 'stack', usedIn: ['college'] },
       { name: 'SQLAlchemy', icon: siSqlalchemy, anim: 'flip', usedIn: ['college'] },
@@ -90,7 +90,7 @@ const SKILL_GROUPS = [
     skills: [
       { name: 'Git', icon: siGit, anim: 'branch', usedIn: ['all'] },
       { name: 'GitHub', icon: siGithub, anim: 'pop', usedIn: ['all'] },
-      { name: 'Docker', icon: siDocker, anim: 'float', usedIn: ['skinomics'] },
+      { name: 'Docker', icon: siDocker, anim: 'spout', usedIn: ['skinomics'] },
       { name: 'Vercel', icon: siVercel, anim: 'drop', usedIn: ['portfolio', 'skinomics'] },
       { name: 'Render', icon: siRender, anim: 'grow', usedIn: ['skinomics'] },
       { name: 'Neon', icon: siNeon, anim: 'pulse', usedIn: ['skinomics'] },
@@ -129,6 +129,25 @@ function SkillIcon({ skill }) {
   );
 }
 
+const ANIMAL_FX = {
+  trumpet: { className: 'fxTrumpet', marks: ['', '', ''] },
+  chirp: { className: 'fxChirp', marks: ['♪', '♫'] },
+  spout: { className: 'fxSpout', marks: ['', '', ''] },
+};
+
+function AnimalFx({ anim }) {
+  const fx = ANIMAL_FX[anim];
+  if (!fx) return null;
+
+  return (
+    <span className={`${styles.fx} ${styles[fx.className]}`} aria-hidden="true">
+      {fx.marks.map((mark, i) => (
+        <i key={i} style={{ '--i': i }}>{mark}</i>
+      ))}
+    </span>
+  );
+}
+
 function SkillCard({ skill, index }) {
   const { t } = useLanguage();
   const [isFlipped, setIsFlipped] = useState(false);
@@ -144,8 +163,11 @@ function SkillCard({ skill, index }) {
     >
       <span className={styles.inner}>
         <span className={`${styles.face} ${styles.front}`}>
-          <span className={`${styles.iconWrap} ${styles[`anim-${skill.anim}`]}`}>
-            <SkillIcon skill={skill} />
+          <span className={styles.iconStage}>
+            <span className={`${styles.iconWrap} ${styles[`anim-${skill.anim}`]}`}>
+              <SkillIcon skill={skill} />
+            </span>
+            <AnimalFx anim={skill.anim} />
           </span>
           <span className={styles.name}>{skill.name}</span>
         </span>
