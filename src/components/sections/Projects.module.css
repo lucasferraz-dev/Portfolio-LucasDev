@@ -152,7 +152,7 @@
 }
 
 .overlayBadge {
-  @apply px-3 py-1 text-[10px] font-mono font-bold tracking-widest uppercase rounded-md border backdrop-blur-sm;
+  @apply px-3 py-1 text-[10px] font-mono font-bold tracking-widest uppercase rounded-full border backdrop-blur-sm;
   color: #e2e8f0;
   border-color: rgb(255 255 255 / 0.25);
   background-color: rgb(0 0 0 / 0.35);
@@ -222,8 +222,15 @@
   @apply flex flex-wrap gap-2;
 }
 
+/* etiqueta de tecnologia: pílula neutra com um pontinho verde */
 .tag {
-  @apply px-3 py-1 text-xs font-mono font-bold rounded-lg bg-accent/5 text-accent border border-accent/10 tracking-wider;
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
+         bg-slate-900/60 text-slate-300 border border-slate-800;
+}
+
+.tag::before {
+  content: "";
+  @apply w-1.5 h-1.5 rounded-full bg-accent shrink-0;
 }
 
 .actions {
@@ -409,7 +416,7 @@
 }
 
 .categoryBadge {
-  @apply px-3 py-1 text-[10px] font-mono font-bold tracking-widest uppercase rounded-md
+  @apply px-3 py-1 text-[10px] font-mono font-bold tracking-widest uppercase rounded-full
          border border-slate-800 text-slate-500;
 }
 
