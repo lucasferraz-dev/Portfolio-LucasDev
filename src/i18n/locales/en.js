@@ -32,13 +32,13 @@ export default {
     subtitle:
       'Software developer with experience in web applications, internal systems and process automation.',
     description:
-      'Computer Science student at PUCPR and IT intern, working with Python, Django, React and databases.',
+      'Computer Science student at PUCPR and systems development intern, working with Python, Django, React and databases.',
     ctaProjects: 'View Projects',
     ctaContact: 'Contact',
     ctaResume: 'Download Resume',
     resumeFile: '/cv/Curriculo_LucasF_EN.pdf',
     scrollHint: 'Scroll to explore',
-    role: 'IT Intern @ GOB-PR',
+    role: 'Systems Dev Intern @ Pilgrims',
   },
 
   about: {
@@ -58,7 +58,7 @@ export default {
     facts: [
       { key: 'location', value: 'São José dos Pinhais · Greater Curitiba, PR' },
       { key: 'education', value: 'Computer Science (in progress)' },
-      { key: 'position', value: 'IT Intern at GOB-PR (since Oct/2025)' },
+      { key: 'position', value: 'Systems Development Intern at Pilgrims Consulting (since Nov/2026)' },
       { key: 'current_focus', value: 'Python/Django, full stack and databases' },
       { key: 'learning', value: 'Artificial Intelligence • Machine Learning' },
       { key: 'languages', value: 'Portuguese (native) • English (technical) • Spanish (basic)' },
@@ -108,7 +108,7 @@ export default {
       ROW_01: {
         title: 'Routines System - GOB/PR Digital',
         categoryLabel: 'Full Stack',
-        period: 'Sep/2026 - Present',
+        period: 'Sep/2026 - Nov/2026',
         context: 'Grande Oriente do Brasil - Paraná - IT Internship',
         role: 'Full-stack developer - data modeling, Django back end and interface',
         summary:
@@ -243,7 +243,8 @@ export default {
       savepoint: 'SAVE POINT',
       skinomics: 'SKINOMICS',
       portfolio: 'PORTFOLIO',
-      internship: 'INTERNSHIP',
+      internship: 'GOB-PR',
+      pilgrims: 'PILGRIMS',
       hackathon: 'HACKATHON',
       college: 'COLLEGE',
       all: 'ALL PROJECTS',
@@ -272,11 +273,11 @@ export default {
         tags: ['OOP', 'Databases', 'Web Development', 'AI / ML'],
       },
       gobpr: {
-        date: 'Oct/2025 – Present',
+        date: 'Oct/2025 – Nov/2026',
         title: 'IT Intern',
         org: 'Grande Oriente do Brasil - Paraná',
         description:
-          'I started in user support and spreadsheet automation, and today I develop [the internal system](#project-ROW_01) that documents the work routines of every department, built with Python/Django on the requirements of the ISO 9001 and ISO 37001 standards.',
+          'I started in user support and spreadsheet automation, and later developed [the internal system](#project-ROW_01) that documents the work routines of every department, built with Python/Django on the requirements of the ISO 9001 and ISO 37001 standards.',
         highlights: [
           'Development of the Routines System: registration, versioning, approval flow and a visual map of each process, with a printable version;',
           'Translating ISO 9001 and ISO 37001 requirements into system rules: document control, version history, per-department access and two-factor authentication;',
@@ -312,12 +313,27 @@ export default {
         tags: ['Python', 'FastAPI', 'PostgreSQL', 'scikit-learn', 'Docker'],
       },
       rotinas: {
-        date: 'Sep/2026 – Present',
+        date: 'Sep/2026 – Nov/2026',
         title: 'Routines System - GOB/PR Digital',
         org: 'GOB-PR - IT Internship',
         description:
-          'Django web system that documents, versions and publishes each department’s work routines, built on the requirements of the ISO 9001 and ISO 37001 standards.',
+          'Django web system that documents, versions and publishes each department’s work routines, built on the requirements of the ISO 9001 and ISO 37001 standards. I delivered everything under my responsibility, and the team keeps evolving the system.',
         tags: ['Python', 'Django', 'ISO 9001', 'ISO 37001'],
+      },
+      pilgrims: {
+        date: 'Nov/2026 – Present',
+        title: 'Systems Development Intern',
+        org: 'Pilgrims Consulting',
+        description:
+          'I build the websites our clients ask for and the company’s internal sites, and I also work on the infrastructure that keeps everything running.',
+        highlights: [
+          'Building websites on demand for clients and internal sites for the company;',
+          'Supporting the infrastructure, with monitoring in Zabbix and Grafana;',
+          'Taking part in dailies and in meetings with clients to understand what each company needs;',
+          'Organizing tasks in Linear and documentation in Wiki.js;',
+          'Developing in the terminal with kitty and Claude Code.',
+        ],
+        tags: ['Web Development', 'Infrastructure', 'Zabbix', 'Grafana', 'Wiki.js', 'Linear', 'Claude Code'],
       },
       hackathon: {
         date: 'Oct/2026',

@@ -32,13 +32,13 @@ export default {
     subtitle:
       'Desenvolvedor de software, com experiência em aplicações web, sistemas internos e automação de processos.',
     description:
-      'Estudante de Ciência da Computação na PUCPR e estagiário de TI, trabalhando com Python, Django, React e bancos de dados.',
+      'Estudante de Ciência da Computação na PUCPR e estagiário de desenvolvimento de sistemas, trabalhando com Python, Django, React e bancos de dados.',
     ctaProjects: 'Ver Projetos',
     ctaContact: 'Contato',
     ctaResume: 'Baixar Currículo',
     resumeFile: '/cv/Curriculo_LucasF_PT.pdf',
     scrollHint: 'Role para me conhecer',
-    role: 'Estagiário de TI @ GOB-PR',
+    role: 'Estagiário de Dev. de Sistemas @ Pilgrims',
   },
 
   about: {
@@ -58,7 +58,7 @@ export default {
     facts: [
       { key: 'localizacao', value: 'São José dos Pinhais · Grande Curitiba, PR' },
       { key: 'formacao', value: 'Ciência da Computação (em andamento)' },
-      { key: 'atuacao', value: 'Estagiário de TI no GOB-PR (desde out/2025)' },
+      { key: 'atuacao', value: 'Estagiário de desenvolvimento de sistemas na Pilgrims Consulting (desde nov/2026)' },
       { key: 'foco_atual', value: 'Python/Django, full stack e bancos de dados' },
       { key: 'aprendendo', value: 'Inteligência Artificial • Machine Learning' },
       { key: 'idiomas', value: 'Português (nativo) • Inglês (técnico) • Espanhol (básico)' },
@@ -108,7 +108,7 @@ export default {
       ROW_01: {
         title: 'Sistema de Rotinas - GOB/PR Digital',
         categoryLabel: 'Full Stack',
-        period: 'Set/2026 - Atualmente',
+        period: 'Set/2026 - Nov/2026',
         context: 'Grande Oriente do Brasil - Paraná - Estágio em TI',
         role: 'Desenvolvedor full-stack - modelagem, back-end em Django e interface',
         summary:
@@ -243,7 +243,8 @@ export default {
       savepoint: 'SAVE POINT',
       skinomics: 'SKINOMICS',
       portfolio: 'PORTFÓLIO',
-      internship: 'ESTÁGIO',
+      internship: 'GOB-PR',
+      pilgrims: 'PILGRIMS',
       hackathon: 'HACKATHON',
       college: 'FACULDADE',
       all: 'TODOS OS PROJETOS',
@@ -272,11 +273,11 @@ export default {
         tags: ['Programação OO', 'Banco de Dados', 'Desenvolvimento Web', 'IA / ML'],
       },
       gobpr: {
-        date: 'Out/2025 – Atual',
+        date: 'Out/2025 – Nov/2026',
         title: 'Estagiário de TI',
         org: 'Grande Oriente do Brasil - Paraná',
         description:
-          'Entrei no suporte e na automação de planilhas e hoje desenvolvo [o sistema interno](#project-ROW_01) que documenta as rotinas de trabalho de todas as secretarias, construído em Python/Django sobre os requisitos das normas ISO 9001 e ISO 37001.',
+          'Entrei no suporte e na automação de planilhas e depois desenvolvi [o sistema interno](#project-ROW_01) que documenta as rotinas de trabalho de todas as secretarias, construído em Python/Django sobre os requisitos das normas ISO 9001 e ISO 37001.',
         highlights: [
           'Desenvolvimento do Sistema de Rotinas: cadastro, versionamento, fluxo de aprovação e mapa visual de cada processo, com versão para impressão;',
           'Tradução dos requisitos da ISO 9001 e da ISO 37001 em regras do sistema: controle de documentos, histórico de versões, acesso por secretaria e autenticação em dois fatores;',
@@ -312,12 +313,27 @@ export default {
         tags: ['Python', 'FastAPI', 'PostgreSQL', 'scikit-learn', 'Docker'],
       },
       rotinas: {
-        date: 'Set/2026 – Atual',
+        date: 'Set/2026 – Nov/2026',
         title: 'Sistema de Rotinas - GOB/PR Digital',
         org: 'GOB-PR - Estágio em TI',
         description:
-          'Sistema web em Django que documenta, versiona e publica as rotinas de trabalho de cada secretaria, construído sobre os requisitos das normas ISO 9001 e ISO 37001.',
+          'Sistema web em Django que documenta, versiona e publica as rotinas de trabalho de cada secretaria, construído sobre os requisitos das normas ISO 9001 e ISO 37001. Entreguei tudo o que estava sob a minha responsabilidade, e a equipe segue evoluindo o sistema.',
         tags: ['Python', 'Django', 'ISO 9001', 'ISO 37001'],
+      },
+      pilgrims: {
+        date: 'Nov/2026 – Atual',
+        title: 'Estagiário de Desenvolvimento de Sistemas',
+        org: 'Pilgrims Consulting',
+        description:
+          'Desenvolvo os sites que os clientes encomendam e os sites internos da empresa, e também atuo na infraestrutura que mantém tudo no ar.',
+        highlights: [
+          'Criação de sites sob demanda para clientes e de sites internos da empresa;',
+          'Apoio na infraestrutura, com monitoramento em Zabbix e Grafana;',
+          'Participação nas dailies e em reuniões com clientes para entender o que cada empresa precisa;',
+          'Organização das tarefas no Linear e documentação no Wiki.js;',
+          'Desenvolvimento no terminal com kitty e Claude Code.',
+        ],
+        tags: ['Desenvolvimento Web', 'Infraestrutura', 'Zabbix', 'Grafana', 'Wiki.js', 'Linear', 'Claude Code'],
       },
       hackathon: {
         date: 'Out/2026',
