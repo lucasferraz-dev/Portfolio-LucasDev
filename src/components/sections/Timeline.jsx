@@ -15,11 +15,46 @@ const TIMELINE = [
   { id: 'hackathon', type: 'hackathon', projectId: 'ROW_02' },
 ];
 
+/*
+ * Abre o card como a capa de um livro conforme a página desce.
+ * --open vai de 0 (fechado, quando o card aparece embaixo da tela)
+ * até 1 (aberto, quando o topo do card passa de 55% da altura da tela).
+ */
+function useBookOpen(ref) {
+  useEffect(() => {
+    const el = ref.current;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const { top } = el.getBoundingClientRect();
+      const viewport = window.innerHeight;
+      const progress = (viewport - top) / (viewport * 0.45);
+      el.style.setProperty('--open', Math.min(Math.max(progress, 0), 1).toFixed(3));
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [ref]);
+}
+
 function TimelineItem({ item, index }) {
   const { t } = useLanguage();
   const itemRef = useRef(null);
+  const cardRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const content = t.timeline.items[item.id];
+  useBookOpen(cardRef);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -40,7 +75,7 @@ function TimelineItem({ item, index }) {
     <li ref={itemRef} className={`${styles.item} ${side} ${isVisible ? styles.visible : ''}`}>
       <span className={`${styles.dot} ${item.ongoing ? styles.dotOngoing : ''}`} aria-hidden="true" />
 
-      <article className={styles.card}>
+      <article ref={cardRef} className={styles.card}>
         <div className={styles.cardTop}>
           <div className={styles.badges}>
             <span className={styles.typeBadge}>{t.timeline.types[item.type]}</span>

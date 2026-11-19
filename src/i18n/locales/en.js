@@ -230,7 +230,7 @@ export default {
 
   skills: {
     title: 'Technical Skills',
-    hint: 'Hover or tap a technology to see where I used it.',
+    hint: 'Click or tap a technology to see where I used it.',
     usedInLabel: 'Used in',
     groups: {
       languages: 'Languages',

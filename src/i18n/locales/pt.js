@@ -230,7 +230,7 @@ export default {
 
   skills: {
     title: 'Conhecimento Técnico',
-    hint: 'Passe o mouse ou toque em uma tecnologia para ver onde usei.',
+    hint: 'Clique ou toque em uma tecnologia para ver onde usei.',
     usedInLabel: 'Usado em',
     groups: {
       languages: 'Linguagens',

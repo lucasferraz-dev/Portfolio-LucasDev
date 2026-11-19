@@ -36,6 +36,7 @@ import {
 } from 'simple-icons';
 import styles from './Skills.module.css';
 import useInView from '../effects/useInView';
+import useTilt from '../effects/useTilt';
 import SkillArt from './SkillArt';
 import { useLanguage } from '../../i18n/useLanguage';
 
@@ -110,27 +111,34 @@ const SKILL_GROUPS = [
 function SkillCard({ skill, index }) {
   const { t } = useLanguage();
   const [isFlipped, setIsFlipped] = useState(false);
+  const tilt = useTilt();
   const usedIn = skill.usedIn.map((key) => t.skills.usedIn[key]);
 
   return (
     <button
       type="button"
+      ref={tilt.ref}
       className={`${styles.card} ${isFlipped ? styles.flipped : ''}`}
       style={{ '--delay': `${index * 70}ms` }}
       onClick={() => setIsFlipped((prev) => !prev)}
+      onPointerMove={tilt.onPointerMove}
+      onPointerLeave={tilt.onPointerLeave}
       aria-label={`${skill.name}. ${t.skills.usedInLabel}: ${usedIn.join(', ')}`}
     >
-      <span className={styles.inner}>
-        <span className={`${styles.face} ${styles.front}`}>
-          <SkillArt skill={skill} />
-          <span className={styles.name}>{skill.name}</span>
-        </span>
+      <span className={styles.tilt}>
+        <span className={styles.inner}>
+          <span className={`${styles.face} ${styles.front}`}>
+            <span className={styles.glare} aria-hidden="true" />
+            <SkillArt skill={skill} />
+            <span className={styles.name}>{skill.name}</span>
+          </span>
 
-        <span className={`${styles.face} ${styles.back}`}>
-          <span className={styles.backLabel}>{t.skills.usedInLabel}</span>
-          {usedIn.map((label) => (
-            <span key={label} className={styles.usedItem}>{label}</span>
-          ))}
+          <span className={`${styles.face} ${styles.back}`}>
+            <span className={styles.backLabel}>{t.skills.usedInLabel}</span>
+            {usedIn.map((label) => (
+              <span key={label} className={styles.usedItem}>{label}</span>
+            ))}
+          </span>
         </span>
       </span>
     </button>

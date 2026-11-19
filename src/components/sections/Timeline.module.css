@@ -81,11 +81,53 @@
 }
 
 .card {
-  @apply bg-surface border border-slate-900 rounded-2xl p-6 md:p-8 shadow-2xl transition-colors duration-300;
+  @apply relative bg-surface border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl;
 }
 
 .card:hover {
-  @apply border-accent/30;
+  @apply border-accent/50;
+}
+
+/*
+ * Livro: o card gira pela “lombada” (o lado colado na linha do tempo).
+ * --open (0 → 1) vem do scroll: fechado = 90° de lado, aberto = posição final.
+ * No celular a linha fica à esquerda e o card abre até ficar reto;
+ * no desktop ele para virado 10° para a linha do meio e se endireita no hover.
+ */
+.item {
+  perspective: 1600px;
+}
+
+.card {
+  --closed: calc(1 - var(--open, 1));
+  transform-origin: left center;
+  transform: rotateY(calc(var(--closed) * -88deg));
+  transition: transform 0.25s ease-out, border-color 0.3s;
+}
+
+/* sombra de página: o card escurece enquanto está fechado */
+.card::after {
+  content: "";
+  @apply absolute inset-0 rounded-[inherit] pointer-events-none bg-black;
+  opacity: calc(var(--closed) * 0.75);
+}
+
+@media (min-width: 768px) {
+  .left .card {
+    transform-origin: right center;
+    transform: rotateY(calc(10deg + var(--closed) * 80deg));
+  }
+
+  .right .card {
+    transform-origin: left center;
+    transform: rotateY(calc(-10deg - var(--closed) * 80deg));
+  }
+
+  .left .card:hover,
+  .right .card:hover {
+    transform: none;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s;
+  }
 }
 
 .cardTop {
@@ -149,8 +191,15 @@
   @apply flex flex-wrap gap-2;
 }
 
+/* etiqueta de tecnologia: pílula neutra com um pontinho verde */
 .tag {
-  @apply px-3 py-1 text-xs font-mono font-bold rounded-lg bg-accent/5 text-accent border border-accent/10 tracking-wider;
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
+         bg-slate-900/60 text-slate-300 border border-slate-800;
+}
+
+.tag::before {
+  content: "";
+  @apply w-1.5 h-1.5 rounded-full bg-accent shrink-0;
 }
 
 .projectLink {
