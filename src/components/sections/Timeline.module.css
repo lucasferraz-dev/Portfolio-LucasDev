@@ -88,6 +88,32 @@
   @apply border-accent/30;
 }
 
+/* No desktop, os cards ficam virados em 3D para a linha do meio e se endireitam no hover */
+@media (min-width: 768px) {
+  .item {
+    perspective: 1600px;
+  }
+
+  .card {
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s;
+  }
+
+  .left .card {
+    transform: rotateY(10deg);
+    transform-origin: right center;
+  }
+
+  .right .card {
+    transform: rotateY(-10deg);
+    transform-origin: left center;
+  }
+
+  .left .card:hover,
+  .right .card:hover {
+    transform: none;
+  }
+}
+
 .cardTop {
   @apply flex flex-wrap items-center justify-between gap-3 mb-5;
 }
