@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import {
   siC,
   siCplusplus,
@@ -36,6 +36,7 @@ import {
 } from 'simple-icons';
 import styles from './Skills.module.css';
 import useInView from '../effects/useInView';
+import useTilt from '../effects/useTilt';
 import SkillArt from './SkillArt';
 import { useLanguage } from '../../i18n/useLanguage';
 
@@ -106,33 +107,6 @@ const SKILL_GROUPS = [
     ],
   },
 ];
-
-const MAX_TILT = 14;
-
-/* Inclina o card em 3D na direção da ponta onde o mouse está (só com mouse; no toque não faz nada). */
-function useTilt() {
-  const ref = useRef(null);
-
-  const onPointerMove = (event) => {
-    if (event.pointerType !== 'mouse') return;
-    const el = ref.current;
-    const rect = el.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width;
-    const y = (event.clientY - rect.top) / rect.height;
-    el.style.setProperty('--ry', `${(x - 0.5) * 2 * MAX_TILT}deg`);
-    el.style.setProperty('--rx', `${(0.5 - y) * 2 * MAX_TILT}deg`);
-    el.style.setProperty('--gx', `${x * 100}%`);
-    el.style.setProperty('--gy', `${y * 100}%`);
-  };
-
-  const onPointerLeave = () => {
-    const el = ref.current;
-    el.style.setProperty('--rx', '0deg');
-    el.style.setProperty('--ry', '0deg');
-  };
-
-  return { ref, onPointerMove, onPointerLeave };
-}
 
 function SkillCard({ skill, index }) {
   const { t } = useLanguage();

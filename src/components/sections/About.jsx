@@ -2,6 +2,7 @@ import styles from './About.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
 import RichText from '../common/RichText';
 import TypedText from '../effects/TypedText';
+import useTilt from '../effects/useTilt';
 import useInView from '../effects/useInView';
 import useTypingProgress, { tokensLength } from '../effects/useTypingProgress';
 
@@ -44,6 +45,41 @@ function ProfileRecord({ facts }) {
   );
 }
 
+
+/* Card do “Como eu trabalho”: inclina seguindo o mouse, com brilho, como os cards de skills */
+function ValueCard({ value, index }) {
+  const tilt = useTilt(8);
+  return (
+    <li
+      ref={tilt.ref}
+      className={styles.valueCard}
+      style={{ '--delay': `${index * 110}ms` }}
+      onPointerMove={tilt.onPointerMove}
+      onPointerLeave={tilt.onPointerLeave}
+    >
+      <span className={styles.valueGlare} aria-hidden="true" />
+      <span className={styles.valueNumber}>{String(index + 1).padStart(2, '0')}</span>
+      <p className={styles.valueText}>
+        <RichText text={value} />
+      </p>
+    </li>
+  );
+}
+
+function ValuesBlock({ title, values }) {
+  const [ref, inView] = useInView(0.2);
+  return (
+    <div ref={ref} className={`${styles.valuesBlock} ${inView ? styles.valuesRevealed : ''}`}>
+      <h3 className={styles.valuesTitle}>{title}</h3>
+      <ol className={styles.valuesGrid}>
+        {values.map((value, i) => (
+          <ValueCard key={value} value={value} index={i} />
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 export default function About() {
   const { lang, t } = useLanguage();
 
@@ -70,19 +106,7 @@ export default function About() {
         <ProfileRecord key={lang} facts={t.about.facts} />
       </div>
 
-      <div className={styles.valuesBlock}>
-        <h3 className={styles.valuesTitle}>{t.about.valuesTitle}</h3>
-        <ol className={styles.valuesGrid}>
-          {t.about.values.map((value, i) => (
-            <li key={value} className={styles.valueCard}>
-              <span className={styles.valueNumber}>{String(i + 1).padStart(2, '0')}</span>
-              <p className={styles.valueText}>
-                <RichText text={value} />
-              </p>
-            </li>
-          ))}
-        </ol>
-      </div>
+      <ValuesBlock title={t.about.valuesTitle} values={t.about.values} />
     </section>
   );
 }
