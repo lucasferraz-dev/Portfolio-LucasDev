@@ -29,13 +29,17 @@
 }
 
 .emailButton {
-  @apply inline-flex items-center gap-3 max-w-full px-5 md:px-7 py-4 rounded-2xl cursor-pointer
-         border border-accent/30 bg-accent/10 text-accent font-mono text-sm md:text-lg font-bold
+  @apply inline-flex items-center gap-2.5 max-w-full px-5 md:px-6 py-2.5 md:py-3 rounded-full cursor-pointer
+         border border-accent/40 bg-accent/10 text-accent font-mono text-sm md:text-base font-bold
          transition-colors duration-200;
 }
 
 .emailButton:hover {
-  @apply bg-accent/20 border-accent/50;
+  @apply bg-accent/20 border-accent/60;
+}
+
+.emailButton:hover .copyIcon {
+  @apply opacity-100;
 }
 
 .emailText {
@@ -43,14 +47,14 @@
 }
 
 .strokeIcon {
-  @apply w-5 h-5 shrink-0 fill-none stroke-current;
+  @apply w-4 h-4 shrink-0 fill-none stroke-current;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .copyIcon {
-  @apply opacity-60;
+  @apply opacity-60 transition-opacity duration-200;
 }
 
 .copied {
@@ -62,20 +66,30 @@
 }
 
 .links {
-  @apply flex flex-wrap items-center justify-center gap-3;
+  @apply flex flex-wrap items-center justify-center gap-2;
 }
 
 .link {
-  @apply inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-900 bg-surface
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-900 bg-transparent
          font-mono text-xs font-bold uppercase tracking-widest text-slate-400 transition-colors duration-200;
 }
 
 .link:hover {
-  @apply text-accent border-accent/30;
+  @apply text-accent border-accent/40 bg-accent/5;
 }
 
 .linkIcon {
-  @apply w-4 h-4 shrink-0;
+  @apply w-4 h-4 shrink-0 transition-transform duration-200;
+}
+
+.link:hover .linkIcon {
+  transform: scale(1.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link:hover .linkIcon {
+    transform: none;
+  }
 }
 
 .terminal {
