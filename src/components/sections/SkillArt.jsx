@@ -196,9 +196,8 @@ function PhpArt({ icon }) {
 
 /* ================= Front-end ================= */
 
-/* React: núcleo pulsando, anéis balançando e elétrons correndo nas órbitas */
+/* React: o átomo gira pra dentro, os anéis se ajeitam no lugar e o núcleo pulsa */
 function ReactArt() {
-  const orbit = 'M-11 0a11 4.2 0 1 0 22 0a11 4.2 0 1 0-22 0';
   const rings = [0, 60, 120];
   return (
     <Art viewBox="-12 -12 24 24" className={styles.reactAtom}>
@@ -206,9 +205,6 @@ function ReactArt() {
         <g key={angle} transform={`rotate(${angle})`}>
           <g className={styles.reactRing} style={{ '--i': i }}>
             <ellipse rx="11" ry="4.2" className={styles.reactOrbit} />
-            <circle r="1" className={styles.reactElectron}>
-              <animateMotion dur={`${2.2 + i * 0.6}s`} repeatCount="indefinite" path={orbit} begin={`${i * -0.7}s`} />
-            </circle>
           </g>
         </g>
       ))}
@@ -272,7 +268,7 @@ function TailwindArt({ icon }) {
   );
 }
 
-/* Vite: o raio cai do céu, clareia tudo, solta faíscas e de vez em quando relampeja */
+/* Vite: o raio cai do céu, clareia tudo, relampeja e solta faíscas */
 function ViteArt({ icon }) {
   const id = useSafeId();
   return (
@@ -301,25 +297,17 @@ function ViteArt({ icon }) {
 
 /* ================= Back-end ================= */
 
-/* Node.js: o hexágono se desenha e um ponto fica dando voltas, como o event loop */
+/* Node.js: o hexágono se desenha e um ponto dá uma volta completa, como o event loop */
 function NodeArt({ icon }) {
-  const loop = 'M12 -1.5a13.5 13.5 0 1 1 -0.01 0';
   return (
     <DrawArt
       icon={icon}
-      extra={
-        <>
-          <circle cx="12" cy="12" r="13.5" className={styles.nodeTrack} />
-          <circle r="0.9" className={styles.nodeTick}>
-            <animateMotion dur="2.4s" repeatCount="indefinite" path={loop} />
-          </circle>
-        </>
-      }
+      extra={<circle cx="12" cy="12" r="13.5" pathLength="1" transform="rotate(-90 12 12)" className={styles.nodeLoop} />}
     />
   );
 }
 
-/* Express: entra a toda velocidade com linhas de vento e dá umas aceleradas */
+/* Express: entra a toda velocidade com linhas de vento */
 function ExpressArt({ icon }) {
   return (
     <Art style={{ color: brandColor(icon) }}>
@@ -603,7 +591,7 @@ function GithubArt({ icon }) {
   );
 }
 
-/* Docker: os containers são empilhados um a um, a baleia boia e bate o rabo */
+/* Docker: os containers são empilhados um a um e a baleia bate o rabo */
 function DockerArt({ icon }) {
   const id = useSafeId();
   const tail = [19.2, 5.5, 5.5, 6];
@@ -715,7 +703,7 @@ function LinearArt({ icon }) {
   );
 }
 
-/* Wiki.js: a borboleta chega voando, batendo as asas, e fica pousada batendo de vez em quando */
+/* Wiki.js: a borboleta chega voando, batendo as asas, e pousa */
 function WikiArt({ icon }) {
   const id = useSafeId();
   const left = [-1, -1, 12.1, 26];
@@ -761,7 +749,7 @@ function ContentfulArt({ icon }) {
   );
 }
 
-/* Zabbix: um eletrocardiograma corre pela caixa monitorando tudo */
+/* Zabbix: um eletrocardiograma é traçado em cima da caixa */
 function ZabbixArt() {
   return (
     <Mono text="ZBX" size={6.2} className={styles.zabbix}>
@@ -770,7 +758,7 @@ function ZabbixArt() {
   );
 }
 
-/* Grafana: gira como uma engrenagem acelerando e fica rodando devagar */
+/* Grafana: gira como uma engrenagem e as métricas oscilam ao lado */
 function GrafanaArt({ icon }) {
   return (
     <Art style={{ color: `#${icon.hex}` }}>
