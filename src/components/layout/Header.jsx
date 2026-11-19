@@ -26,26 +26,29 @@ function ThemeToggle() {
   );
 }
 
-function LanguageSwitcher({ className }) {
+function LanguageToggle() {
   const { lang, setLang, t } = useLanguage();
+  const index = LANGUAGES.findIndex((option) => option.code === lang);
+  const current = LANGUAGES[index];
+  const next = LANGUAGES[(index + 1) % LANGUAGES.length];
+  const label = `${t.header.language}: ${current.name} → ${next.name}`;
 
   return (
-    <div className={`${styles.langSwitcher} ${className}`} role="group" aria-label={t.header.language}>
-      {LANGUAGES.map((option) => (
-        <button
-          key={option.code}
-          type="button"
-          lang={option.htmlLang}
-          title={option.name}
-          aria-label={option.name}
-          aria-pressed={lang === option.code}
-          className={`${styles.langButton} ${lang === option.code ? styles.langActive : ''}`}
-          onClick={() => setLang(option.code)}
-        >
-          {option.label}
-        </button>
-      ))}
-    </div>
+    <button
+      type="button"
+      className={styles.langButton}
+      onClick={() => setLang(next.code)}
+      aria-label={label}
+      title={label}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.langIcon}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
+      </svg>
+      <span key={current.code} lang={current.htmlLang} className={styles.langCode}>
+        {current.label}
+      </span>
+    </button>
   );
 }
 
@@ -85,7 +88,7 @@ export default function Header() {
         </nav>
 
         <div className={styles.actions}>
-          <LanguageSwitcher className={styles.langSwitcherHeader} />
+          <LanguageToggle />
           <ThemeToggle />
 
           <button
@@ -105,8 +108,6 @@ export default function Header() {
 
       {isMenuOpen && (
         <nav id="mobile-menu" className={styles.mobileMenu} aria-label={t.header.mobileNav}>
-          <LanguageSwitcher className={styles.langSwitcherMobile} />
-
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}

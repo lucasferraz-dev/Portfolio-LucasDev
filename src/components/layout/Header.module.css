@@ -33,15 +33,11 @@
 }
 
 .actions {
-  @apply flex items-center gap-3 shrink-0;
-}
-
-.langSwitcher {
-  @apply items-center font-mono text-xs font-bold rounded-lg overflow-hidden border border-slate-900;
+  @apply flex items-center gap-2 shrink-0;
 }
 
 .themeButton {
-  @apply flex items-center justify-center w-9 h-9 rounded-lg border border-slate-900 bg-transparent
+  @apply flex items-center justify-center w-9 h-9 rounded-full border border-slate-900 bg-transparent
          text-slate-400 cursor-pointer transition-colors duration-200;
 }
 
@@ -50,35 +46,54 @@
 }
 
 .themeButton svg {
-  @apply w-[18px] h-[18px] fill-none stroke-current;
+  @apply w-4 h-4 fill-none stroke-current;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.langSwitcherHeader {
-  @apply hidden sm:flex;
-}
-
-.langSwitcherMobile {
-  @apply flex sm:hidden self-start mb-3 text-sm;
-}
-
 .langButton {
-  @apply px-2.5 py-2 text-slate-500 bg-transparent cursor-pointer tracking-wider transition-colors duration-200;
-}
-
-.langSwitcherMobile .langButton {
-  @apply px-4 py-2.5;
+  @apply flex items-center gap-1.5 h-9 pl-2.5 pr-3 rounded-full border border-slate-900 bg-transparent
+         font-mono text-xs font-bold tracking-wider text-slate-400 cursor-pointer transition-colors duration-200;
 }
 
 .langButton:hover {
-  @apply text-white;
+  @apply text-accent border-accent/40;
 }
 
-.langActive,
-.langActive:hover {
-  @apply text-accent bg-accent/10;
+.langIcon {
+  @apply w-4 h-4 fill-none stroke-current transition-transform duration-500;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.langButton:hover .langIcon {
+  transform: rotate(180deg);
+}
+
+.langCode {
+  @apply inline-block w-[2ch] text-left;
+  animation: langIn 0.25s ease-out;
+}
+
+@keyframes langIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .langIcon,
+  .langCode {
+    transition: none;
+    animation: none;
+  }
 }
 
 .navLink {
@@ -98,7 +113,7 @@
 }
 
 .menuButton {
-  @apply xl:hidden flex flex-col justify-center gap-1.5 w-11 h-11 p-2.5 rounded-lg
+  @apply xl:hidden flex flex-col justify-center gap-1 w-9 h-9 px-2.5 rounded-full
          bg-transparent border border-slate-900 cursor-pointer transition-colors duration-200;
 }
 
@@ -111,7 +126,7 @@
 }
 
 .menuBarTopOpen {
-  transform: translateY(8px) rotate(45deg);
+  transform: translateY(6px) rotate(45deg);
 }
 
 .menuBarMidOpen {
@@ -119,7 +134,7 @@
 }
 
 .menuBarBottomOpen {
-  transform: translateY(-8px) rotate(-45deg);
+  transform: translateY(-6px) rotate(-45deg);
 }
 
 .mobileMenu {
