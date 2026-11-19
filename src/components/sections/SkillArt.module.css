@@ -15,9 +15,14 @@
   transform-box: view-box;
 }
 
+/* Bichos: claros no tema escuro e escuros no tema claro */
 .white {
-  fill: #fff;
-  color: #fff;
+  fill: var(--color-white);
+  color: var(--color-white);
+}
+
+.wikiWing {
+  fill: var(--color-white);
 }
 
 /* ---------- Genéricos ---------- */
@@ -1080,7 +1085,7 @@
 .octoBounce { transform-origin: 12px 24px; }
 
 .octoEye {
-  fill: #fff;
+  fill: var(--color-white);
   transform-box: fill-box;
   transform-origin: center;
 }
@@ -1257,7 +1262,7 @@
 }
 
 .xlGlow {
-  fill: #fff;
+  fill: #7ee2a8;
   opacity: 0;
 }
 

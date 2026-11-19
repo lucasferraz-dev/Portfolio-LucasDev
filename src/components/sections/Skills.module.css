@@ -116,12 +116,3 @@
   }
 }
 
-/* ---------- Cards dos bichos: fundo preto e ícone branco, todos iguais ---------- */
-
-.spotlight {
-  background: radial-gradient(circle at 50% 38%, rgb(255 255 255 / 0.08), transparent 62%), #000;
-}
-
-.spotlight .name {
-  color: #e2e8f0;
-}

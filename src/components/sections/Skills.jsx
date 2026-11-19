@@ -39,15 +39,14 @@ import useInView from '../effects/useInView';
 import SkillArt from './SkillArt';
 import { useLanguage } from '../../i18n/useLanguage';
 
-// mascot: os bichos ganham card preto com o ícone branco.
 const SKILL_GROUPS = [
   {
     id: 'languages',
     skills: [
-      { name: 'Python', icon: siPython, mascot: true, usedIn: ['internship', 'hackathon', 'skinomics'] },
+      { name: 'Python', icon: siPython, usedIn: ['internship', 'hackathon', 'skinomics'] },
       { name: 'JavaScript', icon: siJavascript, usedIn: ['savepoint', 'portfolio'] },
       { name: 'TypeScript', icon: siTypescript, usedIn: ['skinomics'] },
-      { name: 'Java', icon: siOpenjdk, mascot: true, usedIn: ['college'] },
+      { name: 'Java', icon: siOpenjdk, usedIn: ['college'] },
       { name: 'C', icon: siC, usedIn: ['college'] },
       { name: 'C++', icon: siCplusplus, usedIn: ['college'] },
       { name: 'PHP', icon: siPhp, usedIn: ['college'] },
@@ -76,8 +75,8 @@ const SKILL_GROUPS = [
   {
     id: 'data',
     skills: [
-      { name: 'PostgreSQL', icon: siPostgresql, mascot: true, usedIn: ['skinomics'] },
-      { name: 'MySQL', icon: siMysql, mascot: true, usedIn: ['savepoint'] },
+      { name: 'PostgreSQL', icon: siPostgresql, usedIn: ['skinomics'] },
+      { name: 'MySQL', icon: siMysql, usedIn: ['savepoint'] },
       { name: 'SQL Server', monogram: 'SQL', usedIn: ['savepoint'] },
       { name: 'SQLite', icon: siSqlite, usedIn: ['college'] },
       { name: 'SQLAlchemy', icon: siSqlalchemy, usedIn: ['college'] },
@@ -91,15 +90,15 @@ const SKILL_GROUPS = [
     id: 'tools',
     skills: [
       { name: 'Git', icon: siGit, usedIn: ['all'] },
-      { name: 'GitHub', icon: siGithub, mascot: true, usedIn: ['all'] },
-      { name: 'Docker', icon: siDocker, mascot: true, usedIn: ['skinomics'] },
+      { name: 'GitHub', icon: siGithub, usedIn: ['all'] },
+      { name: 'Docker', icon: siDocker, usedIn: ['skinomics'] },
       { name: 'Vercel', icon: siVercel, usedIn: ['portfolio', 'skinomics'] },
       { name: 'Render', icon: siRender, usedIn: ['skinomics'] },
       { name: 'Neon', icon: siNeon, usedIn: ['skinomics'] },
       { name: 'Excel', usedIn: ['internship'] },
       { name: 'GLPI', usedIn: ['internship'] },
       { name: 'Linear', icon: siLinear, usedIn: ['internship'] },
-      { name: 'Wiki.js', icon: siWikidotjs, mascot: true, usedIn: ['internship'] },
+      { name: 'Wiki.js', icon: siWikidotjs, usedIn: ['internship'] },
       { name: 'Contentful', icon: siContentful, usedIn: ['internship'] },
       { name: 'Zabbix', usedIn: ['internship'] },
       { name: 'Grafana', icon: siGrafana, usedIn: ['internship'] },
@@ -112,7 +111,6 @@ function SkillCard({ skill, index }) {
   const { t } = useLanguage();
   const [isFlipped, setIsFlipped] = useState(false);
   const usedIn = skill.usedIn.map((key) => t.skills.usedIn[key]);
-  const spotlight = Boolean(skill.mascot);
 
   return (
     <button
@@ -123,7 +121,7 @@ function SkillCard({ skill, index }) {
       aria-label={`${skill.name}. ${t.skills.usedInLabel}: ${usedIn.join(', ')}`}
     >
       <span className={styles.inner}>
-        <span className={`${styles.face} ${styles.front} ${spotlight ? styles.spotlight : ''}`}>
+        <span className={`${styles.face} ${styles.front}`}>
           <SkillArt skill={skill} />
           <span className={styles.name}>{skill.name}</span>
         </span>
