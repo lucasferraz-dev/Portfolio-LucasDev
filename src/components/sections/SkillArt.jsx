@@ -392,7 +392,7 @@ function ApiArt() {
 
 /* ================= Dados & ML ================= */
 
-/* PostgreSQL: o elefante abana as orelhas, ergue a tromba e solta um grito */
+/* PostgreSQL: o elefante balança a tromba, joga a cabeça pra trás e solta um grito (a tromba fica presa na base) */
 function PostgresArt({ icon }) {
   const id = useSafeId();
   const trunk = [11, 17.2, 8, 7];
@@ -421,7 +421,7 @@ function PostgresArt({ icon }) {
       {[0, 1, 2].map((i) => (
         <path
           key={i}
-          d={`M${22 + i * 1.5} ${16.6 - i * 1.1}q${1.4 + i * 0.4} ${2.2 + i * 1.1} 0 ${4.4 + i * 2.2}`}
+          d={`M${21.2 + i * 1.4} ${18.4 - i * 1.1}q${1.3 + i * 0.4} ${2 + i * 1.1} 0 ${4 + i * 2.2}`}
           className={styles.roar}
           style={{ '--i': i }}
         />
@@ -751,7 +751,7 @@ function LinearArt({ icon }) {
   );
 }
 
-/* Wiki.js: a borboleta em camadas chega voando, cada camada de asa batendo num tempo */
+/* Wiki.js: a borboleta em camadas chega voando e todas as camadas das asas batem juntas */
 function WikiArt() {
   const id = useSafeId();
   const left = [-1, -1, 12.1, 26];
@@ -766,7 +766,7 @@ function WikiArt() {
       <g className={styles.flyIn}>
         <g className={styles.flutter}>
           {WIKI_WINGS.map((wing) => (
-            <g key={wing.d} className={wing.side === 'l' ? styles.wingL : styles.wingR} style={{ '--d': `${wing.depth * 0.07}s` }}>
+            <g key={wing.d} className={wing.side === 'l' ? styles.wingL : styles.wingR}>
               <path d={wing.d} className={styles.wikiWing} fillOpacity={wing.opacity} />
             </g>
           ))}
