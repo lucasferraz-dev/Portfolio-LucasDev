@@ -158,6 +158,11 @@
   @apply w-12 h-12 shrink-0 rounded-lg object-contain bg-white p-1;
 }
 
+/* logos brancos sobre fundo preto (ex.: Pilgrims) */
+.logoDark {
+  @apply bg-black p-0.5 border border-slate-800;
+}
+
 .title {
   @apply text-xl md:text-2xl font-bold text-white tracking-tight leading-snug;
 }

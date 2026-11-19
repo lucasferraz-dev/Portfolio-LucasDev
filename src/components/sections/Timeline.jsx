@@ -2,17 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './Timeline.module.css';
 import logoPucpr from '../../assets/pucpr.png';
 import logoGobpr from '../../assets/GOBPR.jpg';
+import logoPilgrims from '../../assets/pilgrims.png';
 import { useLanguage } from '../../i18n/useLanguage';
 import RichText, { KeywordLink } from '../common/RichText';
 
 const TIMELINE = [
   { id: 'pucpr', type: 'education', logo: logoPucpr, ongoing: true },
-  { id: 'gobpr', type: 'work', logo: logoGobpr, ongoing: true },
+  { id: 'gobpr', type: 'work', logo: logoGobpr },
   { id: 'savepoint', type: 'project', projectId: 'ROW_03' },
   { id: 'python', type: 'course' },
   { id: 'skinomics', type: 'project', projectId: 'ROW_04', ongoing: true },
-  { id: 'rotinas', type: 'project', projectId: 'ROW_01', ongoing: true },
+  { id: 'rotinas', type: 'project', projectId: 'ROW_01' },
   { id: 'hackathon', type: 'hackathon', projectId: 'ROW_02' },
+  { id: 'pilgrims', type: 'work', logo: logoPilgrims, logoDark: true, ongoing: true },
 ];
 
 /*
@@ -85,7 +87,15 @@ function TimelineItem({ item, index }) {
         </div>
 
         <div className={styles.heading}>
-          {item.logo && <img src={item.logo} alt="" className={styles.logo} loading="lazy" decoding="async" />}
+          {item.logo && (
+            <img
+              src={item.logo}
+              alt=""
+              className={`${styles.logo} ${item.logoDark ? styles.logoDark : ''}`}
+              loading="lazy"
+              decoding="async"
+            />
+          )}
           <div>
             <h3 className={styles.title}>{content.title}</h3>
             <p className={styles.org}>{content.org}</p>
