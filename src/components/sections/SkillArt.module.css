@@ -847,7 +847,7 @@
 
 /* ================= MySQL (golfinho) ================= */
 
-.dolphin { transform-origin: 18px 8px; }
+.dolphin { transform-origin: 19px 7px; }
 
 .splash {
   fill: var(--color-accent-alt);
@@ -855,25 +855,26 @@
 }
 
 :global(.is-revealed) .dolphin {
-  animation: leap 5s ease-in-out var(--t0) both;
+  animation: leap 1.6s cubic-bezier(0.3, 0.6, 0.4, 1) calc(var(--t0) + 0.2s) both;
 }
 
 :global(.is-revealed) .splash {
-  animation: splash 5s ease-out calc(var(--t0) + 2s) forwards;
+  animation: splash 0.7s ease-out calc(var(--t0) + 1.15s) forwards;
 }
 
+/* sai de trás do nome, faz um arco no ar e mergulha até o lugar dele */
 @keyframes leap {
-  0%, 60%, 100% { transform: none; }
-  10% { transform: translate(-1.5px, 3px) rotate(18deg); }
-  25% { transform: translate(0.5px, -5px) rotate(-22deg); }
-  40% { transform: translate(2px, 1px) rotate(25deg); }
-  50% { transform: none; }
+  0%   { opacity: 0; transform: translate(-6px, 9px) rotate(55deg) scale(0.8); }
+  20%  { opacity: 1; }
+  45%  { transform: translate(-2px, -4px) rotate(-18deg) scale(1); }
+  70%  { transform: translate(0.6px, 0.8px) rotate(8deg); }
+  85%  { transform: translate(0, -0.3px) rotate(-3deg); }
+  100% { opacity: 1; transform: none; }
 }
 
 @keyframes splash {
   0%   { opacity: 1; transform: none; }
-  12%  { opacity: 0; transform: translate(calc((var(--i) - 1.5) * 1.8px), -3px); }
-  100% { opacity: 0; }
+  100% { opacity: 0; transform: translate(calc((var(--i) - 1.5) * 1.8px), -3px); }
 }
 
 /* ================= SQL Server ================= */
@@ -1121,44 +1122,38 @@
 
 /* ================= Docker (baleia) ================= */
 
-.whaleTail { transform-origin: 19.6px 11.4px; }
+/* a nadadeira gira a partir da base: a borda de baixo fica parada e não descola do corpo */
+.whaleTail { transform-origin: 20.5px 11.4px; }
 
-.water {
-  fill: none;
-  stroke: #2496ed;
-  stroke-width: 0.5;
-  stroke-linecap: round;
-  opacity: 0.7;
+:global(.is-revealed) .whaleBob {
+  animation: whaleBob 1.8s ease-in-out calc(var(--t0) + 0.8s) both;
 }
 
-
 :global(.is-revealed) .whaleTail {
-  animation: whaleTail 3s ease-in-out calc(var(--t0) + 0.9s) both;
+  animation: whaleTail 1.8s ease-in-out calc(var(--t0) + 0.8s) both;
 }
 
 :global(.is-revealed) .container {
   animation: stack 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) calc(var(--t0) + var(--i) * 0.25s) both;
 }
 
-:global(.is-revealed) .water {
-  animation: water 1.6s linear var(--t0) 2;
+@keyframes whaleBob {
+  0%, 100% { transform: none; }
+  30% { transform: translateY(0.6px); }
+  60% { transform: translateY(-0.5px); }
 }
 
 @keyframes whaleTail {
-  0%, 40%, 100% { transform: none; }
-  10% { transform: rotate(-18deg); }
-  20% { transform: rotate(10deg); }
-  30% { transform: rotate(-8deg); }
+  0%, 100% { transform: none; }
+  15% { transform: skewX(-22deg); }
+  35% { transform: skewX(18deg); }
+  55% { transform: skewX(-12deg); }
+  75% { transform: skewX(6deg); }
 }
 
 @keyframes stack {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: none; }
-}
-
-@keyframes water {
-  from { transform: none; }
-  to   { transform: translateX(-4px); }
 }
 
 /* ================= Vercel ================= */
