@@ -73,7 +73,7 @@
   }
 
   .card:hover .front {
-    @apply border-accent/40;
+    @apply border-accent/60;
   }
 }
 
@@ -89,7 +89,7 @@
 }
 
 .front {
-  @apply bg-surface border-slate-900 transition-colors duration-300;
+  @apply bg-surface border-slate-800 transition-colors duration-300;
 }
 
 .back {

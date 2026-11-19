@@ -81,11 +81,11 @@
 }
 
 .card {
-  @apply bg-surface border border-slate-900 rounded-2xl p-6 md:p-8 shadow-2xl transition-colors duration-300;
+  @apply bg-surface border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl transition-colors duration-300;
 }
 
 .card:hover {
-  @apply border-accent/30;
+  @apply border-accent/50;
 }
 
 /* No desktop, os cards ficam virados em 3D para a linha do meio e se endireitam no hover */
