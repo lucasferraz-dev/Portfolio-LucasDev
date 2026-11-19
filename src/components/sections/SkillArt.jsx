@@ -171,26 +171,13 @@ function JavaScriptArt({ icon }) {
   );
 }
 
-/* Java: o Duke dá dois pulinhos, acena, o nariz vermelho brilha e ele pia */
+/* Java: o Duke dá três pulinhos gingando como um pinguim, o nariz acende e ele pia */
 function JavaArt({ icon }) {
-  const id = useSafeId();
-  const armL = [0, 10.5, 4.4, 9.5];
-  const armR = [19.6, 10.5, 4.4, 9.5];
   return (
     <Art className={styles.white}>
-      <defs>
-        <ClipRest id={`${id}-rest`} rects={[armL, armR]} />
-        <ClipRect id={`${id}-l`} rect={armL} />
-        <ClipRect id={`${id}-r`} rect={armR} />
-      </defs>
+      <ellipse cx="12" cy="23.6" rx="7" ry="0.7" className={styles.dukeShadow} />
       <g className={styles.dukeHop}>
-        <path d={icon.path} clipPath={`url(#${id}-rest)`} />
-        <g className={styles.dukeArmL}>
-          <path d={icon.path} clipPath={`url(#${id}-l)`} />
-        </g>
-        <g className={styles.dukeArmR}>
-          <path d={icon.path} clipPath={`url(#${id}-r)`} />
-        </g>
+        <path d={icon.path} />
         <circle cx="12" cy="9.75" r="2.2" className={styles.dukeNose} />
       </g>
       <text x="19" y="4.5" className={cx(styles.note, styles.note1)}>♪</text>

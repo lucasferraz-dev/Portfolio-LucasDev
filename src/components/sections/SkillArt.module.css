@@ -184,9 +184,13 @@
 
 /* ================= Java (Duke) ================= */
 
-.dukeHop  { transform-origin: 12px 24px; }
-.dukeArmL { transform-origin: 4.4px 11px; }
-.dukeArmR { transform-origin: 19.6px 11px; }
+.dukeHop { transform-origin: 12px 24px; }
+
+.dukeShadow {
+  fill: var(--color-slate-800);
+  opacity: 0;
+  transform-origin: 12px 23.6px;
+}
 
 .dukeNose {
   fill: #e5242c;
@@ -194,47 +198,41 @@
 }
 
 :global(.is-revealed) .dukeHop {
-  animation: dukeHop 4.5s ease-in-out var(--t0) both;
+  animation: dukeWaddle 1.8s ease-in-out var(--t0) both;
 }
 
-:global(.is-revealed) .dukeArmL {
-  animation: dukeArmL 4.5s ease-in-out var(--t0) both;
-}
-
-:global(.is-revealed) .dukeArmR {
-  animation: dukeWave 4.5s ease-in-out var(--t0) both;
+:global(.is-revealed) .dukeShadow {
+  animation: dukeShadow 1.8s ease-in-out var(--t0) both;
 }
 
 :global(.is-revealed) .dukeNose {
-  animation: dukeNose 4.5s ease-in-out var(--t0) both;
+  animation: dukeNose 1.1s ease-in-out calc(var(--t0) + 1.5s) both;
 }
 
-@keyframes dukeHop {
-  0%, 30%, 100% { transform: none; }
-  6%  { transform: translateY(-2.2px) scaleY(1.05); }
-  12% { transform: translateY(0) scaleY(0.92); }
-  18% { transform: translateY(-1.4px) scaleY(1.03); }
-  24% { transform: translateY(0) scaleY(0.96); }
+/* três pulinhos, gingando pra um lado e pro outro, e aterrissa amassando */
+@keyframes dukeWaddle {
+  0%   { transform: none; }
+  10%  { transform: translateY(-2.6px) rotate(-9deg); }
+  20%  { transform: translateY(0) rotate(0) scale(1.06, 0.9); }
+  30%  { transform: translateY(-2.6px) rotate(9deg); }
+  40%  { transform: translateY(0) rotate(0) scale(1.06, 0.9); }
+  52%  { transform: translateY(-3.4px) rotate(-6deg); }
+  64%  { transform: translateY(0) scale(1.1, 0.86); }
+  76%  { transform: translateY(-0.6px) scale(0.97, 1.04); }
+  100% { transform: none; }
 }
 
-@keyframes dukeArmL {
-  0%, 30%, 100% { transform: none; }
-  6%  { transform: rotate(18deg); }
-  12% { transform: none; }
-  18% { transform: rotate(14deg); }
+/* a sombra encolhe quando ele está no ar */
+@keyframes dukeShadow {
+  0%, 20%, 40%, 64%, 100% { opacity: 0.6; transform: none; }
+  10%, 30% { opacity: 0.3; transform: scaleX(0.7); }
+  52% { opacity: 0.25; transform: scaleX(0.6); }
 }
 
-@keyframes dukeWave {
-  0%, 30%, 64%, 100% { transform: none; }
-  36% { transform: rotate(-42deg); }
-  42% { transform: rotate(-14deg); }
-  48% { transform: rotate(-42deg); }
-  54% { transform: rotate(-14deg); }
-}
-
+/* o nariz acende como uma lâmpada e volta ao vermelho normal */
 @keyframes dukeNose {
-  0%, 32%, 66%, 100% { transform: none; filter: none; }
-  40%, 58% { transform: scale(1.18); filter: drop-shadow(0 0 1.4px #ff4d4d); }
+  0%, 100% { transform: none; filter: none; }
+  30%, 60% { transform: scale(1.2); filter: drop-shadow(0 0 1.6px #ff4d4d) brightness(1.4); }
 }
 
 .note {
@@ -244,17 +242,17 @@
 }
 
 :global(.is-revealed) .note1 {
-  animation: note 4.5s ease-out var(--t0) both;
+  animation: note 1.4s ease-out calc(var(--t0) + 1.6s) both;
 }
 
 :global(.is-revealed) .note2 {
-  animation: note 4.5s ease-out calc(var(--t0) + 0.25s) both;
+  animation: note 1.4s ease-out calc(var(--t0) + 1.85s) both;
 }
 
 @keyframes note {
-  0%, 34% { opacity: 0; transform: translateY(1px); }
-  40% { opacity: 1; transform: translateY(0); }
-  60%, 100% { opacity: 0; transform: translate(1px, -3px); }
+  0%   { opacity: 0; transform: translateY(1px); }
+  20%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translate(1px, -3px); }
 }
 
 /* ================= C ================= */
