@@ -13,7 +13,7 @@
 }
 
 .logo {
-  @apply font-mono text-lg md:text-2xl font-black tracking-tight text-white flex items-center gap-1 transition-colors shrink-0;
+  @apply font-mono text-xl md:text-3xl font-black tracking-tight text-white flex items-center gap-1 transition-colors shrink-0;
 }
 
 .logo:hover {
@@ -29,15 +29,15 @@
 }
 
 .navbar {
-  @apply hidden xl:flex items-center gap-5 2xl:gap-10 font-mono text-sm 2xl:text-base;
+  @apply hidden xl:flex items-center gap-7 2xl:gap-12 font-mono text-base 2xl:text-lg;
 }
 
 .actions {
-  @apply flex items-center gap-2 shrink-0;
+  @apply flex items-center gap-2.5 shrink-0;
 }
 
 .themeButton {
-  @apply flex items-center justify-center w-9 h-9 rounded-full border border-slate-900 bg-transparent
+  @apply flex items-center justify-center w-11 h-11 rounded-full border border-slate-900 bg-transparent
          text-slate-400 cursor-pointer transition-colors duration-200;
 }
 
@@ -46,15 +46,15 @@
 }
 
 .themeButton svg {
-  @apply w-4 h-4 fill-none stroke-current;
+  @apply w-5 h-5 fill-none stroke-current;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .langButton {
-  @apply flex items-center gap-1.5 h-9 pl-2.5 pr-3 rounded-full border border-slate-900 bg-transparent
-         font-mono text-xs font-bold tracking-wider text-slate-400 cursor-pointer transition-colors duration-200;
+  @apply flex items-center gap-2 h-11 pl-3.5 pr-4 rounded-full border border-slate-900 bg-transparent
+         font-mono text-sm font-bold tracking-wider text-slate-400 cursor-pointer transition-colors duration-200;
 }
 
 .langButton:hover {
@@ -62,7 +62,7 @@
 }
 
 .langIcon {
-  @apply w-4 h-4 fill-none stroke-current transition-transform duration-500;
+  @apply w-5 h-5 fill-none stroke-current transition-transform duration-500;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -113,7 +113,7 @@
 }
 
 .menuButton {
-  @apply xl:hidden flex flex-col justify-center gap-1 w-9 h-9 px-2.5 rounded-full
+  @apply xl:hidden flex flex-col justify-center gap-1.5 w-11 h-11 px-3 rounded-full
          bg-transparent border border-slate-900 cursor-pointer transition-colors duration-200;
 }
 
@@ -126,7 +126,7 @@
 }
 
 .menuBarTopOpen {
-  transform: translateY(6px) rotate(45deg);
+  transform: translateY(8px) rotate(45deg);
 }
 
 .menuBarMidOpen {
@@ -134,7 +134,7 @@
 }
 
 .menuBarBottomOpen {
-  transform: translateY(-6px) rotate(-45deg);
+  transform: translateY(-8px) rotate(-45deg);
 }
 
 .mobileMenu {
