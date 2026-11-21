@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ThemeContext } from './useTheme';
 
 const STORAGE_KEY = 'theme';
-const THEME_COLORS = { dark: '#06060a', light: '#f6f7f9' };
+const THEME_COLORS = { dark: '#020204', light: '#f6f7f9' };
 
 function getInitialTheme() {
   try {

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-page: #06060a;
+  --color-page: #020204;
   --color-surface: #0c0c14;
   --color-surface-alt: #08080e;
   --color-surface-deep: #0a0a11;
@@ -63,7 +63,7 @@ html {
 
 body {
   margin: 0;
-  background-color: var(--color-page, #06060a);
+  background-color: var(--color-page, #020204);
   color: var(--color-white, #ffffff);
   font-family: system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
