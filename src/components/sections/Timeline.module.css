@@ -26,19 +26,59 @@
 }
 
 .timeline {
-  @apply relative max-w-6xl mx-auto flex flex-col gap-10 md:gap-16 list-none p-0 m-0;
+  @apply relative max-w-6xl mx-auto;
 }
 
-.timeline::before {
-  content: "";
-  @apply absolute top-2 bottom-2 left-[7px] md:left-1/2 w-px bg-linear-to-b from-accent/70 via-slate-800 to-transparent;
+.list {
+  @apply relative flex flex-col gap-10 md:gap-16 list-none p-0 m-0;
 }
 
+/*
+ * Linha do tempo: um trilho apagado com o preenchimento verde por cima.
+ * --progress (0 → 1) vem do scroll e define até onde o verde já desceu;
+ * a "cabeça" brilhante acompanha a ponta do preenchimento.
+ */
+.track {
+  @apply absolute top-2 bottom-2 left-[7px] md:left-1/2 w-px bg-linear-to-b from-slate-800 via-slate-800 to-transparent;
+}
+
+.trackFill {
+  @apply absolute inset-0 bg-linear-to-b from-accent/40 to-accent origin-top;
+  transform: scaleY(var(--progress, 0));
+}
+
+.trackHead {
+  @apply absolute left-1/2 w-2 h-2 rounded-full bg-accent;
+  top: calc(var(--progress, 0) * 100%);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px 3px var(--color-accent), 0 0 24px 6px color-mix(in srgb, var(--color-accent) 40%, transparent);
+  opacity: calc(min(var(--progress, 0) * 20, 1) * min((1 - var(--progress, 0)) * 20, 1));
+  animation: glow 1.6s ease-in-out infinite;
+}
+
+@keyframes glow {
+  50% { box-shadow: 0 0 14px 5px var(--color-accent), 0 0 32px 10px color-mix(in srgb, var(--color-accent) 30%, transparent); }
+}
+
+/*
+ * Entrada: o card desliza vindo do lado em que fica.
+ * No celular a linha fica à esquerda, então todos chegam pela direita.
+ */
 .item {
   @apply relative pl-10 md:pl-0 md:w-1/2;
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transform: translate(48px, 16px);
+  transition: opacity 0.7s ease-out, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (min-width: 768px) {
+  .left {
+    transform: translate(-64px, 16px);
+  }
+
+  .right {
+    transform: translate(64px, 16px);
+  }
 }
 
 .item:not(:first-child) {
@@ -70,8 +110,40 @@
   @apply md:left-[-7.5px];
 }
 
+/* a bolinha começa apagada e acende quando a linha chega nela */
+.dot {
+  @apply border-slate-700;
+  transition: border-color 0.4s, background-color 0.4s, box-shadow 0.4s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dot[data-reached] {
+  @apply border-accent;
+  transform: scale(1.15);
+  box-shadow: 0 0 12px 2px color-mix(in srgb, var(--color-accent) 50%, transparent);
+}
+
 .dotOngoing {
   @apply bg-accent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trackHead {
+    animation: none;
+  }
+
+  .dot {
+    transition: none;
+  }
+
+  .item,
+  .left,
+  .right {
+    transform: none;
+  }
+
+  .visible .card {
+    animation: none;
+  }
 }
 
 .dotOngoing::after {
@@ -103,6 +175,25 @@
   transform-origin: left center;
   transform: rotateY(calc(var(--closed) * -88deg));
   transition: transform 0.25s ease-out, border-color 0.3s;
+}
+
+/*
+ * Flutuação: o card boia de leve depois que aparece. Usa `translate`, que é
+ * separado do `transform`, para não brigar com o giro do livro. O atraso
+ * negativo por --i deixa cada card num ponto diferente do ciclo.
+ */
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+
+.visible .card {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -1.7s);
+}
+
+.visible .card:hover {
+  animation-play-state: paused;
 }
 
 /* sombra de página: o card escurece enquanto está fechado */

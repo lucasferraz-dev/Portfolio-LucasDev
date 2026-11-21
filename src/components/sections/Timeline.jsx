@@ -50,6 +50,49 @@ function useBookOpen(ref) {
   }, [ref]);
 }
 
+/*
+ * Preenche a linha do tempo conforme a página desce.
+ * --progress vai de 0 a 1 e marca até onde a linha já chegou: o ponto de
+ * referência fica a 60% da altura da tela, a mesma altura onde os cards
+ * terminam de abrir. As bolinhas que ficam acima desse ponto ganham
+ * data-reached e acendem.
+ */
+const PROGRESS_ANCHOR = 0.6;
+
+function useTrackProgress(ref) {
+  useEffect(() => {
+    const el = ref.current;
+    const dots = el.querySelectorAll('[data-dot]');
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const anchor = window.innerHeight * PROGRESS_ANCHOR;
+      const { top, height } = el.getBoundingClientRect();
+      const progress = Math.min(Math.max((anchor - top) / height, 0), 1);
+      el.style.setProperty('--progress', progress.toFixed(4));
+
+      dots.forEach((dot) => {
+        const rect = dot.getBoundingClientRect();
+        dot.toggleAttribute('data-reached', rect.top + rect.height / 2 <= anchor);
+      });
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [ref]);
+}
+
 function TimelineItem({ item, index }) {
   const { t } = useLanguage();
   const itemRef = useRef(null);
@@ -74,8 +117,12 @@ function TimelineItem({ item, index }) {
   const side = index % 2 === 0 ? styles.left : styles.right;
 
   return (
-    <li ref={itemRef} className={`${styles.item} ${side} ${isVisible ? styles.visible : ''}`}>
-      <span className={`${styles.dot} ${item.ongoing ? styles.dotOngoing : ''}`} aria-hidden="true" />
+    <li
+      ref={itemRef}
+      className={`${styles.item} ${side} ${isVisible ? styles.visible : ''}`}
+      style={{ '--i': index }}
+    >
+      <span data-dot className={`${styles.dot} ${item.ongoing ? styles.dotOngoing : ''}`} aria-hidden="true" />
 
       <article ref={cardRef} className={styles.card}>
         <div className={styles.cardTop}>
@@ -136,6 +183,8 @@ function TimelineItem({ item, index }) {
 
 export default function Timeline() {
   const { t } = useLanguage();
+  const timelineRef = useRef(null);
+  useTrackProgress(timelineRef);
 
   return (
     <section id="journey" className={styles.sectionContainer}>
@@ -145,11 +194,18 @@ export default function Timeline() {
         <p className={styles.subtitle}>{t.timeline.subtitle}</p>
       </div>
 
-      <ol className={styles.timeline}>
-        {TIMELINE.map((item, index) => (
-          <TimelineItem key={item.id} item={item} index={index} />
-        ))}
-      </ol>
+      <div ref={timelineRef} className={styles.timeline}>
+        <div className={styles.track} aria-hidden="true">
+          <span className={styles.trackFill} />
+          <span className={styles.trackHead} />
+        </div>
+
+        <ol className={styles.list}>
+          {TIMELINE.map((item, index) => (
+            <TimelineItem key={item.id} item={item} index={index} />
+          ))}
+        </ol>
+      </div>
     </section>
   );
 }
