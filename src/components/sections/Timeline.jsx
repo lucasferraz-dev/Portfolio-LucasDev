@@ -117,7 +117,11 @@ function TimelineItem({ item, index }) {
   const side = index % 2 === 0 ? styles.left : styles.right;
 
   return (
-    <li ref={itemRef} className={`${styles.item} ${side} ${isVisible ? styles.visible : ''}`}>
+    <li
+      ref={itemRef}
+      className={`${styles.item} ${side} ${isVisible ? styles.visible : ''}`}
+      style={{ '--i': index }}
+    >
       <span data-dot className={`${styles.dot} ${item.ongoing ? styles.dotOngoing : ''}`} aria-hidden="true" />
 
       <article ref={cardRef} className={styles.card}>

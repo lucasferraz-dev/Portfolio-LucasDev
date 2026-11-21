@@ -60,11 +60,25 @@
   50% { box-shadow: 0 0 14px 5px var(--color-accent), 0 0 32px 10px color-mix(in srgb, var(--color-accent) 30%, transparent); }
 }
 
+/*
+ * Entrada: o card desliza vindo do lado em que fica.
+ * No celular a linha fica à esquerda, então todos chegam pela direita.
+ */
 .item {
   @apply relative pl-10 md:pl-0 md:w-1/2;
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transform: translate(48px, 16px);
+  transition: opacity 0.7s ease-out, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (min-width: 768px) {
+  .left {
+    transform: translate(-64px, 16px);
+  }
+
+  .right {
+    transform: translate(64px, 16px);
+  }
 }
 
 .item:not(:first-child) {
@@ -120,6 +134,16 @@
   .dot {
     transition: none;
   }
+
+  .item,
+  .left,
+  .right {
+    transform: none;
+  }
+
+  .visible .card {
+    animation: none;
+  }
 }
 
 .dotOngoing::after {
@@ -151,6 +175,25 @@
   transform-origin: left center;
   transform: rotateY(calc(var(--closed) * -88deg));
   transition: transform 0.25s ease-out, border-color 0.3s;
+}
+
+/*
+ * Flutuação: o card boia de leve depois que aparece. Usa `translate`, que é
+ * separado do `transform`, para não brigar com o giro do livro. O atraso
+ * negativo por --i deixa cada card num ponto diferente do ciclo.
+ */
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+
+.visible .card {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -1.7s);
+}
+
+.visible .card:hover {
+  animation-play-state: paused;
 }
 
 /* sombra de página: o card escurece enquanto está fechado */
