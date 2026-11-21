@@ -14,8 +14,8 @@ const FPS = 30;
 const MAX_DPR = 1.5;
 
 const PALETTE = {
-  dark: { base: [148, 163, 184], accent: [0, 204, 85], maxAlpha: 0.3 },
-  light: { base: [71, 85, 105], accent: [0, 134, 58], maxAlpha: 0.26 },
+  dark: { base: [163, 163, 163], accent: [0, 204, 85], maxAlpha: 0.18 },
+  light: { base: [71, 85, 105], accent: [0, 134, 58], maxAlpha: 0.16 },
 };
 
 function waveAt(col, row, t, mouse) {
