@@ -47,9 +47,11 @@ function LanguageToggle() {
       aria-label={label}
       title={label}
     >
-      <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.langIcon}>
+      <svg key={current.code} viewBox="0 0 24 24" aria-hidden="true" className={styles.langIcon}>
         <circle cx="12" cy="12" r="9" />
-        <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
+        <path d="M3 12h18" />
+        <ellipse className={styles.meridianA} cx="12" cy="12" rx="9" ry="9" />
+        <ellipse className={styles.meridianB} cx="12" cy="12" rx="9" ry="9" />
       </svg>
       <span key={current.code} lang={current.htmlLang} className={styles.langCode}>
         {current.label}

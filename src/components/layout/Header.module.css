@@ -103,14 +103,80 @@
 }
 
 .langIcon {
-  @apply w-[22px] h-[22px] fill-none stroke-current transition-transform duration-500;
+  @apply w-[22px] h-[22px] fill-none stroke-current;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.langButton:hover .langIcon {
-  transform: rotate(180deg);
+/*
+ * Volta ao mundo: o contorno e a linha do equador ficam parados e os dois
+ * meridianos se estreitam e alargam como se o globo girasse no próprio eixo.
+ * Cada meridiano é um círculo achatado no eixo X por cos(ângulo); os dois
+ * ficam a 90° um do outro e dão uma volta inteira (360°) no hover ou no clique.
+ */
+.meridianA,
+.meridianB {
+  transform-origin: 12px 12px;
+  vector-effect: non-scaling-stroke;
+}
+
+.meridianA {
+  transform: scaleX(0.454);
+}
+
+.meridianB {
+  transform: scaleX(-0.891);
+}
+
+.langButton:hover .meridianA,
+.langButton:focus-visible .meridianA {
+  animation: meridianA 1.4s linear;
+}
+
+.langButton:hover .meridianB,
+.langButton:focus-visible .meridianB {
+  animation: meridianB 1.4s linear;
+}
+
+@keyframes meridianA {
+  0% { transform: scaleX(0.454); }
+  6.25% { transform: scaleX(0.078); }
+  12.5% { transform: scaleX(-0.309); }
+  18.75% { transform: scaleX(-0.649); }
+  25% { transform: scaleX(-0.891); }
+  31.25% { transform: scaleX(-0.997); }
+  37.5% { transform: scaleX(-0.951); }
+  43.75% { transform: scaleX(-0.760); }
+  50% { transform: scaleX(-0.454); }
+  56.25% { transform: scaleX(-0.078); }
+  62.5% { transform: scaleX(0.309); }
+  68.75% { transform: scaleX(0.649); }
+  75% { transform: scaleX(0.891); }
+  81.25% { transform: scaleX(0.997); }
+  87.5% { transform: scaleX(0.951); }
+  93.75% { transform: scaleX(0.760); }
+  100% { transform: scaleX(0.454); }
+}
+
+@keyframes meridianB {
+  0% { transform: scaleX(-0.891); }
+  6.25% { transform: scaleX(-0.997); }
+  12.5% { transform: scaleX(-0.951); }
+  18.75% { transform: scaleX(-0.760); }
+  25% { transform: scaleX(-0.454); }
+  31.25% { transform: scaleX(-0.078); }
+  37.5% { transform: scaleX(0.309); }
+  43.75% { transform: scaleX(0.649); }
+  50% { transform: scaleX(0.891); }
+  56.25% { transform: scaleX(0.997); }
+  62.5% { transform: scaleX(0.951); }
+  68.75% { transform: scaleX(0.760); }
+  75% { transform: scaleX(0.454); }
+  81.25% { transform: scaleX(0.078); }
+  87.5% { transform: scaleX(-0.309); }
+  93.75% { transform: scaleX(-0.649); }
+  100% { transform: scaleX(-0.891); }
 }
 
 .langCode {
@@ -130,7 +196,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .langIcon,
+  .meridianA,
+  .meridianB,
   .langCode {
     transition: none;
     animation: none;
