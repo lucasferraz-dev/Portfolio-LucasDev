@@ -5,6 +5,7 @@ import { useLanguage } from '../../i18n/useLanguage';
 import TypedText from '../effects/TypedText';
 import useInView from '../effects/useInView';
 import TerminalWindow from '../common/TerminalWindow';
+import Tux from '../effects/Tux';
 import useTypingProgress, { tokensLength } from '../effects/useTypingProgress';
 
 const EMAIL = 'lucasferrazsantos@hotmail.com';
@@ -279,7 +280,10 @@ export default function Contact() {
         </div>
       </div>
 
-      <ContactShell key={lang} rows={t.contact.ping} />
+      <div className={styles.shellWrap}>
+        <Tux className={styles.tux} />
+        <ContactShell key={lang} rows={t.contact.ping} />
+      </div>
     </section>
   );
 }

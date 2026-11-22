@@ -16,6 +16,8 @@ const TARGETS = [
   '#skills',
   '#journey',
   '#contact',
+  '[data-tour="strip"]',
+  '[data-tour="tux"]',
 ];
 
 const PAD = 8;

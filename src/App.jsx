@@ -7,6 +7,7 @@ import Timeline from './components/sections/Timeline';
 import ScrollHint from './components/layout/ScrollHint';
 import Contact from './components/sections/Contact';
 import AsciiWaves from './components/effects/AsciiWaves';
+import FactStrips from './components/effects/FactStrips';
 import { Analytics } from '@vercel/analytics/react';
 import { useLanguage } from './i18n/useLanguage';
 
@@ -27,6 +28,7 @@ export default function App() {
 
       {/* Ordem pensada para quem avalia: quem sou → o que fiz → como faço */}
       <main id="main" className="relative z-10 pt-20">
+        <FactStrips />
         <Hero />
         <About />
         <Projects />

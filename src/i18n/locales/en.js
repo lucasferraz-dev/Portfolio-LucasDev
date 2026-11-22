@@ -26,6 +26,26 @@ export default {
     help: 'How to use this portfolio',
   },
 
+  fun: {
+    tuxLabel: 'Poke Tux',
+    tuxLines: [
+      'Works on my machine.',
+      'I use Arch, btw.',
+      'rm -rf / ? No way.',
+      'Have you tried turning it off and on again?',
+      'sudo apt install coffee',
+      'Hiring Lucas is a simple command.',
+    ],
+    strips: [
+      'top 10 overall at the Localiza&Co hackathon, reaching top 4 midday',
+      'turned ISO 9001 and ISO 37001 requirements into system rules',
+      'Skinomics forecasts Steam prices with an 8.1% MAPE',
+      'Save Point: a game library with a REST API, a database and React',
+      'software development intern at Pilgrims since Nov/2026',
+      'native PT · technical EN · basic ES, and a terminal always open',
+    ],
+  },
+
   tour: {
     next: 'Next',
     prev: 'Back',
@@ -42,6 +62,8 @@ export default {
       { title: 'Skills', text: 'Click a technology to see which projects and experiences I used it in.' },
       { title: 'Journey', text: 'My education, experience and projects in order, from the beginning until today.' },
       { title: 'Contact', text: 'Copy my email or reach me on LinkedIn, GitHub or WhatsApp.' },
+      { title: 'Draggable tapes', text: 'These little tapes around the site hold fun facts about me. Drag and drop them anywhere; double-click puts one back.' },
+      { title: 'Tux', text: 'Click the penguin on top of the terminal to hear what he has to say. The terminal also takes commands: type help.' },
     ],
   },
 

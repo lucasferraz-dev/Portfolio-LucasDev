@@ -1,0 +1,74 @@
+@reference "../../index.css";
+
+/* camada do tamanho da página; só as fitas recebem o ponteiro */
+.layer {
+  @apply absolute inset-0 z-20 pointer-events-none overflow-x-clip;
+}
+
+/*
+ * Fita de código: mono, levemente torta, meio apagada até alguém passar o mouse.
+ * --dx/--dy vêm do arrasto e --lean inclina na direção do movimento.
+ */
+.strip {
+  @apply absolute flex items-center gap-2 max-w-[260px] pl-2 pr-3 py-1.5 rounded-md border border-slate-800
+         bg-surface/90 font-mono text-[11px] leading-snug text-slate-400 shadow-lg pointer-events-auto
+         select-none cursor-grab;
+  touch-action: none;
+  opacity: 0.55;
+  transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(calc(var(--tilt) + var(--lean, 0deg)));
+  transition: opacity 0.3s, box-shadow 0.3s, border-color 0.3s, scale 0.2s;
+  animation: stripIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.6s + var(--i) * 0.12s) backwards;
+  backdrop-filter: blur(4px);
+}
+
+@keyframes stripIn {
+  from { opacity: 0; scale: 0.6; }
+}
+
+.strip:hover {
+  @apply border-slate-700 text-slate-200;
+  opacity: 1;
+}
+
+.lifted {
+  @apply border-accent/60 text-slate-100 cursor-grabbing;
+  opacity: 1;
+  scale: 1.06;
+  box-shadow: 0 18px 40px -10px rgb(0 0 0 / 0.7), 0 0 0 1px color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+/* volta ao lugar original com dois cliques */
+.returning {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+}
+
+/* pontinhos de pegar */
+.grip {
+  @apply w-1.5 h-3 shrink-0 opacity-50;
+  background-image: radial-gradient(currentColor 1px, transparent 1.2px);
+  background-size: 3px 3px;
+}
+
+.slashes {
+  @apply text-accent shrink-0;
+}
+
+.text {
+  @apply min-w-0;
+}
+
+@media (max-width: 767px) {
+  .strip {
+    @apply max-w-[180px] text-[10px];
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strip {
+    animation: none;
+  }
+
+  .returning {
+    transition: none;
+  }
+}

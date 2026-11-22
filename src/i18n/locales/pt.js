@@ -26,6 +26,26 @@ export default {
     help: 'Como usar o portfólio',
   },
 
+  fun: {
+    tuxLabel: 'Cutucar o Tux',
+    tuxLines: [
+      'Funciona na minha máquina.',
+      'Eu uso Arch, aliás.',
+      'rm -rf / ? Nem pensar.',
+      'Já tentou desligar e ligar de novo?',
+      'sudo apt install café',
+      'Contratar o Lucas é um comando simples.',
+    ],
+    strips: [
+      'top 10 geral no hackathon da Localiza&Co, chegando ao top 4 no meio do dia',
+      'transformei os requisitos da ISO 9001 e da ISO 37001 em regras de sistema',
+      'o Skinomics prevê preços da Steam com MAPE de 8,1%',
+      'Save Point: biblioteca de jogos com API REST, banco de dados e React',
+      'estagiário de desenvolvimento na Pilgrims desde nov/2026',
+      'PT nativo · EN técnico · ES básico, e um terminal sempre aberto',
+    ],
+  },
+
   tour: {
     next: 'Próximo',
     prev: 'Anterior',
@@ -42,6 +62,8 @@ export default {
       { title: 'Skills', text: 'Clique em uma tecnologia para ver em quais projetos e experiências eu usei.' },
       { title: 'Trajetória', text: 'Minha formação, experiências e projetos em ordem, do começo até hoje.' },
       { title: 'Contato', text: 'Copie meu e-mail ou fale comigo pelo LinkedIn, GitHub ou WhatsApp.' },
+      { title: 'Fitas arrastáveis', text: 'Essas fitinhas espalhadas pelo site trazem curiosidades sobre mim. Arraste e solte onde quiser; dois cliques devolvem ao lugar.' },
+      { title: 'Tux', text: 'Clique no pinguim em cima do terminal para ele soltar uma frase. O terminal também aceita comandos: digite help.' },
     ],
   },
 
