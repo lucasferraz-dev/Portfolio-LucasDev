@@ -165,6 +165,7 @@ function ValueCard({ value, index }) {
     <li
       ref={tilt.ref}
       className={styles.valueCard}
+      data-sticky={`value-${index}`}
       style={{ '--delay': `${index * 110}ms` }}
       onPointerMove={tilt.onPointerMove}
       onPointerLeave={tilt.onPointerLeave}

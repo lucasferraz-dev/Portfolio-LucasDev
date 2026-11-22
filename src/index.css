@@ -116,3 +116,10 @@ html.tv-cursor-hidden,
 html.tv-cursor-hidden * {
   cursor: none !important;
 }
+
+/* card que vai receber a figurinha enquanto ela é arrastada por cima dele */
+[data-sticker-target] {
+  outline: 2px dashed var(--color-accent);
+  outline-offset: 6px;
+  transition: outline-offset 0.2s;
+}

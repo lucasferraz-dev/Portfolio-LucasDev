@@ -11,7 +11,7 @@ const TerminalWindow = forwardRef(function TerminalWindow(
   ref
 ) {
   return (
-    <div ref={ref} className={`${styles.window} ${className}`} {...rest}>
+    <div ref={ref} className={`${styles.window} ${className}`} data-sticky={`terminal-${title}`} {...rest}>
       <div className={styles.titleBar}>
         <span className={styles.lights} aria-hidden="true">
           <span className={styles.light} />

@@ -59,6 +59,10 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
   const drag = useRef(null);
   const frame = useRef(0);
   const last = useRef(0);
+  // card em que a fita está colada (data-sticky) e a distância do centro dela ao centro dele
+  const host = useRef(saved.host ? { id: saved.host, ox: saved.ox, oy: saved.oy } : null);
+  const follow = useRef(0);
+  const target = useRef(null);
 
   const apply = () => {
     const { x, y, a } = body.current;
@@ -97,6 +101,50 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     return { hitX: nx !== cx, hitY: ny !== cy };
   };
 
+  const stripCenter = () => {
+    const r = ref.current.getBoundingClientRect();
+    return [r.left + r.width / 2, r.top + r.height / 2];
+  };
+
+  // card “colável” embaixo do centro da fita, se houver
+  const findHost = () => {
+    const [cx, cy] = stripCenter();
+    for (const el of document.elementsFromPoint(cx, cy)) {
+      if (ref.current.contains(el)) continue;
+      const found = el.closest('[data-sticky]');
+      if (found) return found;
+    }
+    return null;
+  };
+
+  // contorno no card enquanto a fita está sendo arrastada por cima dele
+  const highlight = (el) => {
+    if (target.current === el) return;
+    target.current?.removeAttribute('data-sticker-target');
+    el?.setAttribute('data-sticker-target', '');
+    target.current = el;
+  };
+
+  // colada num card: a cada quadro a fita vai para onde o card estiver
+  const startFollowing = () => {
+    cancelAnimationFrame(follow.current);
+    const tick = () => {
+      follow.current = requestAnimationFrame(tick);
+      const h = host.current;
+      if (!h || drag.current) return;
+      const card = document.querySelector(`[data-sticky="${CSS.escape(h.id)}"]`);
+      const r = card?.getBoundingClientRect();
+      if (!r || !r.width) return;
+      const layer = layerRef.current.getBoundingClientRect();
+      measureBase();
+      const b = body.current;
+      b.x = r.left + r.width / 2 - layer.left + h.ox - b.baseX;
+      b.y = r.top + r.height / 2 - layer.top + h.oy - b.baseY;
+      apply();
+    };
+    tick();
+  };
+
   useLayoutEffect(() => {
     Object.assign(body.current, { x: saved.x, y: saved.y, a: saved.a ?? 0 });
     apply();
@@ -106,21 +154,42 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     if (hitX || hitY) {
       apply();
       const { x, y, a } = body.current;
-      onSettle(index, { x, y, a });
+      onSettle(index, { x, y, a, ...(host.current && { host: host.current.id, ox: host.current.ox, oy: host.current.oy }) });
     }
+    if (host.current) startFollowing();
     // só deve rodar quando a posição salva muda, não a cada render
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saved.x, saved.y, saved.a]);
 
-  useEffect(() => () => cancelAnimationFrame(frame.current), []);
+  useEffect(
+    () => () => {
+      cancelAnimationFrame(frame.current);
+      cancelAnimationFrame(follow.current);
+      target.current?.removeAttribute('data-sticker-target');
+    },
+    []
+  );
 
   const settle = () => {
     const el = ref.current;
     el.classList.remove(styles.lifted, styles.stuck);
     void el.offsetWidth; // reinicia a animação de “colar”
     el.classList.add(styles.stuck);
+    highlight(null);
+
+    // se caiu em cima de um card, cola nele e passa a acompanhá-lo
+    const card = findHost();
+    if (card) {
+      const r = card.getBoundingClientRect();
+      const [cx, cy] = stripCenter();
+      host.current = { id: card.dataset.sticky, ox: cx - (r.left + r.width / 2), oy: cy - (r.top + r.height / 2) };
+      startFollowing();
+    } else {
+      host.current = null;
+    }
+
     const { x, y, a } = body.current;
-    onSettle(index, { x, y, a });
+    onSettle(index, { x, y, a, ...(host.current && { host: host.current.id, ox: host.current.ox, oy: host.current.oy }) });
   };
 
   const loop = (now) => {
@@ -151,6 +220,7 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
       b.x = d.px + d.rx - b.baseX;
       b.y = d.py + d.ry - b.baseY;
       keepInside();
+      highlight(findHost());
       // aceleração do ponteiro neste quadro; sem eventos novos, a velocidade some aos poucos
       d.ax = 0;
       d.ay = 0;
@@ -186,6 +256,8 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
 
   const onPointerDown = (event) => {
     cancelAnimationFrame(frame.current);
+    cancelAnimationFrame(follow.current);
+    host.current = null;
     event.currentTarget.setPointerCapture(event.pointerId);
     measureBase();
     const b = body.current;
@@ -263,6 +335,9 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
 
   const reset = () => {
     cancelAnimationFrame(frame.current);
+    cancelAnimationFrame(follow.current);
+    host.current = null;
+    highlight(null);
     drag.current = null;
     const el = ref.current;
     el.classList.add(styles.returning);

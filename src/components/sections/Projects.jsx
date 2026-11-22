@@ -87,7 +87,7 @@ function ProjectCard({ project, onOpenProcess }) {
   const cover = project.images[0];
 
   return (
-    <article id={`project-${project.id}`} className={styles.card}>
+    <article id={`project-${project.id}`} className={styles.card} data-sticky={`project-${project.id}`}>
       <button
         type="button"
         className={styles.cardButton}

@@ -124,7 +124,7 @@ function TimelineItem({ item, index }) {
     >
       <span data-dot className={`${styles.dot} ${item.ongoing ? styles.dotOngoing : ''}`} aria-hidden="true" />
 
-      <article ref={cardRef} className={styles.card}>
+      <article ref={cardRef} className={styles.card} data-sticky={`journey-${item.id}`}>
         <div className={styles.cardTop}>
           <div className={styles.badges}>
             <span className={styles.typeBadge}>{t.timeline.types[item.type]}</span>
