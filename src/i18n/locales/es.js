@@ -335,8 +335,8 @@ export default {
   },
 
   contact: {
-    title: '¿Construimos algo juntos?',
-    subtitle: 'Abierto a oportunidades de pasantía, proyectos y buenas conversaciones sobre tecnología.',
+    title: '¿Tienes un problema que resolver?',
+    subtitle: 'Escríbeme. Me gusta entender el proceso antes de escribir la primera línea de código.',
     copyEmail: 'Copiar correo',
     copied: '¡Correo copiado!',
     ping: [
