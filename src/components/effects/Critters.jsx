@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { siDocker, siGithub, siPostgresql } from 'simple-icons';
+import DockerWhale from './DockerWhale';
 import styles from './Critters.module.css';
 import { MYSQL_DOLPHIN, WIKI_FRONT, WIKI_WINGS } from '../sections/skillShapes';
 
@@ -8,9 +8,9 @@ import { MYSQL_DOLPHIN, WIKI_FRONT, WIKI_WINGS } from '../sections/skillShapes';
  * Easter egg: cópias dos mascotes que são bichos (das skills) espalhadas pelo
  * site. Eles moram em lugares da página (não ficam presos na tela):
  * a baleia do Docker atravessa o espaço entre duas seções nadando, a borboleta
- * do Wiki.js voa por uma região e pousa nos cards, o Octocat e o elefante do
- * PostgreSQL ficam pendurados em cards dos projetos como chaveiros e o
- * golfinho do MySQL salta pela linha da Trajetória quando ela está na tela.
+ * do Wiki.js voa por uma região e pousa nos cards e o golfinho do MySQL salta
+ * pela linha da Trajetória quando ela está na tela. (Os chaveiros de tecnologia
+ * ficam nos próprios cards dos projetos, em Keychains.)
  * Não aparecem no celular nem para quem prefere menos movimento.
  */
 
@@ -36,12 +36,9 @@ function pagePos(el, main) {
   return { x: r.left - m.left, y: r.top - m.top, w: r.width, h: r.height };
 }
 
-/* ---------- Baleia do Docker: nada entre as seções, batendo a cauda ---------- */
-
-const WHALE_TAIL = [17.6, 5, 6.9, 6.4];
+/* ---------- Baleia do Docker: nada entre as seções (desenho e animação em DockerWhale) ---------- */
 
 function Whale({ main }) {
-  const id = useId().replace(/:/g, '');
   const ref = useRef(null);
   const [run, setRun] = useState(0);
 
@@ -72,8 +69,6 @@ function Whale({ main }) {
     };
   }, [run, main]);
 
-  const rest = `M-6 -6H30V30H-6Z M${WHALE_TAIL[0]} ${WHALE_TAIL[1]}h${WHALE_TAIL[2]}v${WHALE_TAIL[3]}h${-WHALE_TAIL[2]}Z`;
-
   return (
     <div ref={ref} className={styles.whale}>
       <div className={styles.whaleFace}>
@@ -84,22 +79,7 @@ function Whale({ main }) {
             <i />
             <i />
           </span>
-          <svg viewBox="0 0 24 24" className={styles.whaleIcon} aria-hidden="true">
-            <defs>
-              <clipPath id={`${id}-rest`}>
-                <path clipRule="evenodd" d={rest} />
-              </clipPath>
-              <clipPath id={`${id}-tail`}>
-                <rect x={WHALE_TAIL[0]} y={WHALE_TAIL[1]} width={WHALE_TAIL[2]} height={WHALE_TAIL[3]} />
-              </clipPath>
-            </defs>
-            <g className={styles.whaleBody}>
-              <path d={siDocker.path} clipPath={`url(#${id}-rest)`} />
-            </g>
-            <g className={styles.whaleTail}>
-              <path d={siDocker.path} clipPath={`url(#${id}-tail)`} />
-            </g>
-          </svg>
+          <DockerWhale />
         </div>
       </div>
     </div>
@@ -241,35 +221,6 @@ function Butterfly({ main }) {
   );
 }
 
-/* ---------- Chaveiros pendurados nos cards dos projetos (Octocat e elefante) ---------- */
-
-function Keychain({ selector, side, icon, color, label, badge = false }) {
-  const card = useTarget(selector);
-  const [shakes, setShakes] = useState(0);
-  if (!card) return null;
-
-  return createPortal(
-    <div className={`${styles.keychain} ${side === 'right' ? styles.keychainRight : ''}`}>
-      <span className={styles.ring} aria-hidden="true" />
-      <span className={styles.chain} aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
-      <button type="button" className={styles.charm} onClick={() => setShakes((n) => n + 1)} aria-label={label} title={label}>
-        <span key={shakes} className={`${styles.charmSwing} ${shakes ? styles.jingle : ''}`}>
-          <span className={`${styles.charmFace} ${badge ? styles.badge : ''}`}>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d={icon.path} fill={color} />
-            </svg>
-          </span>
-        </span>
-      </button>
-    </div>,
-    card
-  );
-}
-
 /* ---------- Golfinho do MySQL: salta pela linha da Trajetória quando ela está na tela ---------- */
 
 function Dolphin() {
@@ -359,15 +310,6 @@ export default function Critters() {
         </div>,
         main
       )}
-      <Keychain selector='[data-sticky="project-ROW_03"]' side="left" icon={siGithub} color="var(--color-white)" label="Octocat" />
-      <Keychain
-        selector='[data-sticky="project-ROW_01"]'
-        side="right"
-        icon={siPostgresql}
-        color="#4169E1"
-        label="PostgreSQL"
-        badge
-      />
       <Dolphin />
     </>
   );
