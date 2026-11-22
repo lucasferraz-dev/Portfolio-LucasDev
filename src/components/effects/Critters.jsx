@@ -481,44 +481,82 @@ function Clawd({ main }) {
   );
 }
 
-/* ---------- kitty: o gato espia por trás da borda de um card, olha e se esconde ---------- */
+/* ---------- kitty: esconde-esconde atrás dos cards ---------- */
 
+const KITTY_SEEN_MS = 5800; // quanto tempo ele fica depois que alguém o encontra
+const KITTY_HIDE_MS = 450; // tempo para se abaixar antes de trocar de card
+
+/*
+ * O gato está sempre espiando por trás da borda de algum card. Enquanto ninguém
+ * o encontra, ele fica lá. Quando ele aparece na tela, fica uns segundos (dá
+ * tempo de clicar), depois se abaixa e vai se esconder atrás de outro card, de
+ * preferência um que não esteja na tela. Ao ser clicado, mia, fecha os olhinhos
+ * feliz e vai para outro esconderijo.
+ */
 function Kitty({ main }) {
   const ref = useRef(null);
   const [spot, setSpot] = useState(null);
-  const [meow, setMeow] = useState(false);
-  const last = useRef(null);
+  const [phase, setPhase] = useState('peek'); // peek | happy | hide
+
+  // escolhe um esconderijo; se der, um card fora da tela (para ser achado depois)
+  const relocate = useRef(() => {});
+  relocate.current = (avoid) => {
+    const cards = cardsIn(main, 220).filter(({ card }) => card !== avoid);
+    if (!cards.length) return;
+    const top = -main.getBoundingClientRect().top;
+    const offscreen = cards.filter(({ p }) => p.y < top - 40 || p.y > top + window.innerHeight + 40);
+    const pool = offscreen.length ? offscreen : cards;
+    const { card } = pool[Math.floor(Math.random() * pool.length)];
+    setSpot({ card, offset: rand(0.15, 0.85), id: Math.random() });
+    setPhase('peek');
+  };
 
   useEffect(() => {
-    let timer = 0;
-    const next = () => {
-      // escolhe um card perto de onde ele apareceu da última vez (ou qualquer um)
-      const cards = cardsIn(main, 220).filter(
-        ({ p }) => !last.current || Math.abs(p.y - last.current) < 1600
-      );
-      if (!cards.length) return;
-      const { card, p } = cards[Math.floor(Math.random() * cards.length)];
-      last.current = p.y;
-      setMeow(false);
-      setSpot({ card, offset: rand(0.15, 0.85), id: Math.random() });
-      timer = setTimeout(next, rand(9000, 15000));
-    };
-    timer = setTimeout(next, 1500);
+    const timer = setTimeout(() => relocate.current(null), 1200);
     return () => clearTimeout(timer);
   }, [main]);
 
-  // acompanha o card (ele pode estar flutuando ou abrindo como livro)
+  // acompanha o card e percebe quando alguém o encontrou
   useEffect(() => {
     if (!spot) return undefined;
     let frame = 0;
-    const tick = () => {
+    let seenAt = 0;
+    let leaving = 0;
+
+    const tick = (now) => {
       frame = requestAnimationFrame(tick);
       const p = pagePos(spot.card, main);
+      if (!p.w) {
+        relocate.current(spot.card);
+        return;
+      }
       if (ref.current) ref.current.style.transform = `translate(${p.x + p.w * spot.offset}px, ${p.y}px)`;
+
+      // está na tela? (a borda do card entre o topo e o pé da janela)
+      const screenY = p.y + main.getBoundingClientRect().top;
+      const visible = screenY > 70 && screenY < window.innerHeight - 20;
+      if (visible && !seenAt) seenAt = now;
+      if (seenAt && !leaving && now - seenAt > KITTY_SEEN_MS) {
+        leaving = now;
+        setPhase('hide');
+      }
+      if (leaving && now - leaving > KITTY_HIDE_MS) {
+        leaving = 0;
+        relocate.current(spot.card);
+      }
     };
-    tick();
+
+    frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
   }, [spot, main]);
+
+  const poke = () => {
+    if (phase !== 'peek') return;
+    setPhase('happy');
+    const card = spot.card;
+    setTimeout(() => setPhase('hide'), 1300);
+    setTimeout(() => relocate.current(card), 1300 + KITTY_HIDE_MS);
+  };
 
   if (!spot) return null;
 
@@ -529,8 +567,8 @@ function Kitty({ main }) {
         <button
           key={spot.id}
           type="button"
-          className={`${styles.kittyPeek} ${meow ? styles.kittyHide : ''}`}
-          onClick={() => setMeow(true)}
+          className={`${styles.kittyPeek} ${phase === 'hide' ? styles.kittyHide : ''} ${phase === 'happy' ? styles.kittyHappy : ''}`}
+          onClick={poke}
           aria-label="kitty"
           title="kitty"
         >
@@ -541,10 +579,16 @@ function Kitty({ main }) {
                 <path key={d} d={d} />
               ))}
             </g>
+            {/* olhinhos fechados de feliz (^ ^): tampa os olhos e desenha o arquinho por cima */}
+            <g className={styles.kittyJoy}>
+              <ellipse cx="9.5" cy="7.6" rx="1.05" ry="1.25" />
+              <ellipse cx="14.4" cy="7.6" rx="1.05" ry="1.25" />
+              <path d="M8.7 8.1l.8-.8.8.8M13.6 8.1l.8-.8.8.8" />
+            </g>
           </svg>
         </button>
       </div>
-      {meow && <span className={styles.meow}>miau</span>}
+      {phase === 'happy' && <span className={styles.meow}>miau</span>}
     </div>
   );
 }

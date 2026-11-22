@@ -241,10 +241,16 @@
   @apply absolute bottom-0 -left-7 w-14 h-9 overflow-hidden;
 }
 
+/* sobe por trás da borda e fica espiando */
 .kittyPeek {
   @apply absolute left-0 bottom-0 w-14 h-[30px] p-0 border-0 bg-transparent cursor-pointer pointer-events-auto;
-  translate: 0 100%;
-  animation: kittyPeek 6.5s ease-in-out forwards;
+  translate: 0 6%;
+  animation: kittyRise 0.7s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+}
+
+@keyframes kittyRise {
+  from { translate: 0 100%; }
+  to { translate: 0 6%; }
 }
 
 .kittyPeek svg {
@@ -253,17 +259,13 @@
   filter: drop-shadow(0 0 1px rgb(255 255 255 / 0.4));
 }
 
-/* sobe devagar, fica espiando e desce */
-@keyframes kittyPeek {
-  0% { translate: 0 100%; }
-  10% { translate: 0 30%; }
-  16%, 82% { translate: 0 6%; }
-  92%, 100% { translate: 0 100%; }
+.kittyPeek:hover {
+  translate: 0 0;
 }
 
-/* clicou: some rapidinho */
+/* abaixa e some atrás do card */
 .kittyHide {
-  animation: kittyHide 0.35s ease-in forwards;
+  animation: kittyHide 0.45s ease-in forwards;
 }
 
 @keyframes kittyHide {
@@ -271,30 +273,66 @@
   to { translate: 0 100%; }
 }
 
-/* olha para um lado, para o outro e pisca */
+/* fica olhando para os lados e piscando enquanto espia */
 .kittyEyes {
   transform-box: fill-box;
   transform-origin: center;
-  animation: kittyLook 6.5s ease-in-out forwards;
+  animation: kittyLook 4.8s ease-in-out infinite;
 }
 
 @keyframes kittyLook {
-  0%, 24% { transform: translateX(0) scaleY(1); }
-  32%, 44% { transform: translateX(-0.9px) scaleY(1); }
-  52%, 62% { transform: translateX(0.9px) scaleY(1); }
+  0%, 18% { transform: translateX(0) scaleY(1); }
+  26%, 40% { transform: translateX(-0.9px) scaleY(1); }
+  48%, 60% { transform: translateX(0.9px) scaleY(1); }
   68% { transform: translateX(0) scaleY(1); }
-  70% { transform: translateX(0) scaleY(0.1); }
-  72%, 100% { transform: translateX(0) scaleY(1); }
+  71% { transform: translateX(0) scaleY(0.1); }
+  74%, 100% { transform: translateX(0) scaleY(1); }
+}
+
+/* clicado: fecha os olhinhos feliz (^ ^) e dá uma balançadinha */
+.kittyJoy {
+  opacity: 0;
+}
+
+.kittyJoy ellipse {
+  fill: var(--color-white);
+}
+
+.kittyJoy path {
+  fill: none;
+  stroke: var(--color-page);
+  stroke-width: 0.55;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.kittyHappy .kittyEyes {
+  opacity: 0;
+}
+
+.kittyHappy .kittyJoy {
+  opacity: 1;
+}
+
+.kittyHappy svg {
+  animation: kittyWiggle 0.5s ease-in-out 2;
+  transform-origin: 50% 100%;
+}
+
+@keyframes kittyWiggle {
+  0%, 100% { rotate: 0deg; }
+  25% { rotate: -6deg; }
+  75% { rotate: 6deg; }
 }
 
 .meow {
   @apply absolute bottom-10 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md border border-slate-800 bg-surface
          font-mono text-[11px] text-slate-200 shadow-lg;
-  animation: meow 1.2s ease-out forwards;
+  animation: meow 1.3s ease-out forwards;
 }
 
 @keyframes meow {
   0% { opacity: 0; translate: 0 6px; }
-  20%, 70% { opacity: 1; translate: 0 0; }
+  20%, 75% { opacity: 1; translate: 0 0; }
   100% { opacity: 0; translate: 0 -6px; }
 }
