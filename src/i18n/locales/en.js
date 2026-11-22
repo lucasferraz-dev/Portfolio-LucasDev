@@ -10,17 +10,6 @@ export default {
   },
 
   header: {
-    nav: {
-      about: 'About',
-      projects: 'Projects',
-      skills: 'Skills',
-      journey: 'Journey',
-      contact: 'Contact',
-    },
-    mainNav: 'Main navigation',
-    mobileNav: 'Mobile navigation',
-    openMenu: 'Open menu',
-    closeMenu: 'Close menu',
     language: 'Language',
     lightMode: 'Switch to light mode',
     darkMode: 'Switch to dark mode',

@@ -3,8 +3,6 @@ import styles from './Header.module.css';
 import { LANGUAGES, useLanguage } from '../../i18n/useLanguage';
 import { useTheme } from '../../theme/useTheme';
 
-const NAV_SECTIONS = ['about', 'projects', 'skills', 'journey', 'contact'];
-
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
@@ -53,22 +51,13 @@ function LanguageToggle() {
 }
 
 export default function Header() {
-  const { t } = useLanguage();
-  const NAV_LINKS = NAV_SECTIONS.map((id) => ({ href: `#${id}`, label: t.header.nav[id] }));
-
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [isMenuOpen]);
 
   return (
     <header className={`${styles.headerContainer} ${isScrolled ? styles.scrolled : ''}`}>
@@ -79,47 +68,11 @@ export default function Header() {
           <span className={styles.logoSuffix}> /&gt;</span>
         </a>
 
-        <nav className={styles.navbar} aria-label={t.header.mainNav}>
-          {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href} className={styles.navLink}>
-              <span className={styles.linkLine}>//</span> {link.label}
-            </a>
-          ))}
-        </nav>
-
         <div className={styles.actions}>
           <LanguageToggle />
           <ThemeToggle />
-
-          <button
-            type="button"
-            className={styles.menuButton}
-            onClick={() => setIsMenuOpen((prev) => !prev)}
-            aria-expanded={isMenuOpen}
-            aria-controls="mobile-menu"
-            aria-label={isMenuOpen ? t.header.closeMenu : t.header.openMenu}
-          >
-            <span className={`${styles.menuBar} ${isMenuOpen ? styles.menuBarTopOpen : ''}`} />
-            <span className={`${styles.menuBar} ${isMenuOpen ? styles.menuBarMidOpen : ''}`} />
-            <span className={`${styles.menuBar} ${isMenuOpen ? styles.menuBarBottomOpen : ''}`} />
-          </button>
         </div>
       </div>
-
-      {isMenuOpen && (
-        <nav id="mobile-menu" className={styles.mobileMenu} aria-label={t.header.mobileNav}>
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className={styles.mobileLink}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <span className={styles.linkLine}>//</span> {link.label}
-            </a>
-          ))}
-        </nav>
-      )}
     </header>
   );
 }

@@ -28,10 +28,6 @@
   @apply opacity-60;
 }
 
-.navbar {
-  @apply hidden xl:flex items-center gap-8 2xl:gap-14 font-mono text-lg 2xl:text-xl;
-}
-
 .actions {
   @apply flex items-center gap-2.5 shrink-0;
 }
@@ -94,60 +90,4 @@
     transition: none;
     animation: none;
   }
-}
-
-.navLink {
-  @apply text-slate-400 font-bold tracking-wide transition-colors duration-200 flex items-center gap-1.5;
-}
-
-.navLink:hover {
-  @apply text-white;
-}
-
-.linkLine {
-  @apply text-slate-700 font-normal transition-colors duration-200;
-}
-
-.navLink:hover .linkLine {
-  @apply text-accent;
-}
-
-.menuButton {
-  @apply xl:hidden flex flex-col justify-center gap-1.5 w-12 h-12 px-3.5 rounded-full
-         bg-transparent border border-slate-900 cursor-pointer transition-colors duration-200;
-}
-
-.menuButton:hover {
-  @apply border-accent/40;
-}
-
-.menuBar {
-  @apply block w-full h-0.5 bg-slate-300 rounded-full transition-all duration-200 origin-center;
-}
-
-.menuBarTopOpen {
-  transform: translateY(8px) rotate(45deg);
-}
-
-.menuBarMidOpen {
-  @apply opacity-0;
-}
-
-.menuBarBottomOpen {
-  transform: translateY(-8px) rotate(-45deg);
-}
-
-.mobileMenu {
-  @apply xl:hidden flex flex-col gap-1 px-6 pb-8 pt-2
-         bg-page/98 border-t border-slate-900/80;
-}
-
-.mobileLink {
-  @apply font-mono text-lg font-bold text-slate-300 py-3.5 px-2 rounded-lg
-         border-b border-slate-900/60 flex items-center gap-2 transition-colors duration-200;
-}
-
-.mobileLink:hover,
-.mobileLink:focus-visible {
-  @apply text-accent;
 }
