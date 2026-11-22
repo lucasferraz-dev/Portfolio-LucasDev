@@ -35,14 +35,6 @@ export default function App() {
         <Contact />
       </main>
 
-      <footer className="relative z-10 px-6 md:px-16 lg:px-24 py-10 border-t border-slate-900/60 flex flex-col md:flex-row gap-3 items-center justify-between">
-        <span className="font-mono text-xs tracking-widest uppercase text-slate-600">
-          © {new Date().getFullYear()} Lucas Ferraz dos Santos
-        </span>
-        <span className="font-mono text-xs tracking-widest uppercase text-slate-700">
-          Built with React & curiosity.
-        </span>
-      </footer>
 
       <Analytics />
     </div>
