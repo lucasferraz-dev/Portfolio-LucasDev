@@ -37,16 +37,19 @@
   @apply w-1 border-x-0;
 }
 
-/* plaquinha de metal com o logo; balança um pouco atrasada (--lag) */
+/* medalhão redondo de metal escuro com aro prateado; balança um pouco atrasado (--lag) */
 .charm {
-  @apply flex items-center justify-center w-11 h-11 -mt-0.5 p-1.5 rounded-xl border-2 pointer-events-auto
+  @apply flex items-center justify-center w-11 h-11 -mt-0.5 p-2 rounded-full border-2 pointer-events-auto
          cursor-grab select-none;
   touch-action: none;
   transform-origin: 50% 0;
   rotate: var(--lag, 0rad);
-  border-color: #b8bcc4;
-  background: linear-gradient(160deg, #f4f5f7, #d6d9de);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8), 0 5px 8px rgb(0 0 0 / 0.45);
+  border-color: #a9aeb7;
+  background: radial-gradient(circle at 35% 30%, #3a3c42, #17181b 70%);
+  box-shadow:
+    inset 0 0 0 1.5px rgb(0 0 0 / 0.5),
+    inset 0 1px 1px rgb(255 255 255 / 0.25),
+    0 5px 8px rgb(0 0 0 / 0.5);
   transition: scale 0.15s;
 }
 
