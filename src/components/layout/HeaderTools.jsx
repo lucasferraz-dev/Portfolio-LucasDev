@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Header.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
@@ -49,49 +49,155 @@ export function FullscreenToggle() {
 
 /* seções que o modo TV passa, em ordem; null é o topo da página */
 const TV_SLIDES = [null, 'about', 'projects', 'skills', 'journey', 'contact'];
-const SLIDE_MS = 8000;
+const SPEED = 80; // pixels por segundo descendo dentro de uma seção
+const HOLD_START = 2200; // tempo parado no começo de cada seção
+const HOLD_END = 1500; // tempo parado no fim, antes de ir para a próxima
+const TRAVEL = 900; // tempo da rolagem suave até o começo de uma seção
+
+/* onde cada seção começa e até onde dá para descer nela (fim da seção no pé da tela) */
+function slideBounds(index) {
+  const absTop = (id) => {
+    const el = id && document.getElementById(id);
+    return el ? el.getBoundingClientRect().top + window.scrollY : null;
+  };
+  const start = index === 0 ? 0 : absTop(TV_SLIDES[index]) ?? 0;
+  const nextTop = index + 1 < TV_SLIDES.length ? absTop(TV_SLIDES[index + 1]) : null;
+  const bottom = nextTop ?? document.documentElement.scrollHeight;
+  return { start, end: Math.max(start, bottom - window.innerHeight) };
+}
+
+/* qual seção está no topo da tela agora (para continuar de onde a pessoa parou) */
+function currentSlide() {
+  let found = 0;
+  TV_SLIDES.forEach((_, i) => {
+    if (slideBounds(i).start <= window.scrollY + 10) found = i;
+  });
+  return found;
+}
 
 /*
- * Modo TV: rola sozinho de seção em seção, como slides, e volta ao começo.
- * Para quando a pessoa clica de novo, aperta Esc ou rola a página por conta própria.
+ * Modo TV: apresenta o portfólio em tela cheia. Em cada seção ele para um pouco
+ * no título, desce devagar até o fim dela e passa para a próxima, voltando ao
+ * começo no final. Dá para pausar, voltar e avançar seção e sair quando quiser.
+ * Se a pessoa rolar a página por conta própria, ele pausa; ao continuar, segue
+ * de onde ela parou.
  */
 export function TvModeToggle() {
   const { t } = useLanguage();
   const [active, setActive] = useState(false);
+  const [playing, setPlaying] = useState(true);
   const [slide, setSlide] = useState(0);
+  const slideRef = useRef(0);
+  const phase = useRef({ name: 'hold', until: 0 });
+  const progressRef = useRef(null);
+  const enteredFullscreen = useRef(false);
 
+  const goTo = useCallback((index) => {
+    const next = (index + TV_SLIDES.length) % TV_SLIDES.length;
+    slideRef.current = next;
+    setSlide(next);
+    window.scrollTo({ top: slideBounds(next).start, behavior: 'smooth' });
+    phase.current = { name: 'hold', until: performance.now() + TRAVEL + HOLD_START };
+  }, []);
+
+  const stop = useCallback(() => {
+    setActive(false);
+    if (enteredFullscreen.current && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    enteredFullscreen.current = false;
+  }, []);
+
+  const start = () => {
+    setPlaying(true);
+    setActive(true);
+    goTo(0);
+    if (document.fullscreenEnabled && !document.fullscreenElement) {
+      document.documentElement
+        .requestFullscreen()
+        .then(() => { enteredFullscreen.current = true; })
+        .catch(() => {});
+    }
+  };
+
+  // o laço que desce a página enquanto está tocando
+  useEffect(() => {
+    if (!active || !playing) return undefined;
+
+    let frame = 0;
+    let last = performance.now();
+
+    const tick = (now) => {
+      frame = requestAnimationFrame(tick);
+      const dt = now - last;
+      last = now;
+      const { start: top, end } = slideBounds(slideRef.current);
+      const current = phase.current;
+
+      if (current.name === 'hold' && now >= current.until) {
+        phase.current = { name: 'scroll', until: 0 };
+      } else if (current.name === 'scroll') {
+        const y = window.scrollY + (SPEED * dt) / 1000;
+        if (y >= end) {
+          window.scrollTo({ top: end, behavior: 'instant' });
+          phase.current = { name: 'end', until: now + HOLD_END };
+        } else {
+          window.scrollTo({ top: y, behavior: 'instant' });
+        }
+      } else if (current.name === 'end' && now >= current.until) {
+        goTo(slideRef.current + 1);
+      }
+
+      if (progressRef.current) {
+        const p = end > top ? (window.scrollY - top) / (end - top) : 1;
+        progressRef.current.style.transform = `scaleX(${Math.min(Math.max(p, 0), 1)})`;
+      }
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [active, playing, goTo]);
+
+  // teclado, rolagem manual e saída da tela cheia
   useEffect(() => {
     if (!active) return undefined;
 
-    const id = TV_SLIDES[slide];
-    if (id) document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    else window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    const timer = setTimeout(() => setSlide((n) => (n + 1) % TV_SLIDES.length), SLIDE_MS);
-    return () => clearTimeout(timer);
-  }, [active, slide]);
-
-  useEffect(() => {
-    if (!active) return undefined;
-
-    const stop = () => setActive(false);
+    const pause = () => setPlaying(false);
     const onKey = (event) => {
-      if (['Escape', 'ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End'].includes(event.key)) stop();
+      if (event.key === 'Escape') stop();
+      else if (event.key === ' ') {
+        event.preventDefault();
+        setPlaying((value) => !value);
+      } else if (event.key === 'ArrowRight') goTo(slideRef.current + 1);
+      else if (event.key === 'ArrowLeft') goTo(slideRef.current - 1);
+      else if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End'].includes(event.key)) pause();
+    };
+    const onFullscreen = () => {
+      if (enteredFullscreen.current && !document.fullscreenElement) {
+        enteredFullscreen.current = false;
+        setActive(false);
+      }
     };
 
-    window.addEventListener('wheel', stop, { passive: true });
-    window.addEventListener('touchmove', stop, { passive: true });
+    window.addEventListener('wheel', pause, { passive: true });
+    window.addEventListener('touchmove', pause, { passive: true });
     window.addEventListener('keydown', onKey);
+    document.addEventListener('fullscreenchange', onFullscreen);
     return () => {
-      window.removeEventListener('wheel', stop);
-      window.removeEventListener('touchmove', stop);
+      window.removeEventListener('wheel', pause);
+      window.removeEventListener('touchmove', pause);
       window.removeEventListener('keydown', onKey);
+      document.removeEventListener('fullscreenchange', onFullscreen);
     };
-  }, [active]);
+  }, [active, goTo, stop]);
 
-  const toggle = () => {
-    setSlide(0);
-    setActive((value) => !value);
+  // ao continuar depois de uma pausa, segue a partir de onde a página está
+  const togglePlay = () => {
+    if (!playing) {
+      const index = currentSlide();
+      slideRef.current = index;
+      setSlide(index);
+      phase.current = { name: 'scroll', until: 0 };
+    }
+    setPlaying((value) => !value);
   };
 
   const label = active ? t.header.tvStop : t.header.tvMode;
@@ -101,7 +207,7 @@ export function TvModeToggle() {
       <button
         type="button"
         className={`${styles.themeButton} ${active ? styles.toolActive : ''}`}
-        onClick={toggle}
+        onClick={active ? stop : start}
         aria-label={label}
         aria-pressed={active}
         title={label}
@@ -110,27 +216,40 @@ export function TvModeToggle() {
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <rect x="3" y="5" width="18" height="12" rx="2" />
           <path d="M8 21h8M12 17v4" />
-          {active ? (
-            <path className={styles.tvGlyph} d="M10.5 9v4M13.5 9v4" />
-          ) : (
-            <path className={`${styles.tvGlyph} ${styles.tvPlay}`} d="M10.5 8.8v4.4l3.6-2.2z" />
-          )}
+          <path className={`${styles.tvGlyph} ${styles.tvPlay}`} d="M10.5 8.8v4.4l3.6-2.2z" />
         </svg>
       </button>
 
       {active &&
         createPortal(
-          <div className={styles.tvBar} role="status">
-            <span className={styles.tvDot} aria-hidden="true" />
-            <span className={styles.tvText}>
-              {t.header.tvLabel} · {slide + 1}/{TV_SLIDES.length}
+          <div className={styles.tvBar} role="toolbar" aria-label={t.header.tvLabel}>
+            <span className={`${styles.tvDot} ${playing ? '' : styles.tvDotPaused}`} aria-hidden="true" />
+            <span className={styles.tvText} aria-live="polite">
+              {t.header.tvSections[slide]} · {slide + 1}/{TV_SLIDES.length}
             </span>
+
             <span className={styles.tvProgress} aria-hidden="true">
-              <span key={slide} className={styles.tvProgressFill} style={{ '--slide': `${SLIDE_MS}ms` }} />
+              <span ref={progressRef} className={styles.tvProgressFill} />
             </span>
-            <button type="button" className={styles.tvStop} onClick={() => setActive(false)} aria-label={t.header.tvStop}>
-              ×
-            </button>
+
+            <div className={styles.tvControls}>
+              <button type="button" className={styles.tvControl} onClick={() => goTo(slideRef.current - 1)} aria-label={t.header.tvPrev} title={t.header.tvPrev}>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5L9 12l10 7z" /></svg>
+              </button>
+              <button type="button" className={styles.tvControl} onClick={togglePlay} aria-label={playing ? t.header.tvPause : t.header.tvPlay} title={playing ? t.header.tvPause : t.header.tvPlay}>
+                {playing ? (
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" /></svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path className={styles.tvFilled} d="M7 5l12 7-12 7z" /></svg>
+                )}
+              </button>
+              <button type="button" className={styles.tvControl} onClick={() => goTo(slideRef.current + 1)} aria-label={t.header.tvNext} title={t.header.tvNext}>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M5 5l10 7-10 7z" /></svg>
+              </button>
+              <button type="button" className={styles.tvControl} onClick={stop} aria-label={t.header.tvStop} title={t.header.tvStop}>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+              </button>
+            </div>
           </div>,
           document.body
         )}

@@ -232,7 +232,7 @@
   stroke-width: 1;
 }
 
-/* pílula do modo TV, presa embaixo da tela */
+/* barra do modo TV, presa embaixo da tela, com os controles */
 .tvBar {
   @apply fixed bottom-6 left-1/2 z-[60] flex items-center gap-3 pl-4 pr-1.5 py-1.5 rounded-full
          border border-slate-800 bg-page/80 shadow-2xl;
@@ -247,8 +247,13 @@
 }
 
 .tvDot {
-  @apply w-2 h-2 rounded-full bg-red-500;
+  @apply w-2 h-2 shrink-0 rounded-full bg-red-500;
   animation: tvBlink 1.2s ease-in-out infinite;
+}
+
+.tvDotPaused {
+  @apply bg-slate-500;
+  animation: none;
 }
 
 @keyframes tvBlink {
@@ -256,30 +261,40 @@
 }
 
 .tvText {
-  @apply font-mono text-[11px] font-bold tracking-widest uppercase text-slate-300;
+  @apply font-mono text-[11px] font-bold tracking-widest uppercase text-slate-300 whitespace-nowrap;
 }
 
 .tvProgress {
-  @apply relative w-20 h-1 rounded-full overflow-hidden bg-slate-800;
+  @apply relative hidden sm:block w-20 h-1 rounded-full overflow-hidden bg-slate-800;
 }
 
 .tvProgressFill {
   @apply absolute inset-0 bg-accent origin-left;
-  animation: tvFill var(--slide) linear forwards;
+  transform: scaleX(0);
 }
 
-@keyframes tvFill {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
+.tvControls {
+  @apply flex items-center gap-1;
 }
 
-.tvStop {
-  @apply w-7 h-7 rounded-full flex items-center justify-center border border-slate-800 bg-transparent
-         text-slate-400 text-lg leading-none cursor-pointer transition-colors duration-200;
+.tvControl {
+  @apply w-8 h-8 rounded-full flex items-center justify-center border border-slate-800 bg-transparent
+         text-slate-300 cursor-pointer transition-colors duration-200;
 }
 
-.tvStop:hover {
+.tvControl:hover {
   @apply text-accent border-accent/50;
+}
+
+.tvControl svg {
+  @apply w-3.5 h-3.5 fill-none stroke-current;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tvFilled {
+  fill: currentColor;
 }
 
 /* "?" num círculo branco: fica parado, dá um pulinho, gira de lado no ar e cai */
