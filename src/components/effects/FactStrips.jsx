@@ -41,13 +41,16 @@ function save(key, value) {
  * Pegando no meio não há alavanca, então ela só acompanha, sem girar. Ao
  * soltar, segue girando e deslizando com o embalo, e quica nas bordas da página.
  */
-const INERTIA = 0.9; // quanto a aceleração do ponteiro joga a fita (balanço, hélice)
+const INERTIA = 1.3; // quanto a aceleração do ponteiro joga a fita (balanço, hélice)
 const DRAG = 0.15; // atrito leve que alinha a fita atrás do movimento
-const SPIN_DAMPING = 0.06; // freio do giro enquanto está segurando
+const SPIN_DAMPING = 0.06; // freio do giro enquanto o ponteiro se move rápido
+const PLACING_DAMPING = 0.5; // freio extra quando o ponteiro está devagar (posicionando a fita)
+const PLACING_SPEED = 7; // abaixo disso (px/quadro) é posicionar; acima, é girar ou arremessar
+const THROW_SPEED = 7; // soltar abaixo dessa velocidade gruda na hora, sem deslizar
 const MAX_SPIN = 0.45; // giro máximo por quadro (radianos)
 const JITTER = 1.2; // trancos menores que isso (px/quadro²) são tremida da mão e não contam
 const FRICTION = 0.94;
-const SPIN_FRICTION = 0.985;
+const SPIN_FRICTION = 0.965;
 const BOUNCE = 0.5;
 
 function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHint, hintText, layerRef }) {
@@ -130,8 +133,11 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
       // torque do atrito no centro em volta do ponto de pega (preso no cursor)
       const r2 = d.rx * d.rx + d.ry * d.ry;
       const inertia = r2 + d.i0;
+      // devagar o giro freia forte (dá para posicionar); rápido, ele fica solto
+      const speed = Math.hypot(d.vx, d.vy);
+      const damping = SPIN_DAMPING + PLACING_DAMPING * Math.max(1 - speed / PLACING_SPEED, 0);
       const torque =
-        -INERTIA * (d.rx * d.ay - d.ry * d.ax) - DRAG * (d.rx * d.vy - d.ry * d.vx) - SPIN_DAMPING * b.w * r2;
+        -INERTIA * (d.rx * d.ay - d.ry * d.ax) - DRAG * (d.rx * d.vy - d.ry * d.vx) - damping * b.w * r2;
       b.w = Math.max(Math.min(b.w + (torque / inertia) * dt, MAX_SPIN), -MAX_SPIN);
 
       const turn = b.w * dt;
@@ -235,12 +241,24 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     if (!d) return;
     drag.current = null;
     const b = body.current;
-    // o centro sai com a velocidade do ponto de pega mais a do giro
     const idle = performance.now() - d.lastT > 80;
     const vx = idle ? 0 : d.vx;
     const vy = idle ? 0 : d.vy;
-    b.vx = vx - b.w * d.ry;
-    b.vy = vy + b.w * d.rx;
+    const cvx = vx - b.w * d.ry;
+    const cvy = vy + b.w * d.rx;
+
+    // soltou devagar: a pessoa só quer deixar a fita ali, então ela gruda na hora
+    if (Math.hypot(cvx, cvy) < THROW_SPEED) {
+      cancelAnimationFrame(frame.current);
+      Object.assign(b, { vx: 0, vy: 0, w: 0 });
+      apply();
+      settle();
+      return;
+    }
+
+    // arremesso de verdade: o centro sai com a velocidade do ponto de pega mais a do giro
+    b.vx = cvx;
+    b.vy = cvy;
   };
 
   const reset = () => {
