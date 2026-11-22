@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import styles from './Header.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
 import Tour from './Tour';
+import { startPresenting } from '../effects/presentation';
 
 /* ---------- Tela cheia ---------- */
 
@@ -117,6 +118,9 @@ export function TvModeToggle() {
         .catch(() => {});
     }
   };
+
+  // enquanto o modo TV está ligado, as animações de entrada voltam a rodar a cada seção
+  useEffect(() => (active ? startPresenting() : undefined), [active]);
 
   // o laço que desce a página enquanto está tocando
   useEffect(() => {

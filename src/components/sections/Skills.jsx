@@ -149,7 +149,7 @@ function SkillCard({ skill, index }) {
 }
 
 function SkillGroup({ group, title }) {
-  const [ref, inView] = useInView(0.15);
+  const [ref, inView] = useInView(0.15, { replay: true });
 
   return (
     <div ref={ref} className={`${styles.group} ${inView ? `${styles.revealed} is-revealed` : ''}`}>

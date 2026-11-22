@@ -145,7 +145,7 @@ function ValueCard({ value, index }) {
 }
 
 function ValuesBlock({ title, values }) {
-  const [ref, inView] = useInView(0.2);
+  const [ref, inView] = useInView(0.2, { replay: true });
   return (
     <div ref={ref} className={`${styles.valuesBlock} ${inView ? styles.valuesRevealed : ''}`}>
       <h3 className={styles.valuesTitle}>{title}</h3>

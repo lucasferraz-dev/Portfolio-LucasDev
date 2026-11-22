@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { createPortal } from 'react-dom';
 import styles from './Tour.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
+import { startPresenting } from '../effects/presentation';
 
 /* o que cada passo destaca, na mesma ordem dos textos em t.tour.steps */
 const TARGETS = [
@@ -58,6 +59,9 @@ export default function Tour({ onClose }) {
     else setIndex((i) => i + 1);
   }, [isLast, onClose]);
   const prev = useCallback(() => setIndex((i) => Math.max(i - 1, 0)), []);
+
+  // durante o tour, as animações de entrada voltam a rodar quando cada seção aparece
+  useEffect(() => startPresenting(), []);
 
   // leva o alvo para a tela e acompanha a posição dele enquanto a página rola
   useEffect(() => {
