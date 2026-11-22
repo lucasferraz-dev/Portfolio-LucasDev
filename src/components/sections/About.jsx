@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
 import styles from './About.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
 import RichText from '../common/RichText';
 import TypedText from '../effects/TypedText';
+import useTilt from '../effects/useTilt';
 import useInView from '../effects/useInView';
 import useTypingProgress, { tokensLength } from '../effects/useTypingProgress';
 
@@ -47,80 +47,112 @@ function ProfileRecord({ facts }) {
 
 
 /*
- * Divide a frase em duas partes: o começo (até a primeira vírgula ou dois-pontos),
- * que fica em destaque, e o resto. Cada palavra vira um <span> com o seu índice.
+ * Ícones animados do “Como eu trabalho”, no espírito dos mascotes das skills.
+ * Cada um roda a sua animação uma vez quando o bloco aparece e de novo no hover.
  */
-function splitWords(text) {
-  const cut = text.search(/[,:]/);
-  const lead = cut === -1 ? text : text.slice(0, cut + 1);
-  const rest = cut === -1 ? '' : text.slice(cut + 1);
-  const words = [
-    ...lead.split(' ').filter(Boolean).map((word) => ({ word, lead: true })),
-    ...rest.split(' ').filter(Boolean).map((word) => ({ word, lead: false })),
-  ];
-  return words;
+
+/* Lupa vasculhando até achar o bug, que mexe as perninhas quando é encontrado */
+function IconCause() {
+  return (
+    <svg viewBox="0 0 48 48" className={`${styles.icon} ${styles.iconCause}`}>
+      <g className={styles.bug}>
+        <path className={styles.bugLegs} d="M14 24l-4-2M14 28h-5M14 32l-4 2M26 24l4-2M26 28h5M26 32l4 2" />
+        <path className={styles.bugAntennae} d="M18 15l-2-4M22 15l2-4" />
+        <circle className={styles.bugHead} cx="20" cy="18" r="3.5" />
+        <ellipse className={styles.bugBody} cx="20" cy="28" rx="6" ry="8" />
+        <path className={styles.bugLine} d="M20 21v15" />
+      </g>
+      <g className={styles.lens}>
+        <circle className={styles.lensGlass} cx="28" cy="22" r="9" />
+        <path className={styles.lensHandle} d="M34.5 28.5L42 36" />
+      </g>
+    </svg>
+  );
 }
 
-/*
- * Como eu trabalho: cada princípio é uma frase grande numa linha, separada por
- * um fio. As palavras começam apagadas e acendem uma a uma conforme a linha sobe
- * na tela (--p vai de 0 a 1 com o scroll).
- */
-function ValuesBlock({ title, values }) {
-  const listRef = useRef(null);
+/* Prancheta com checklist: os itens são marcados um a um */
+function IconPlan() {
+  return (
+    <svg viewBox="0 0 48 48" className={`${styles.icon} ${styles.iconPlan}`}>
+      <rect className={styles.board} x="10" y="8" width="28" height="35" rx="4" />
+      <rect className={styles.clip} x="18" y="5" width="12" height="6" rx="2" />
+      {[17, 25, 33].map((y, i) => (
+        <g key={y} className={styles.task} style={{ '--t': i }}>
+          <rect className={styles.taskBox} x="15" y={y} width="5" height="5" rx="1.2" />
+          <path className={styles.taskCheck} d={`M16 ${y + 2.6}l1.4 1.4 2.8-3`} pathLength="1" />
+          <path className={styles.taskLine} d={`M24 ${y + 2.5}h${i === 1 ? 7 : 10}`} pathLength="1" />
+        </g>
+      ))}
+    </svg>
+  );
+}
 
-  useEffect(() => {
-    const rows = [...listRef.current.children];
-    let frame = 0;
+/* Bússola: a agulha gira, hesita e para numa direção nova */
+function IconRoute() {
+  return (
+    <svg viewBox="0 0 48 48" className={`${styles.icon} ${styles.iconRoute}`}>
+      <circle className={styles.compass} cx="24" cy="24" r="17" />
+      <path className={styles.compassTicks} d="M24 9v3M24 36v3M9 24h3M36 24h3" />
+      <g className={styles.needle}>
+        <path className={styles.needleNorth} d="M24 12l3.5 12h-7z" />
+        <path className={styles.needleSouth} d="M24 36l3.5-12h-7z" />
+      </g>
+      <circle className={styles.compassPin} cx="24" cy="24" r="2" />
+    </svg>
+  );
+}
 
-    const update = () => {
-      frame = 0;
-      const vh = window.innerHeight;
-      rows.forEach((row) => {
-        const { top } = row.getBoundingClientRect();
-        const progress = (vh * 0.9 - top) / (vh * 0.45);
-        row.style.setProperty('--p', Math.min(Math.max(progress, 0), 1).toFixed(3));
-      });
-    };
+/* Celular dormindo: ninguém precisou ligar */
+function IconUser() {
+  return (
+    <svg viewBox="0 0 48 48" className={`${styles.icon} ${styles.iconUser}`}>
+      <g className={styles.phone}>
+        <rect className={styles.phoneBody} x="12" y="9" width="19" height="32" rx="4" />
+        <path className={styles.phoneFace} d="M17 23q2 2 4 0M22.5 23q2 2 4 0M19.5 29q2 1.5 4 0" />
+        <path className={styles.phoneSpeaker} d="M19.5 12.5h4" />
+      </g>
+      <text className={styles.zzz} x="33" y="20" style={{ '--z': 0 }}>z</text>
+      <text className={styles.zzz} x="37" y="14" style={{ '--z': 1 }}>z</text>
+      <text className={styles.zzz} x="41" y="8" style={{ '--z': 2 }}>z</text>
+    </svg>
+  );
+}
 
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
+const VALUE_ICONS = [IconCause, IconPlan, IconRoute, IconUser];
 
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
-  }, [values]);
+/* Card do “Como eu trabalho”: inclina seguindo o mouse, com brilho, como os cards de skills */
+function ValueCard({ value, index }) {
+  const tilt = useTilt(8);
+  const Icon = VALUE_ICONS[index];
 
   return (
-    <div className={styles.valuesBlock}>
+    <li
+      ref={tilt.ref}
+      className={styles.valueCard}
+      style={{ '--delay': `${index * 110}ms` }}
+      onPointerMove={tilt.onPointerMove}
+      onPointerLeave={tilt.onPointerLeave}
+    >
+      <span className={styles.valueGlare} aria-hidden="true" />
+      <span className={styles.valueIcon} aria-hidden="true">
+        {Icon && <Icon />}
+      </span>
+      <p className={styles.valueText}>
+        <RichText text={value} />
+      </p>
+    </li>
+  );
+}
+
+function ValuesBlock({ title, values }) {
+  const [ref, inView] = useInView(0.2);
+  return (
+    <div ref={ref} className={`${styles.valuesBlock} ${inView ? styles.valuesRevealed : ''}`}>
       <h3 className={styles.valuesTitle}>{title}</h3>
-      <ol ref={listRef} className={styles.valuesList}>
-        {values.map((value, i) => {
-          const words = splitWords(value);
-          return (
-            <li key={value} className={styles.valueRow} style={{ '--n': words.length }}>
-              <span className={styles.valueIndex}>{String(i + 1).padStart(2, '0')}</span>
-              <p className={styles.valueSentence} aria-label={value}>
-                {words.map(({ word, lead }, w) => (
-                  <span
-                    key={w}
-                    aria-hidden="true"
-                    className={lead ? styles.wordLead : styles.word}
-                    style={{ '--w': w }}
-                  >
-                    {word}{' '}
-                  </span>
-                ))}
-              </p>
-            </li>
-          );
-        })}
+      <ol className={styles.valuesGrid}>
+        {values.map((value, i) => (
+          <ValueCard key={value} value={value} index={i} />
+        ))}
       </ol>
     </div>
   );
