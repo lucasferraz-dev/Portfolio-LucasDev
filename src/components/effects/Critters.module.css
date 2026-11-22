@@ -5,51 +5,6 @@
   @apply absolute inset-0 z-30 pointer-events-none overflow-hidden;
 }
 
-/* ---------- baleia do Docker ---------- */
-
-.whale {
-  @apply absolute left-0 w-32 h-[92px];
-}
-
-.whaleFace {
-  @apply w-full h-full;
-  scale: var(--face, 1) 1;
-}
-
-/* ondulação do nado: sobe e desce inclinando o corpo para onde está indo */
-.whaleWave {
-  @apply relative w-full h-full;
-  animation: swimWave 3.2s ease-in-out infinite;
-}
-
-@keyframes swimWave {
-  0%, 100% { translate: 0 0; rotate: 4deg; }
-  25% { translate: 0 -7px; rotate: 0deg; }
-  50% { translate: 0 -12px; rotate: -4deg; }
-  75% { translate: 0 -5px; rotate: 0deg; }
-}
-
-/* bolhinhas ficando para trás, perto da cauda */
-.bubbles {
-  @apply absolute right-0 top-[38%] w-0 h-0;
-}
-
-.bubbles i {
-  @apply absolute w-1.5 h-1.5 rounded-full border opacity-0;
-  border-color: color-mix(in srgb, var(--color-white) 60%, transparent);
-  animation: bubble 2.4s ease-out infinite;
-}
-
-.bubbles i:nth-child(2) { animation-delay: 0.6s; --bx: 10px; }
-.bubbles i:nth-child(3) { animation-delay: 1.2s; --bx: 4px; }
-.bubbles i:nth-child(4) { animation-delay: 1.8s; --bx: 14px; }
-
-@keyframes bubble {
-  0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
-  15% { opacity: 0.9; }
-  100% { opacity: 0; transform: translate(calc(18px + var(--bx, 0px)), -26px) scale(1.1); }
-}
-
 /* ---------- borboleta do Wiki.js ---------- */
 
 .butterfly {
@@ -114,48 +69,188 @@
   animation-duration: 1.2s;
 }
 
-/* ---------- golfinho do MySQL ---------- */
+/* ---------- Claude Code ---------- */
 
-/* faixa acima da linha da seção: abaixo da linha fica escondido, como embaixo d'água */
-.dolphinWater {
-  @apply absolute left-0 right-0 overflow-hidden pointer-events-none z-10;
-  top: calc(var(--water) * -1);
-  height: var(--water);
+/* o ponto (0, 0) é onde ficam os pés, em cima da borda do card */
+.clawd {
+  @apply absolute top-0 left-0 w-0 h-0;
 }
 
-/* o ponto (0, 0) é o centro do golfinho, para ele girar em volta do próprio corpo */
-.dolphin {
-  @apply absolute top-0 left-0 w-0 h-0 opacity-0;
+.clawdButton {
+  @apply absolute bottom-0 -left-6 w-12 h-9 p-0 border-0 bg-transparent cursor-pointer pointer-events-auto;
 }
 
-.dolphin > svg {
-  @apply absolute w-32 h-16 -left-16 -top-8;
+.clawdFlip {
+  @apply block w-full h-full;
+  transform-origin: 50% 100%;
+  scale: var(--face, 1) 1;
+  transition: scale 0.3s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* respingo: um anel na linha d'água e gotas voando em leque */
-.splashAt {
-  @apply absolute bottom-0 w-0 h-0;
+.clawdSvg {
+  @apply block w-full h-full overflow-visible;
+  fill: #d97757;
+  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.5));
 }
 
-.ripple {
-  @apply absolute -left-6 -bottom-1 w-12 h-3 rounded-full border-t-2 opacity-0;
-  border-color: color-mix(in srgb, #9cc6ec 80%, transparent);
-  animation: ripple 0.8s ease-out var(--d) forwards;
+.clawdBody,
+.clawdArmL,
+.clawdArmR,
+.clawdLegA,
+.clawdLegB,
+.clawdLid {
+  transform-box: view-box;
 }
 
-@keyframes ripple {
-  0% { opacity: 1; transform: scale(0.3, 1); }
-  100% { opacity: 0; transform: scale(2, 1.6); }
+.clawdBody {
+  transform-origin: 12px 17px;
 }
 
-.drop {
-  @apply absolute left-0 bottom-0 w-1.5 h-1.5 rounded-full opacity-0;
-  background-color: #b9d8f3;
-  animation: drop 0.7s cubic-bezier(0.2, 0.7, 0.4, 1) var(--d) forwards;
+/* andando: gingadinho e as perninhas alternando */
+.walking .clawdBody {
+  animation: clawdBob 0.4s ease-in-out infinite;
 }
 
-@keyframes drop {
-  0% { opacity: 1; transform: translate(0, 0) scale(1); }
-  55% { opacity: 1; transform: translate(calc(var(--n) * 7px), calc(-30px + var(--n) * var(--n) * 1.5px)) scale(0.9); }
-  100% { opacity: 0; transform: translate(calc(var(--n) * 11px), 4px) scale(0.6); }
+@keyframes clawdBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.6px); }
+}
+
+.walking .clawdLegA,
+.walking .clawdLegB {
+  animation: clawdStep 0.4s ease-in-out infinite;
+}
+
+.walking .clawdLegB {
+  animation-delay: -0.2s;
+}
+
+@keyframes clawdStep {
+  0%, 100% { transform: rotate(-22deg); }
+  50% { transform: rotate(22deg); }
+}
+
+/* pisca de vez em quando */
+.clawdLid {
+  fill: #d97757;
+  transform-origin: 50% 0;
+  transform: scaleY(0);
+  animation: clawdBlink 4s ease-in-out infinite;
+}
+
+@keyframes clawdBlink {
+  0%, 92%, 100% { transform: scaleY(0); }
+  95% { transform: scaleY(1); }
+}
+
+/* no ar: bracinhos para cima */
+.jumping .clawdArmL,
+.cheer .clawdArmL {
+  transform-origin: 3px 11px;
+  animation: clawdArmUpL 0.35s ease-out both;
+}
+
+.jumping .clawdArmR,
+.cheer .clawdArmR {
+  transform-origin: 21px 11px;
+  animation: clawdArmUpR 0.35s ease-out both;
+}
+
+@keyframes clawdArmUpL {
+  to { transform: rotate(45deg) translate(-0.5px, -1px); }
+}
+
+@keyframes clawdArmUpR {
+  to { transform: rotate(-45deg) translate(0.5px, -1px); }
+}
+
+/* aterrissa amassando */
+.landed .clawdFlip {
+  animation: clawdLand 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes clawdLand {
+  0% { transform: scale(1.2, 0.75); }
+  100% { transform: scale(1, 1); }
+}
+
+/* clique: pulinho comemorando */
+.cheer {
+  animation: clawdCheer 0.7s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+@keyframes clawdCheer {
+  0% { transform: translateY(0) scale(1.1, 0.9); }
+  45% { transform: translateY(-18px) scale(0.95, 1.08); }
+  80% { transform: translateY(0) scale(1.08, 0.92); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+/* ---------- kitty ---------- */
+
+.kittyHole {
+  @apply absolute top-0 left-0 w-0 h-0;
+}
+
+/* janela logo acima da borda do card: a cabeça sobe de baixo dela, como se viesse de trás */
+.kittyWindow {
+  @apply absolute bottom-0 -left-7 w-14 h-9 overflow-hidden;
+}
+
+.kittyPeek {
+  @apply absolute left-0 bottom-0 w-14 h-[30px] p-0 border-0 bg-transparent cursor-pointer pointer-events-auto;
+  translate: 0 100%;
+  animation: kittyPeek 6.5s ease-in-out forwards;
+}
+
+.kittyPeek svg {
+  @apply block w-full h-full overflow-visible;
+  fill: var(--color-white);
+  filter: drop-shadow(0 0 1px rgb(255 255 255 / 0.4));
+}
+
+/* sobe devagar, fica espiando e desce */
+@keyframes kittyPeek {
+  0% { translate: 0 100%; }
+  10% { translate: 0 30%; }
+  16%, 82% { translate: 0 6%; }
+  92%, 100% { translate: 0 100%; }
+}
+
+/* clicou: some rapidinho */
+.kittyHide {
+  animation: kittyHide 0.35s ease-in forwards;
+}
+
+@keyframes kittyHide {
+  from { translate: 0 6%; }
+  to { translate: 0 100%; }
+}
+
+/* olha para um lado, para o outro e pisca */
+.kittyEyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: kittyLook 6.5s ease-in-out forwards;
+}
+
+@keyframes kittyLook {
+  0%, 24% { transform: translateX(0) scaleY(1); }
+  32%, 44% { transform: translateX(-0.9px) scaleY(1); }
+  52%, 62% { transform: translateX(0.9px) scaleY(1); }
+  68% { transform: translateX(0) scaleY(1); }
+  70% { transform: translateX(0) scaleY(0.1); }
+  72%, 100% { transform: translateX(0) scaleY(1); }
+}
+
+.meow {
+  @apply absolute bottom-10 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md border border-slate-800 bg-surface
+         font-mono text-[11px] text-slate-200 shadow-lg;
+  animation: meow 1.2s ease-out forwards;
+}
+
+@keyframes meow {
+  0% { opacity: 0; translate: 0 6px; }
+  20%, 70% { opacity: 1; translate: 0 0; }
+  100% { opacity: 0; translate: 0 -6px; }
 }
