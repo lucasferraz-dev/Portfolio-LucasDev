@@ -11,62 +11,106 @@
   @apply absolute top-0 left-0 w-0 h-0;
 }
 
+.butterflyHit {
+  @apply absolute -left-6 -top-10 w-12 h-12 p-0 border-0 bg-transparent cursor-pointer pointer-events-auto;
+}
+
+/* o corpo sobe a cada batida para baixo das asas */
+.flapBob {
+  @apply block w-full h-full;
+  animation: flapBob 0.3s cubic-bezier(0.3, 0, 0.6, 1) infinite;
+}
+
+@keyframes flapBob {
+  0%, 100% { translate: 0 1px; }
+  35% { translate: 0 -2.5px; }
+}
+
 .butterflyIcon {
-  @apply absolute -left-[22px] -top-[38px] block w-11 h-11 overflow-visible;
+  @apply block w-full h-full overflow-visible;
   fill: var(--color-white);
   filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.5));
 }
 
 /*
- * As duas asas batem separadas, dobrando no eixo do corpo (x = 12,25): cada
- * lado espreme na horizontal a partir do meio, como uma asa vista de cima subindo.
+ * Batida assimétrica, como borboleta de verdade: as asas descem rápido (fechando
+ * no eixo do corpo, x = 12,25) e sobem devagar, abrindo de novo.
  */
 .wingLeft,
 .wingRight {
   transform-box: view-box;
   transform-origin: 12.25px 12px;
-  animation: flapLeft 0.22s ease-in-out infinite alternate;
+  animation: flapL 0.3s cubic-bezier(0.3, 0, 0.6, 1) infinite;
 }
 
 .wingRight {
-  animation-name: flapRight;
+  animation-name: flapR;
 }
 
-@keyframes flapLeft {
-  from { transform: scaleX(1) skewY(0deg); }
-  to { transform: scaleX(0.18) skewY(8deg); }
+@keyframes flapL {
+  0%, 100% { transform: scaleX(1) skewY(0deg); }
+  35% { transform: scaleX(0.12) skewY(10deg); }
 }
 
-@keyframes flapRight {
-  from { transform: scaleX(1) skewY(0deg); }
-  to { transform: scaleX(0.18) skewY(-8deg); }
+@keyframes flapR {
+  0%, 100% { transform: scaleX(1) skewY(0deg); }
+  35% { transform: scaleX(0.12) skewY(-10deg); }
 }
 
-/* planando: asas abertas, só um tremidinho */
-.gliding .wingLeft,
-.gliding .wingRight {
-  animation-duration: 1.4s;
-  animation-name: glideLeft;
+/* fugindo: batidas rápidas */
+.butterfly[data-flap="fast"] .wingLeft,
+.butterfly[data-flap="fast"] .wingRight,
+.butterfly[data-flap="fast"] .flapBob {
+  animation-duration: 0.16s;
 }
 
-.gliding .wingRight {
-  animation-name: glideRight;
+/* pousada (num card ou no cursor): abre e fecha devagar, quase parada */
+.butterfly[data-flap="rest"] .wingLeft,
+.butterfly[data-flap="rest"] .wingRight {
+  animation: restL 1.8s ease-in-out infinite;
 }
 
-@keyframes glideLeft {
-  from { transform: scaleX(1); }
-  to { transform: scaleX(0.85); }
+.butterfly[data-flap="rest"] .wingRight {
+  animation-name: restR;
 }
 
-@keyframes glideRight {
-  from { transform: scaleX(1); }
-  to { transform: scaleX(0.85); }
+.butterfly[data-flap="rest"] .flapBob {
+  animation: none;
 }
 
-/* pousada: abre e fecha as asas devagar */
-.resting .wingLeft,
-.resting .wingRight {
-  animation-duration: 1.2s;
+@keyframes restL {
+  0%, 60%, 100% { transform: scaleX(1); }
+  80% { transform: scaleX(0.35) skewY(6deg); }
+}
+
+@keyframes restR {
+  0%, 60%, 100% { transform: scaleX(1); }
+  80% { transform: scaleX(0.35) skewY(-6deg); }
+}
+
+/* brilhinhos do looping */
+.sparkles {
+  @apply absolute w-0 h-0 pointer-events-none;
+}
+
+.sparkles i {
+  @apply absolute w-1.5 h-1.5 -ml-[3px] -mt-[3px] rounded-full opacity-0;
+  background-color: var(--color-white);
+  box-shadow: 0 0 6px var(--color-white);
+  rotate: var(--a);
+  animation: sparkle 1.1s ease-out 0.5s forwards;
+}
+
+.sparkles i:nth-child(even) {
+  background-color: var(--color-accent);
+  box-shadow: 0 0 6px var(--color-accent);
+  animation-delay: 0.62s;
+}
+
+@keyframes sparkle {
+  0% { opacity: 0; transform: translateY(0) scale(0.4); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-46px) scale(1); }
 }
 
 /* ---------- Claude Code ---------- */

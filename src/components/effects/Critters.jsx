@@ -35,48 +35,113 @@ function pagePos(el, main) {
   return { x: r.left - m.left, y: r.top - m.top, w: r.width, h: r.height };
 }
 
-/* ---------- Borboleta do Wiki.js: voa por uma região do site e pousa nos cards ---------- */
+/* ---------- Borboleta do Wiki.js: passeia, fica curiosa com o mouse, pousa nele e se assusta ---------- */
+
+/*
+ * Modos:
+ *  wander  passeia por uma região do site e às vezes vai pousar num card
+ *  card    pousada num card, abrindo e fechando as asas devagar
+ *  curious o mouse chegou perto: ela voa em volta do cursor
+ *  cursor  o mouse ficou paradinho: ela pousa na ponta dele e vai junto devagar
+ *  flee    o mouse se mexeu rápido (ou ela foi clicada): foge assustada
+ *  loop    foi clicada: dá um looping soltando brilhinhos e depois foge
+ */
+const CURIOUS_RADIUS = 230;
+const SCARE_SPEED = 16; // px por quadro: mais rápido que isso assusta
+const STILL_SPEED = 0.6; // px por quadro: mais devagar que isso é “mouse parado”
 
 function Butterfly({ main }) {
   const id = useId().replace(/:/g, '');
   const ref = useRef(null);
+  const loopRef = useRef(() => {});
+  const [sparkles, setSparkles] = useState([]);
 
   useEffect(() => {
     const el = ref.current;
     const home = document.getElementById('about') ?? main;
-    const start = pagePos(home, main);
     const s = {
-      x: rand(80, main.offsetWidth - 80),
-      y: start.y + rand(60, 300),
+      x: rand(120, main.offsetWidth - 120),
+      y: pagePos(home, main).y + rand(80, 280),
       vx: 0,
       vy: 0,
+      mode: 'wander',
       target: null,
       perch: null,
-      restUntil: 0,
-      glideUntil: 0,
-      t: 0,
+      until: 0,
+      cooldown: 0, // até quando ela não fica curiosa de novo
+      stillSince: 0,
+      orbit: Math.random() * Math.PI * 2,
+      loop: null,
+      t: Math.random() * 1000,
+      bank: 0,
     };
+    const mouse = { x: -9999, y: -9999, speed: 0, inside: false };
     let frame = 0;
     let last = performance.now();
 
-    // próximo destino: perto de onde ela está (até uns 700px para cima ou para baixo)
+    const onMove = (event) => {
+      const m = main.getBoundingClientRect();
+      const x = event.clientX - m.left;
+      const y = event.clientY - m.top;
+      // no primeiro movimento não há posição anterior: não conta como puxão
+      if (mouse.inside) mouse.speed = Math.max(mouse.speed, Math.hypot(x - mouse.x, y - mouse.y));
+      mouse.x = x;
+      mouse.y = y;
+      mouse.inside = true;
+    };
+    const onLeave = () => {
+      mouse.inside = false;
+    };
+    window.addEventListener('pointermove', onMove, { passive: true });
+    document.addEventListener('pointerleave', onLeave);
+
     const pickTarget = () => {
       const cards = [...main.querySelectorAll('[data-sticky]')]
         .map((card) => ({ card, p: pagePos(card, main) }))
         .filter(({ p }) => p.w > 0 && Math.abs(p.y - s.y) < 700);
-      if (cards.length && Math.random() < 0.4) {
+      if (cards.length && Math.random() < 0.35) {
         const { card } = cards[Math.floor(Math.random() * cards.length)];
         s.target = { card, offset: rand(0.15, 0.85) };
       } else {
-        const y = Math.min(Math.max(s.y + rand(-500, 500), 80), main.offsetHeight - 80);
+        const y = Math.min(Math.max(s.y + rand(-450, 450), 80), main.offsetHeight - 80);
         s.target = { x: rand(60, main.offsetWidth - 60), y };
       }
     };
 
-    const targetPoint = () => {
-      if (!s.target.card) return s.target;
-      const p = pagePos(s.target.card, main);
-      return { x: p.x + p.w * s.target.offset, y: p.y - 6 };
+    const flee = (now, strength = 1) => {
+      const dx = s.x - mouse.x;
+      const dy = s.y - mouse.y;
+      const d = Math.hypot(dx, dy) || 1;
+      s.vx = (dx / d) * 7 * strength + rand(-1, 1);
+      s.vy = (dy / d) * 7 * strength - 2;
+      s.mode = 'flee';
+      s.until = now + 900;
+      s.cooldown = now + 4500;
+      s.perch = null;
+      s.target = null;
+    };
+
+    // clique: looping no ar com brilhinhos, depois foge
+    loopRef.current = () => {
+      const now = performance.now();
+      s.mode = 'loop';
+      s.perch = null;
+      s.loop = { cx: s.x, cy: s.y - 34, start: now, from: s.x, fromY: s.y };
+      setSparkles((list) => [...list.slice(-3), { id: now, x: s.x, y: s.y - 34 }]);
+    };
+
+    const steer = (tx, ty, pull, max, dt) => {
+      const dx = tx - s.x;
+      const dy = ty - s.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      s.vx += (dx / dist) * pull * dt;
+      s.vy += (dy / dist) * pull * dt;
+      const speed = Math.hypot(s.vx, s.vy);
+      if (speed > max) {
+        s.vx = (s.vx / speed) * max;
+        s.vy = (s.vy / speed) * max;
+      }
+      return dist;
     };
 
     const tick = (now) => {
@@ -84,62 +149,124 @@ function Butterfly({ main }) {
       const dt = Math.min((now - last) / 16.67, 3);
       last = now;
       s.t += dt;
-      let flapping = true;
-      let gliding = false;
+      const mouseDist = Math.hypot(mouse.x - s.x, mouse.y - s.y);
+      const scared = mouse.speed > SCARE_SPEED && mouseDist < 160;
+      if (mouse.speed < STILL_SPEED) {
+        if (!s.stillSince) s.stillSince = now;
+      } else s.stillSince = 0;
 
-      if (s.perch) {
-        // pousada: acompanha o card até a hora de voar de novo
+      // mudanças de modo que dependem do mouse
+      if (scared && (s.mode === 'curious' || s.mode === 'cursor')) flee(now, 1.2);
+      else if (
+        mouse.inside &&
+        mouseDist < CURIOUS_RADIUS &&
+        now > s.cooldown &&
+        (s.mode === 'wander' || s.mode === 'card')
+      ) {
+        s.mode = 'curious';
+        s.perch = null;
+        s.until = now + rand(9000, 14000);
+      }
+
+      let flap = 'fly';
+
+      if (s.mode === 'loop') {
+        // volta completa em torno de um ponto acima de onde estava
+        const k = Math.min((now - s.loop.start) / 900, 1);
+        const a = Math.PI / 2 + k * Math.PI * 2;
+        s.x = s.loop.cx + Math.cos(a) * 34;
+        s.y = s.loop.cy + Math.sin(a) * 34;
+        s.bank = -k * 360;
+        if (k >= 1) {
+          s.bank = 0;
+          flee(now, 0.8);
+        }
+      } else if (s.mode === 'cursor') {
+        // pousada na ponta do cursor: vai junto, devagar
+        s.x += (mouse.x + 8 - s.x) * Math.min(0.35 * dt, 1);
+        s.y += (mouse.y - 4 - s.y) * Math.min(0.35 * dt, 1);
+        s.vx = 0;
+        s.vy = 0;
+        flap = 'rest';
+        if (now > s.until || !mouse.inside) {
+          s.mode = 'wander';
+          s.cooldown = now + 3000;
+          s.vy = -2.5;
+        }
+      } else if (s.mode === 'curious') {
+        // voa em volta do cursor, numa órbita que muda de tamanho
+        s.orbit += 0.045 * dt;
+        const r = 44 + Math.sin(s.t * 0.05) * 14;
+        steer(mouse.x + Math.cos(s.orbit) * r, mouse.y - 18 + Math.sin(s.orbit) * r * 0.55, 0.22, 3.2, dt);
+        s.x += s.vx * dt;
+        s.y += s.vy * dt;
+        // mouse paradinho e ela pertinho: pousa na ponta dele
+        if (s.stillSince && now - s.stillSince > 1100 && mouseDist < 80) {
+          s.mode = 'cursor';
+          s.until = now + rand(8000, 14000);
+        }
+        if (now > s.until || !mouse.inside || mouseDist > CURIOUS_RADIUS * 1.6) {
+          s.mode = 'wander';
+          s.cooldown = now + 3500;
+        }
+      } else if (s.mode === 'card') {
         const p = pagePos(s.perch.card, main);
         s.x = p.x + p.w * s.perch.offset;
         s.y = p.y - 6;
-        flapping = false;
-        if (now >= s.restUntil) {
+        flap = 'rest';
+        if (now >= s.until) {
+          s.mode = 'wander';
           s.perch = null;
           s.vy = -2.5;
           pickTarget();
         }
       } else {
-        if (!s.target) pickTarget();
-        const p = targetPoint();
-        const dx = p.x - s.x;
-        const dy = p.y - s.y;
-        const dist = Math.hypot(dx, dy);
-
-        // de vez em quando plana com as asas abertas, sem bater
-        if (now >= s.glideUntil && Math.random() < 0.004) s.glideUntil = now + rand(700, 1600);
-        gliding = now < s.glideUntil;
-
-        const pull = gliding ? 0.03 : 0.07;
-        s.vx += (dx / (dist || 1)) * pull * dt + Math.sin(s.t * 0.13) * 0.05;
-        s.vy += (dy / (dist || 1)) * pull * dt + Math.cos(s.t * 0.11) * 0.05;
-        const max = gliding ? 1.6 : 2.2;
-        const speed = Math.hypot(s.vx, s.vy);
-        if (speed > max) {
-          s.vx = (s.vx / speed) * max;
-          s.vy = (s.vy / speed) * max;
+        if (s.mode === 'flee' && now > s.until) s.mode = 'wander';
+        if (s.mode === 'wander') {
+          if (!s.target) pickTarget();
+          const tp = s.target.card
+            ? (() => {
+                const p = pagePos(s.target.card, main);
+                return { x: p.x + p.w * s.target.offset, y: p.y - 6 };
+              })()
+            : s.target;
+          // voo orgânico: o vento muda devagar (duas ondas de ritmos diferentes)
+          s.vx += (Math.sin(s.t * 0.031) + Math.sin(s.t * 0.087)) * 0.035 * dt;
+          s.vy += (Math.cos(s.t * 0.027) + Math.sin(s.t * 0.071)) * 0.035 * dt;
+          const dist = steer(tp.x, tp.y, 0.06, 2.1, dt);
+          if (dist < 12) {
+            if (s.target.card) {
+              s.mode = 'card';
+              s.perch = s.target;
+              s.until = now + rand(2500, 6000);
+            }
+            s.target = null;
+          }
+        } else {
+          s.vx *= 0.97;
+          s.vy *= 0.97;
         }
         s.x += s.vx * dt;
-        // cada batida de asa dá um impulsinho para cima; planando, desce devagar
-        s.y += s.vy * dt + (gliding ? 0.25 : Math.sin(s.t * 0.55) * 0.9);
-
-        if (dist < 12) {
-          if (s.target.card) {
-            s.perch = s.target;
-            s.restUntil = now + rand(2500, 6000);
-            s.vx = 0;
-            s.vy = 0;
-          }
-          s.target = null;
-        }
+        s.y += s.vy * dt;
       }
 
-      el.style.transform = `translate(${s.x}px, ${s.y}px) rotate(${s.perch ? 0 : s.vx * 10}deg)`;
-      el.classList.toggle(styles.resting, !flapping);
-      el.classList.toggle(styles.gliding, gliding);
+      // inclina nas curvas, como se fizesse curva no ar
+      if (s.mode !== 'loop') s.bank += (Math.max(Math.min(s.vx * 9, 28), -28) - s.bank) * Math.min(0.15 * dt, 1);
+      s.x = Math.min(Math.max(s.x, 20), main.offsetWidth - 20);
+      s.y = Math.min(Math.max(s.y, 30), main.offsetHeight - 30);
+
+      el.style.transform = `translate(${s.x}px, ${s.y}px) rotate(${s.bank}deg)`;
+      el.dataset.flap = s.mode === 'flee' ? 'fast' : flap;
+      el.dataset.mode = s.mode;
+      mouse.speed *= 0.6;
     };
 
     frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerleave', onLeave);
+    };
   }, [main]);
 
   // cada lado da borboleta: as camadas de asa daquele lado e a metade da frente
@@ -153,20 +280,33 @@ function Butterfly({ main }) {
   );
 
   return (
-    <div ref={ref} className={styles.butterfly}>
-      <svg viewBox="0 0 24 24" className={styles.butterflyIcon} aria-hidden="true">
-        <defs>
-          <clipPath id={`${id}-l`}>
-            <rect x="-1" y="-1" width="13.25" height="26" />
-          </clipPath>
-          <clipPath id={`${id}-r`}>
-            <rect x="12.25" y="-1" width="13" height="26" />
-          </clipPath>
-        </defs>
-        {half('l')}
-        {half('r')}
-      </svg>
-    </div>
+    <>
+      <div ref={ref} className={styles.butterfly}>
+        <button type="button" className={styles.butterflyHit} onClick={() => loopRef.current()} aria-label="Wiki.js" title="Wiki.js">
+          <span className={styles.flapBob}>
+            <svg viewBox="0 0 24 24" className={styles.butterflyIcon} aria-hidden="true">
+              <defs>
+                <clipPath id={`${id}-l`}>
+                  <rect x="-1" y="-1" width="13.25" height="26" />
+                </clipPath>
+                <clipPath id={`${id}-r`}>
+                  <rect x="12.25" y="-1" width="13" height="26" />
+                </clipPath>
+              </defs>
+              {half('l')}
+              {half('r')}
+            </svg>
+          </span>
+        </button>
+      </div>
+      {sparkles.map((burst) => (
+        <span key={burst.id} className={styles.sparkles} style={{ left: burst.x, top: burst.y }}>
+          {Array.from({ length: 8 }, (_, i) => (
+            <i key={i} style={{ '--a': `${i * 45}deg` }} />
+          ))}
+        </span>
+      ))}
+    </>
   );
 }
 
