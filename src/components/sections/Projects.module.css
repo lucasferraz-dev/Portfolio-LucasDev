@@ -212,17 +212,6 @@
   stroke-width: 2;
 }
 
-/* bolinha que segue o mouse dentro do card */
-.cursorBubble {
-  @apply absolute top-0 left-0 hidden items-center justify-center w-28 h-28 rounded-full pointer-events-none
-         font-mono text-[11px] font-bold tracking-widest uppercase text-center leading-tight px-4
-         bg-accent text-on-accent;
-  translate: calc(var(--x, 50%) - 50%) calc(var(--y, 50%) - 50%);
-  scale: 0;
-  transition: translate 0.12s linear, scale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 10px 40px -8px color-mix(in srgb, var(--color-accent) 70%, transparent);
-}
-
 @media (hover: hover) and (min-width: 768px) {
   .reveal {
     grid-template-rows: 0fr;
@@ -231,14 +220,6 @@
   .revealInner {
     opacity: 0;
     transform: translateY(12px);
-  }
-
-  .cursorBubble {
-    @apply flex;
-  }
-
-  .cardButton {
-    cursor: none;
   }
 
   .cardButton:hover .reveal,
@@ -258,9 +239,6 @@
     filter: brightness(0.8);
   }
 
-  .cardButton:hover .cursorBubble {
-    scale: 1;
-  }
 }
 
 /* ---------- Links e tags (modal) ---------- */
@@ -304,7 +282,7 @@
 }
 
 .modal {
-  @apply p-0 m-auto w-[min(1180px,calc(100%-2rem))] h-[min(860px,calc(100dvh-2rem))] max-w-none max-h-none
+  @apply p-0 m-auto w-[min(1000px,calc(100%-2rem))] max-w-none max-h-[calc(100dvh-2rem)]
          rounded-3xl border border-slate-800 bg-surface text-slate-300 shadow-2xl overflow-hidden;
 }
 
@@ -319,17 +297,31 @@
 }
 
 .modalLayout {
-  @apply h-full overflow-y-auto lg:overflow-hidden lg:grid lg:grid-cols-[1.4fr_1fr];
+  @apply max-h-[calc(100dvh-2rem)] overflow-y-auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-slate-800) transparent;
+}
+
+.modalLayout::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modalLayout::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-800;
+}
+
+.modalLayout::-webkit-scrollbar-thumb:hover {
+  @apply bg-accent/60;
 }
 
 /* ---------- Galeria ---------- */
 
 .gallery {
-  @apply relative flex flex-col bg-black lg:h-full;
+  @apply relative flex flex-col bg-black;
 }
 
 .galleryViewport {
-  @apply relative aspect-video lg:aspect-auto lg:flex-1 overflow-hidden;
+  @apply relative grid overflow-hidden;
 }
 
 /* a mesma foto, ampliada e desfocada, preenche as sobras ao redor da imagem */
@@ -341,7 +333,8 @@
 }
 
 .gallerySlide {
-  @apply absolute inset-0 w-full h-full object-contain select-none opacity-0;
+  @apply relative block w-full h-auto max-h-[75vh] object-contain select-none opacity-0;
+  grid-area: 1 / 1;
   transform: scale(1.03);
   transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -373,7 +366,7 @@
 }
 
 .galleryCounter {
-  @apply absolute top-4 left-4 px-3 py-1 rounded-full font-mono text-[11px] font-bold tracking-widest backdrop-blur-sm;
+  @apply absolute bottom-4 left-4 px-3 py-1 rounded-full font-mono text-[11px] font-bold tracking-widest backdrop-blur-sm;
   color: #ffffff;
   background-color: rgb(0 0 0 / 0.55);
 }
@@ -403,35 +396,25 @@
 /* ---------- Conteúdo ---------- */
 
 .modalBody {
-  @apply relative flex flex-col gap-8 p-6 md:p-10 lg:h-full lg:overflow-y-auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-slate-800) transparent;
+  @apply relative flex flex-col gap-8 p-6 md:p-10;
 }
 
-.modalBody::-webkit-scrollbar {
-  width: 6px;
-}
-
-.modalBody::-webkit-scrollbar-thumb {
-  @apply rounded-full bg-slate-800;
-}
-
-.modalBody::-webkit-scrollbar-thumb:hover {
-  @apply bg-accent/60;
-}
-
-.modalBody > :not(.closeButton) {
+.modalBody > * {
   animation: blockIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   animation-delay: calc(0.12s + var(--i, 0) * 0.07s);
 }
 
 .closeButton {
-  @apply fixed lg:absolute top-6 right-6 lg:top-5 lg:right-5 z-10 w-10 h-10 rounded-full flex items-center justify-center
-         cursor-pointer border border-slate-800 bg-surface text-slate-400 transition-all duration-300;
+  @apply absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center
+         cursor-pointer border backdrop-blur-sm transition-all duration-300;
+  color: #ffffff;
+  background-color: rgb(0 0 0 / 0.55);
+  border-color: rgb(255 255 255 / 0.2);
 }
 
 .closeButton:hover {
-  @apply text-accent border-accent/50;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
   transform: rotate(90deg);
 }
 
@@ -442,7 +425,7 @@
 }
 
 .modalHeader {
-  @apply flex flex-col items-start gap-3 pr-12;
+  @apply flex flex-col items-start gap-3;
 }
 
 .categoryBadge {
@@ -544,10 +527,9 @@
   .image,
   .reveal,
   .revealInner,
-  .cursorBubble,
   .gallerySlide,
   .modal[open],
-  .modalBody > :not(.closeButton) {
+  .modalBody > * {
     transition: none;
     animation: none;
   }

@@ -71,8 +71,8 @@ function ProjectLinks({ project, className }) {
 
 /*
  * Card: a foto inteira com título e período por cima. No hover a imagem dá um
- * zoom leve, o resumo sobe por baixo do título e uma bolinha "Ver processo"
- * acompanha o mouse. O card todo é um botão que abre o modal.
+ * zoom leve e o resumo sobe por baixo do título. O card todo é um botão que
+ * abre o modal.
  */
 function ProjectCard({ project, onOpenProcess }) {
   const { t } = useLanguage();
@@ -84,12 +84,6 @@ function ProjectCard({ project, onOpenProcess }) {
     setRatio(Math.min(Math.max(naturalWidth / naturalHeight, MIN_RATIO), MAX_RATIO));
   };
 
-  const handlePointerMove = (event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    event.currentTarget.style.setProperty('--x', `${event.clientX - rect.left}px`);
-    event.currentTarget.style.setProperty('--y', `${event.clientY - rect.top}px`);
-  };
-
   const cover = project.images[0];
 
   return (
@@ -98,7 +92,6 @@ function ProjectCard({ project, onOpenProcess }) {
         type="button"
         className={styles.cardButton}
         onClick={() => onOpenProcess(project.id)}
-        onPointerMove={handlePointerMove}
         aria-label={`${t.projects.viewProcess}: ${project.title}`}
       >
         <div className={styles.media} style={{ aspectRatio: ratio }}>
@@ -145,9 +138,6 @@ function ProjectCard({ project, onOpenProcess }) {
             </div>
           </div>
 
-          <span className={styles.cursorBubble} aria-hidden="true">
-            {t.projects.viewProcess}
-          </span>
         </div>
       </button>
     </article>
@@ -155,7 +145,7 @@ function ProjectCard({ project, onOpenProcess }) {
 }
 
 /*
- * Galeria do modal: a foto aparece inteira (sem corte) ocupando o painel,
+ * Galeria do modal: a foto aparece inteira (sem corte) na largura do modal,
  * com setas, contador e miniaturas quando o projeto tem mais de uma imagem.
  */
 function ProjectGallery({ images, title }) {
@@ -252,9 +242,9 @@ function ProjectGallery({ images, title }) {
 }
 
 /*
- * Modal em duas colunas no desktop: a galeria à esquerda e o conteúdo à direita,
- * que rola sozinho com uma barra fina. Cada bloco entra em cascata (--i).
- * No celular vira uma coluna só, com a foto em cima.
+ * Modal em uma coluna: a galeria no topo, com a foto inteira na largura do modal,
+ * e o conteúdo embaixo. O modal todo rola com uma barra fina e cada bloco entra
+ * em cascata (--i). O botão de fechar fica preso no canto, fora da rolagem.
  */
 function ProjectModal({ project, onClose }) {
   const { t } = useLanguage();
@@ -303,21 +293,23 @@ function ProjectModal({ project, onClose }) {
       aria-labelledby="project-modal-title"
     >
       {project && (
+        <>
+        <button
+          type="button"
+          className={styles.closeButton}
+          onClick={onClose}
+          aria-label={t.projects.close}
+          data-autofocus
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+
         <div key={project.id} className={styles.modalLayout}>
           <ProjectGallery images={project.images} title={project.title} />
 
           <div className={styles.modalBody}>
-            <button
-              type="button"
-              className={styles.closeButton}
-              onClick={onClose}
-              aria-label={t.projects.close}
-              data-autofocus
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M6 6l12 12M18 6L6 18" />
-              </svg>
-            </button>
 
             <header className={styles.modalHeader} style={reveal()}>
               <span className={styles.categoryBadge}>{project.categoryLabel}</span>
@@ -383,6 +375,7 @@ function ProjectModal({ project, onClose }) {
             </div>
           </div>
         </div>
+        </>
       )}
     </dialog>
   );
