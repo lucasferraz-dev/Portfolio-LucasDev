@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   siC,
   siClaudecode,
@@ -15,6 +15,7 @@ import {
   siHtml5,
   siJavascript,
   siLinear,
+  siLinux,
   siMysql,
   siNeon,
   siNodedotjs,
@@ -30,6 +31,7 @@ import {
   siSqlalchemy,
   siSqlite,
   siTailwindcss,
+  siTraefikproxy,
   siTypescript,
   siVercel,
   siVite,
@@ -39,6 +41,7 @@ import styles from './Skills.module.css';
 import useInView from '../effects/useInView';
 import useTilt from '../effects/useTilt';
 import SkillArt from './SkillArt';
+import TuxWalker from '../effects/TuxWalker';
 import { useLanguage } from '../../i18n/useLanguage';
 
 const SKILL_GROUPS = [
@@ -107,6 +110,8 @@ const SKILL_GROUPS = [
       { name: 'Azure', usedIn: ['pilgrims'] },
       { name: 'Claude Code', icon: siClaudecode, usedIn: ['pilgrims', 'skinomics'] },
       { name: 'kitty', usedIn: ['pilgrims'] },
+      { name: 'Linux', icon: siLinux, usedIn: ['pilgrims', 'internship'] },
+      { name: 'Traefik', icon: siTraefikproxy, usedIn: ['pilgrims'] },
     ],
   },
 ];
@@ -126,6 +131,7 @@ function SkillCard({ skill, index }) {
       onClick={() => setIsFlipped((prev) => !prev)}
       onPointerMove={tilt.onPointerMove}
       onPointerLeave={tilt.onPointerLeave}
+      data-skill={skill.name}
       aria-label={`${skill.name}. ${t.skills.usedInLabel}: ${usedIn.join(', ')}`}
     >
       <span className={styles.tilt}>
@@ -167,6 +173,7 @@ function SkillGroup({ group, title }) {
 
 export default function Skills() {
   const { t } = useLanguage();
+  const groupsRef = useRef(null);
 
   return (
     <section id="skills" className={styles.sectionContainer}>
@@ -176,7 +183,8 @@ export default function Skills() {
         <p className={styles.hint}>{t.skills.hint}</p>
       </div>
 
-      <div className={styles.groups}>
+      <div ref={groupsRef} className={styles.groups}>
+        <TuxWalker containerRef={groupsRef} />
         {SKILL_GROUPS.map((group) => (
           <SkillGroup key={group.id} group={group} title={t.skills.groups[group.id]} />
         ))}

@@ -1,0 +1,117 @@
+@reference "../../index.css";
+
+/*
+ * O ponto (0, 0) do elemento é onde ficam os pés: o Tux é desenhado para cima
+ * dele, então colocar o elemento no topo de um card deixa o Tux em pé ali.
+ * --face (1 ou -1) vira o Tux para o lado em que ele está andando.
+ */
+.walker {
+  @apply absolute top-0 left-0 z-10 w-0 h-0;
+}
+
+.button {
+  @apply absolute bottom-0 -left-4 w-8 h-9 p-0 border-0 bg-transparent cursor-pointer;
+}
+
+.button:disabled {
+  cursor: default;
+}
+
+.button:focus-visible {
+  @apply outline-2 outline-offset-2 outline-accent rounded-full;
+}
+
+.tux {
+  @apply block w-full h-full overflow-visible;
+  transform-origin: 50% 100%;
+  scale: var(--face, 1) 1;
+  filter: drop-shadow(0 0 1px rgb(255 255 255 / 0.4)) drop-shadow(0 3px 4px rgb(0 0 0 / 0.5));
+  transition: scale 0.2s;
+}
+
+.black { fill: #141414; }
+.white { fill: #f5f5f5; }
+.orange { fill: #f2a516; }
+
+/* gingado e passos só enquanto está andando */
+.walking .tux {
+  animation: waddle 0.5s ease-in-out infinite;
+}
+
+@keyframes waddle {
+  0%, 100% { rotate: -6deg; translate: 0 0; }
+  25% { rotate: 0deg; translate: 0 -1.5px; }
+  50% { rotate: 6deg; translate: 0 0; }
+  75% { rotate: 0deg; translate: 0 -1.5px; }
+}
+
+.footLeft,
+.footRight {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.walking .footLeft,
+.walking .footRight {
+  animation: step 0.5s ease-in-out infinite;
+}
+
+.walking .footRight {
+  animation-delay: -0.25s;
+}
+
+@keyframes step {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* no ar, durante o pulo do card até em cima dos cards */
+.leaping .tux {
+  animation: leap 0.9s ease-in-out;
+}
+
+@keyframes leap {
+  0% { scale: 0.9 1.1; }
+  50% { scale: 0.95 1.05; rotate: -10deg; }
+  85% { scale: 1 1; rotate: 0deg; }
+  92% { scale: 1.15 0.85; }
+  100% { scale: 1 1; }
+}
+
+/* pulinho quando alguém clica */
+.hop {
+  animation: hop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes hop {
+  0% { translate: 0 0; }
+  40% { translate: 0 -10px; }
+  100% { translate: 0 0; }
+}
+
+/* balão de fala */
+.bubble {
+  @apply absolute bottom-[46px] left-1/2 -translate-x-1/2 w-max max-w-[220px] px-3 py-2 rounded-xl
+         border border-slate-800 bg-surface font-mono text-xs leading-snug text-slate-200 shadow-2xl;
+  animation: bubbleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bubble::after {
+  content: "";
+  @apply absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 border-r border-b border-slate-800 bg-surface;
+}
+
+@keyframes bubbleIn {
+  from { opacity: 0; translate: 0 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .walking .tux,
+  .walking .footLeft,
+  .walking .footRight,
+  .leaping .tux,
+  .hop,
+  .bubble {
+    animation: none;
+  }
+}

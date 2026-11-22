@@ -1627,3 +1627,83 @@
   50%  { opacity: 0; }
 }
 
+/* ---------- Linux: o Tux pula para fora do card ---------- */
+
+.linuxGhost {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 0.35;
+  stroke-dasharray: 0.9 0.7;
+  opacity: 0;
+}
+
+.linuxTux {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+:global(.is-revealed) .linuxTux {
+  animation: linuxJump 1.6s cubic-bezier(0.4, 0, 0.2, 1) var(--t0) both;
+}
+
+:global(.is-revealed) .linuxGhost {
+  animation: linuxGhostIn 0.5s ease calc(var(--t0) + 1.5s) both;
+}
+
+/* aparece, olha para os lados, agacha e pula para cima até sair do card */
+@keyframes linuxJump {
+  0% { opacity: 0; transform: scale(0.6); }
+  14% { opacity: 1; transform: scale(1); }
+  24% { transform: rotate(-8deg); }
+  34% { transform: rotate(8deg); }
+  44% { transform: rotate(0deg); }
+  58% { transform: translateY(0.6px) scale(1.12, 0.8); }
+  70% { opacity: 1; transform: translateY(-6px) scale(0.92, 1.1); }
+  100% { opacity: 0; transform: translateY(-26px) scale(0.95, 1.05); }
+}
+
+@keyframes linuxGhostIn {
+  to { opacity: 0.35; }
+}
+
+/* ---------- Traefik: pacotes chegando e sendo roteados ---------- */
+
+.traefikPacket {
+  fill: var(--color-white);
+  opacity: 0;
+}
+
+:global(.is-revealed) .traefikPacket {
+  animation-duration: 1.2s;
+  animation-timing-function: ease-in-out;
+  animation-delay: calc(var(--t0) + 1.3s + var(--p) * 0.35s);
+  animation-iteration-count: 2;
+}
+
+:global(.is-revealed) .traefikRoute0 { animation-name: traefikRoute0; }
+:global(.is-revealed) .traefikRoute1 { animation-name: traefikRoute1; }
+:global(.is-revealed) .traefikRoute2 { animation-name: traefikRoute2; }
+
+@keyframes traefikRoute0 {
+  0% { opacity: 0; transform: translate(-5px, 12px); }
+  15% { opacity: 1; }
+  45% { transform: translate(12px, 12px); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translate(29px, 3px); }
+}
+
+@keyframes traefikRoute1 {
+  0% { opacity: 0; transform: translate(-5px, 12px); }
+  15% { opacity: 1; }
+  45% { transform: translate(12px, 12px); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translate(29px, 12px); }
+}
+
+@keyframes traefikRoute2 {
+  0% { opacity: 0; transform: translate(-5px, 12px); }
+  15% { opacity: 1; }
+  45% { transform: translate(12px, 12px); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translate(29px, 21px); }
+}

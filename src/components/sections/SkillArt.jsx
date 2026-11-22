@@ -923,6 +923,39 @@ function KittyArt() {
   );
 }
 
+/*
+ * Linux: o Tux aparece, olha para os lados, se agacha e pula para cima, saindo
+ * pelo topo do card; fica só o contorno tracejado de onde ele estava. O pulo
+ * continua no TuxWalker, que pega o fim desta animação (animationend) e leva o
+ * Tux até em cima da primeira fileira de ferramentas.
+ */
+function LinuxArt({ icon }) {
+  return (
+    <Art style={{ color: `#${icon.hex}` }}>
+      <path d={icon.path} className={styles.linuxGhost} />
+      <g className={styles.linuxTux}>
+        <path d={icon.path} fill="currentColor" />
+      </g>
+    </Art>
+  );
+}
+
+/* Traefik: o logo é traçado e preenchido e os pacotes chegam por um lado e saem roteados para três destinos */
+function TraefikArt({ icon }) {
+  return (
+    <DrawArt
+      icon={icon}
+      extra={
+        <g>
+          {[0, 1, 2].map((i) => (
+            <circle key={i} r="1.1" className={`${styles.traefikPacket} ${styles[`traefikRoute${i}`]}`} style={{ '--p': i }} />
+          ))}
+        </g>
+      }
+    />
+  );
+}
+
 /* Mapa de nome → animação. */
 const ART = {
   Python: { Component: PythonArt },
@@ -967,6 +1000,8 @@ const ART = {
   Azure: { Component: AzureArt },
   'Claude Code': { Component: ClaudeCodeArt },
   kitty: { Component: KittyArt },
+  Linux: { Component: LinuxArt },
+  Traefik: { Component: TraefikArt },
 };
 
 
