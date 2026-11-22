@@ -98,7 +98,7 @@
 }
 
 .tux {
-  @apply -top-[58px] right-10;
+  @apply -top-[72px] right-10;
 }
 
 .terminal {

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './TuxWalker.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
+import TuxSprite from './TuxSprite';
 
 const SPEED = 32; // pixels por segundo andando
 const LEAP_MS = 900;
@@ -22,6 +23,8 @@ export default function TuxWalker({ containerRef }) {
   const [phase, setPhase] = useState('hidden'); // hidden → leap → walk
   const [line, setLine] = useState(null);
   const [talks, setTalks] = useState(0);
+  const [walking, setWalking] = useState(false);
+  const walkingRef = useRef(false);
 
   // posições, nas coordenadas da área das skills: de onde ele pula e por onde anda
   const measure = () => {
@@ -99,8 +102,12 @@ export default function TuxWalker({ containerRef }) {
       }
 
       el.style.transform = `translate(${s.x}px, ${floor}px)`;
+      // vira estilo Paper Mario: o CSS anima a escala de 1 para -1, achatando no meio
       el.style.setProperty('--face', s.dir);
-      el.classList.toggle(styles.walking, walking);
+      if (walkingRef.current !== walking) {
+        walkingRef.current = walking;
+        setWalking(walking);
+      }
     };
 
     frame = requestAnimationFrame(tick);
@@ -141,17 +148,11 @@ export default function TuxWalker({ containerRef }) {
         aria-label={t.fun.tuxLabel}
         title={t.fun.tuxLabel}
       >
-        <svg key={talks} viewBox="0 0 64 72" className={`${styles.tux} ${talks ? styles.hop : ''}`} aria-hidden="true">
-          <path className={`${styles.orange} ${styles.footLeft}`} d="M18 62c-4 0-7 2-7 5 0 2 2 3 4 3h9c2 0 3-2 2-4l-2-3c-1-1-3-1-6-1z" />
-          <path className={`${styles.orange} ${styles.footRight}`} d="M46 62c4 0 7 2 7 5 0 2-2 3-4 3h-9c-2 0-3-2-2-4l2-3c1-1 3-1 6-1z" />
-          <path className={styles.black} d="M32 4C21 4 15 13 15 24c0 6-4 10-5 17-1 9 4 21 22 21s23-12 22-21c-1-7-5-11-5-17C49 13 43 4 32 4z" />
-          <path className={styles.white} d="M32 24c-8 0-12 8-12 16 0 9 5 17 12 17s12-8 12-17c0-8-4-16-12-16z" />
-          <ellipse className={styles.white} cx="26.5" cy="17" rx="4.5" ry="5.5" />
-          <ellipse className={styles.white} cx="37.5" cy="17" rx="4.5" ry="5.5" />
-          <circle className={styles.black} cx="29" cy="18" r="2.2" />
-          <circle className={styles.black} cx="39" cy="18" r="2.2" />
-          <path className={styles.orange} d="M27 24c2-2 4-3 7-3s5 1 7 3c-2 3-4 4-7 4s-5-1-7-4z" />
-        </svg>
+        <span key={talks} className={`${styles.hopper} ${talks ? styles.hop : ''}`}>
+          <span className={styles.flip}>
+            <TuxSprite mode={walking ? 'walk' : 'idle'} />
+          </span>
+        </span>
       </button>
     </div>
   );

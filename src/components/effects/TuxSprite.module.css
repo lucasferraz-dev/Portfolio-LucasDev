@@ -1,0 +1,118 @@
+@reference "../../index.css";
+
+.sprite {
+  @apply block w-full h-full overflow-visible;
+  /* contorno claro bem sutil para o corpo preto não sumir no fundo escuro */
+  filter: drop-shadow(0 0 0.6px rgb(255 255 255 / 0.55)) drop-shadow(0 4px 6px rgb(0 0 0 / 0.45));
+}
+
+.body,
+.footBack,
+.footFront,
+.flipperBack,
+.flipperFront,
+.eyes {
+  transform-box: fill-box;
+}
+
+/* ---------- parado: pisca e respira ---------- */
+
+.eyes {
+  transform-origin: center;
+  animation: blink 4.6s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.08); }
+}
+
+.idle .body {
+  transform-origin: 50% 100%;
+  animation: breathe 3s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.015, 0.985); }
+}
+
+/* ---------- andando: ginga, passos alternados e asas balançando ---------- */
+
+.walk .body {
+  transform-origin: 50% 100%;
+  animation: waddle 0.56s ease-in-out infinite;
+}
+
+@keyframes waddle {
+  0%, 100% { transform: rotate(-5deg) translateY(0); }
+  25% { transform: rotate(0deg) translateY(-2.5px); }
+  50% { transform: rotate(5deg) translateY(0); }
+  75% { transform: rotate(0deg) translateY(-2.5px); }
+}
+
+.walk .footBack,
+.walk .footFront {
+  transform-origin: 50% 100%;
+  animation: stepFoot 0.56s ease-in-out infinite;
+}
+
+.walk .footFront {
+  animation-delay: -0.28s;
+}
+
+@keyframes stepFoot {
+  0%, 50%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-5px) rotate(-8deg); }
+}
+
+.walk .flipperBack {
+  transform-origin: 70% 10%;
+  animation: flap 0.56s ease-in-out infinite;
+}
+
+.walk .flipperFront {
+  transform-origin: 30% 10%;
+  animation: flap 0.56s ease-in-out infinite reverse;
+}
+
+@keyframes flap {
+  0%, 100% { transform: rotate(-9deg); }
+  50% { transform: rotate(9deg); }
+}
+
+/* ---------- sentado: pés balançando, um de cada vez ---------- */
+
+.sit .footBack,
+.sit .footFront {
+  transform-origin: 50% 0%;
+  animation: dangle 1.6s ease-in-out infinite;
+}
+
+.sit .footFront {
+  animation-delay: -0.8s;
+}
+
+@keyframes dangle {
+  0%, 100% { transform: rotate(-12deg); }
+  50% { transform: rotate(12deg); }
+}
+
+.sit .flipperFront {
+  transform-origin: 30% 10%;
+  animation: wave 6s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%, 70%, 100% { transform: rotate(0deg); }
+  75% { transform: rotate(-38deg); }
+  80% { transform: rotate(-12deg); }
+  85% { transform: rotate(-38deg); }
+  90% { transform: rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sprite * {
+    animation: none !important;
+  }
+}
