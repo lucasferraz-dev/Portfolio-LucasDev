@@ -7,6 +7,8 @@
 
 .sectionContainer {
   @apply py-24 max-w-none w-full px-6 md:px-16 lg:px-24 border-t border-slate-900/60;
+  /* os cards entram deslizando de fora; sem isso eles alargam a página no celular */
+  overflow-x: clip;
 }
 
 .header {
