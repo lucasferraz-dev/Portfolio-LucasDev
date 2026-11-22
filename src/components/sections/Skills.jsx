@@ -132,6 +132,7 @@ function SkillCard({ skill, index }) {
       onPointerMove={tilt.onPointerMove}
       onPointerLeave={tilt.onPointerLeave}
       data-skill={skill.name}
+      data-sticky={`skill-${skill.name}`}
       aria-label={`${skill.name}. ${t.skills.usedInLabel}: ${usedIn.join(', ')}`}
     >
       <span className={styles.tilt}>

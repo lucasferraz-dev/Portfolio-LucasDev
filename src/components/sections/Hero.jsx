@@ -144,8 +144,11 @@ export default function Hero() {
       </div>
 
       <div className={styles.visualContainer}>
-        <div className={styles.photoFrame}>
-          <img src={fotoPerfil} alt="Lucas Ferraz dos Santos" className={styles.profilePhoto} fetchPriority="high" />
+        {/* moldura sem corte em volta da foto, onde as figurinhas colam */}
+        <div className={styles.photoWrap} data-sticky="profile-photo">
+          <div className={styles.photoFrame}>
+            <img src={fotoPerfil} alt="Lucas Ferraz dos Santos" className={styles.profilePhoto} fetchPriority="high" />
+          </div>
         </div>
         
         <DeveloperQuery role={t.hero.role} />

@@ -95,6 +95,10 @@
   animation: float 5s ease-in-out infinite;
 }
 
+.photoWrap {
+  @apply relative w-full;
+}
+
 .photoFrame {
   @apply w-full aspect-square bg-surface border border-slate-900 rounded-full overflow-hidden shadow-2xl relative mx-auto;
 }
