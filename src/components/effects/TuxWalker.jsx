@@ -5,20 +5,23 @@ import TuxSprite from './TuxSprite';
 
 const SPEED = 32; // pixels por segundo andando
 const LEAP_MS = 900;
-const TURN_PAUSE = 700; // paradinha antes de virar para o outro lado
+const TURN_PAUSE = 450; // paradinha para virar quando o próximo destino é para o outro lado
+const REST_MIN = 500; // tempo parado ao chegar num destino (sorteado entre os dois)
+const REST_MAX = 3200;
+const MIN_TRIP = 40; // distância mínima até o próximo destino
 const TALK_MS = 3200;
-const PATROL_CARDS = 3; // anda em cima dos primeiros cards de ferramentas
 
 /*
  * Tux que pula do card do Linux. Quando a animação do card termina (o Tux sai
  * pelo topo), este Tux continua o pulo num arco até em cima da primeira fileira
- * de ferramentas e fica andando reto, indo e voltando por cima dos primeiros
- * cards. Ao clicar, ele para, dá um pulinho e fala alguma coisa.
+ * de ferramentas e fica passeando por ela: sorteia um destino, anda até lá, para
+ * um tempo e escolhe outro, virando quando muda de direção. Ao clicar, ele para,
+ * dá um pulinho e fala alguma coisa olhando para quem clicou.
  */
 export default function TuxWalker({ containerRef }) {
   const { t } = useLanguage();
   const ref = useRef(null);
-  const state = useRef({ x: 0, dir: 1, pauseUntil: 0, talkingUntil: 0 });
+  const state = useRef({ x: 0, dir: 1, target: null, pauseUntil: 0, talkingUntil: 0 });
   const lastLine = useRef(-1);
   const [phase, setPhase] = useState('hidden'); // hidden → leap → walk
   const [line, setLine] = useState(null);
@@ -35,7 +38,9 @@ export default function TuxWalker({ containerRef }) {
       return { left: r.left - box.left, right: r.right - box.left, top: r.top - box.top, width: r.width };
     };
     const linux = rel(container.querySelector('[data-skill="Linux"]'));
-    const tools = [...container.querySelector('[data-skill="Git"]').parentElement.children].slice(0, PATROL_CARDS).map(rel);
+    // a primeira fileira inteira de ferramentas (os cards com o mesmo topo do primeiro)
+    const all = [...container.querySelector('[data-skill="Git"]').parentElement.children].map(rel);
+    const tools = all.filter((card) => Math.abs(card.top - all[0].top) < 2);
     return {
       from: { x: linux.left + linux.width / 2, y: linux.top },
       floor: tools[0].top,
@@ -90,14 +95,29 @@ export default function TuxWalker({ containerRef }) {
       last = now;
       const s = state.current;
       const { floor, minX, maxX } = measure();
-      const walking = !still && now >= s.pauseUntil && now >= s.talkingUntil;
+      const walking = !still && s.target !== null && now >= s.pauseUntil && now >= s.talkingUntil;
 
-      if (walking) {
-        s.x += s.dir * SPEED * dt;
-        if (s.x >= maxX || s.x <= minX) {
-          s.x = Math.min(Math.max(s.x, minX), maxX);
-          s.dir *= -1;
+      // escolhe um destino aleatório na fileira; se for para o outro lado, vira antes
+      if (!still && s.target === null && now >= s.pauseUntil) {
+        let target = s.x;
+        for (let tries = 0; tries < 8 && Math.abs(target - s.x) < MIN_TRIP; tries++) {
+          target = minX + Math.random() * (maxX - minX);
+        }
+        s.target = target;
+        const dir = Math.sign(target - s.x) || s.dir;
+        if (dir !== s.dir) {
+          s.dir = dir;
           s.pauseUntil = now + TURN_PAUSE;
+        }
+      }
+
+      if (walking && s.target !== null) {
+        s.x += s.dir * SPEED * dt;
+        const arrived = s.dir > 0 ? s.x >= s.target : s.x <= s.target;
+        if (arrived || s.x >= maxX || s.x <= minX) {
+          s.x = Math.min(Math.max(arrived ? s.target : s.x, minX), maxX);
+          s.target = null;
+          s.pauseUntil = now + REST_MIN + Math.random() * (REST_MAX - REST_MIN);
         }
       }
 
@@ -150,7 +170,7 @@ export default function TuxWalker({ containerRef }) {
       >
         <span key={talks} className={`${styles.hopper} ${talks ? styles.hop : ''}`}>
           <span className={styles.flip}>
-            <TuxSprite mode={walking ? 'walk' : 'idle'} />
+            <TuxSprite mode={walking ? 'walk' : 'idle'} front={line !== null} />
           </span>
         </span>
       </button>

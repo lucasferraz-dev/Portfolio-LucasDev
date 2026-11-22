@@ -9,14 +9,15 @@ import styles from './TuxSprite.module.css';
  * para a direita, como um sprite: virar para a esquerda é espelhar.
  *
  * mode: 'idle' (pisca e respira), 'walk' (ginga, passos e asas) ou 'sit'
- * (sentado, balançando os pés). O pé fica em y = 120 no viewBox.
+ * (sentado, balançando os pés). front: olha para quem está vendo (pupilas e
+ * bico no centro), com uma transição suave. O pé fica em y = 120 no viewBox.
  */
-export default function TuxSprite({ mode = 'idle', className = '' }) {
+export default function TuxSprite({ mode = 'idle', front = false, className = '' }) {
   const id = useId().replace(/:/g, '');
   const g = (name) => `url(#${id}-${name})`;
 
   return (
-    <svg viewBox="0 0 100 122" className={`${styles.sprite} ${styles[mode]} ${className}`} aria-hidden="true">
+    <svg viewBox="0 0 100 122" className={`${styles.sprite} ${styles[mode]} ${front ? styles.front : ''} ${className}`} aria-hidden="true">
       <defs>
         <radialGradient id={`${id}-body`} cx="38%" cy="22%" r="80%">
           <stop offset="0%" stopColor="#4a4a4f" />
@@ -83,10 +84,12 @@ export default function TuxSprite({ mode = 'idle', className = '' }) {
         <g className={styles.eyes}>
           <ellipse cx="44" cy="24" rx="6.8" ry="9.2" fill={g('eye')} />
           <ellipse cx="60" cy="24" rx="6.4" ry="9" fill={g('eye')} />
-          <circle cx="47" cy="26" r="3.7" fill="#0b0b0c" />
-          <circle cx="62.6" cy="26" r="3.5" fill="#0b0b0c" />
-          <circle cx="48.2" cy="24.4" r="1.2" fill="#ffffff" />
-          <circle cx="63.7" cy="24.4" r="1.1" fill="#ffffff" />
+          <g className={styles.pupils}>
+            <circle cx="47" cy="26" r="3.7" fill="#0b0b0c" />
+            <circle cx="62.6" cy="26" r="3.5" fill="#0b0b0c" />
+            <circle cx="48.2" cy="24.4" r="1.2" fill="#ffffff" />
+            <circle cx="63.7" cy="24.4" r="1.1" fill="#ffffff" />
+          </g>
         </g>
 
         {/* bico em duas partes */}

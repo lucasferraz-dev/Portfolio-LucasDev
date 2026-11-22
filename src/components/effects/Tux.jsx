@@ -4,8 +4,8 @@ import { useLanguage } from '../../i18n/useLanguage';
 import TuxSprite from './TuxSprite';
 
 /*
- * Tux sentado na borda de cima do terminal do contato. Parado, ele balança os
- * pés, pisca e de vez em quando acena. Ao clicar, dá um
+ * Tux sentado na borda de cima do terminal do contato, sempre olhando para
+ * quem está vendo. Parado, ele balança os pés, pisca e de vez em quando acena. Ao clicar, dá um
  * pulinho e solta um balão com uma frase aleatória (sem repetir a anterior).
  */
 export default function Tux({ className = '' }) {
@@ -39,7 +39,7 @@ export default function Tux({ className = '' }) {
 
       <button type="button" className={styles.button} onClick={poke} aria-label={t.fun.tuxLabel} title={t.fun.tuxLabel}>
         <span key={hops} className={`${styles.tux} ${hops ? styles.hop : ''}`}>
-          <TuxSprite mode="sit" />
+          <TuxSprite mode="sit" front />
         </span>
       </button>
     </div>
