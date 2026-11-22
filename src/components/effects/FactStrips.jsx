@@ -16,7 +16,11 @@ const ANCHORS = [
   { section: 'contact', side: 'right', top: 40, tilt: 2 },
 ];
 
-const STORAGE_KEY = 'fact-strips';
+// a versão muda quando o formato salvo muda, para não carregar posições de um jeito antigo de colar
+const STORAGE_KEY = 'fact-strips-v2';
+try {
+  localStorage.removeItem('fact-strips');
+} catch {}
 const MOVED_KEY = 'fact-strips-moved';
 
 function load(key, fallback) {
