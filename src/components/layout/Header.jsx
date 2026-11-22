@@ -102,7 +102,7 @@ function LanguageToggle() {
       aria-label={label}
       title={label}
     >
-      <span key={current.code} className={styles.langIcon}>
+      <span key={`planet-${current.code}`} className={styles.langIcon}>
         <Planet />
       </span>
       <span key={current.code} lang={current.htmlLang} className={styles.langCode}>
