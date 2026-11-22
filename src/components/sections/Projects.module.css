@@ -113,13 +113,17 @@
 }
 
 .card {
-  @apply relative flex flex-col bg-surface border border-slate-900 rounded-2xl overflow-hidden shadow-2xl
-         transition-colors duration-300 w-full scroll-mt-28;
+  @apply relative w-full scroll-mt-28;
 }
 
-.card:hover,
-.card:focus-within {
-  @apply border-accent/30;
+.cardButton {
+  @apply relative block w-full p-0 text-left rounded-2xl overflow-hidden cursor-pointer
+         bg-surface border border-slate-900 shadow-2xl transition-colors duration-300;
+}
+
+.cardButton:hover,
+.cardButton:focus-visible {
+  @apply border-accent/40;
 }
 
 .media {
@@ -127,33 +131,30 @@
 }
 
 .image {
-  @apply absolute inset-0 w-full h-full object-cover transition-transform duration-700;
+  @apply absolute inset-0 w-full h-full object-cover;
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.6s;
 }
 
 .imagePlaceholder {
-  @apply w-full h-full flex flex-col items-center justify-center gap-3 bg-surface-alt;
-  background-image:
-    linear-gradient(rgba(0, 204, 85, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 204, 85, 0.04) 1px, transparent 1px);
-  background-size: 28px 28px;
+  @apply w-full h-full flex items-center justify-center bg-surface-alt;
 }
 
 .placeholderText {
   @apply font-mono text-sm md:text-base font-bold tracking-widest text-accent/70 text-center px-6;
 }
 
-.placeholderSub {
-  @apply font-mono text-[10px] tracking-[0.25em] text-slate-700 uppercase;
-}
-
+/*
+ * Texto por cima da foto. O degradê escurece só a parte de baixo; no hover ele
+ * sobe um pouco e o bloco .reveal abre (0fr → 1fr) com o resumo e as tecnologias.
+ */
 .overlay {
-  @apply absolute inset-x-0 bottom-0 flex flex-col items-start gap-2 p-6 md:p-8 pt-20
-         bg-linear-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300;
+  @apply absolute inset-x-0 bottom-0 flex flex-col items-start gap-2 p-6 md:p-8 pt-24;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.9), rgb(0 0 0 / 0.55) 55%, transparent);
 }
 
 .overlayBadge {
   @apply px-3 py-1 text-[10px] font-mono font-bold tracking-widest uppercase rounded-full border backdrop-blur-sm;
-  color: #e2e8f0;
+  color: #e5e5e5;
   border-color: rgb(255 255 255 / 0.25);
   background-color: rgb(0 0 0 / 0.35);
 }
@@ -166,21 +167,34 @@
 
 .overlayPeriod {
   @apply font-mono text-xs tracking-widest uppercase;
-  color: rgb(255 255 255 / 0.8);
-  text-shadow: 0 1px 6px rgb(0 0 0 / 0.6);
+  color: rgb(255 255 255 / 0.75);
 }
 
-.hoverHint {
-  @apply absolute top-4 right-4 hidden items-center gap-2 px-3 py-1.5 rounded-full border backdrop-blur-sm
-         font-mono text-[11px] font-bold tracking-widest uppercase transition-opacity duration-300;
-  color: #ffffff;
-  border-color: rgb(255 255 255 / 0.25);
-  background-color: rgb(0 0 0 / 0.55);
+.reveal {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.hoverHintIcon {
-  @apply w-3.5 h-3.5;
-  fill: currentColor;
+.revealInner {
+  @apply min-h-0 overflow-hidden flex flex-col gap-3;
+  transition: opacity 0.4s, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.revealSummary {
+  @apply pt-2 text-sm md:text-base leading-relaxed max-w-2xl line-clamp-2;
+  color: rgb(255 255 255 / 0.82);
+}
+
+.revealTags {
+  @apply flex flex-wrap gap-1.5;
+}
+
+.revealTag {
+  @apply px-2.5 py-0.5 rounded-full text-[11px] font-medium border;
+  color: rgb(255 255 255 / 0.85);
+  border-color: rgb(255 255 255 / 0.2);
+  background-color: rgb(255 255 255 / 0.06);
 }
 
 .photoCount {
@@ -198,25 +212,58 @@
   stroke-width: 2;
 }
 
-.panel {
-  @apply flex flex-col gap-5 p-6 md:p-8 bg-surface;
+/* bolinha que segue o mouse dentro do card */
+.cursorBubble {
+  @apply absolute top-0 left-0 hidden items-center justify-center w-28 h-28 rounded-full pointer-events-none
+         font-mono text-[11px] font-bold tracking-widest uppercase text-center leading-tight px-4
+         bg-accent text-on-accent;
+  translate: calc(var(--x, 50%) - 50%) calc(var(--y, 50%) - 50%);
+  scale: 0;
+  transition: translate 0.12s linear, scale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 10px 40px -8px color-mix(in srgb, var(--color-accent) 70%, transparent);
 }
 
-.panelHeader {
-  @apply hidden;
+@media (hover: hover) and (min-width: 768px) {
+  .reveal {
+    grid-template-rows: 0fr;
+  }
+
+  .revealInner {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .cursorBubble {
+    @apply flex;
+  }
+
+  .cardButton {
+    cursor: none;
+  }
+
+  .cardButton:hover .reveal,
+  .cardButton:focus-visible .reveal {
+    grid-template-rows: 1fr;
+  }
+
+  .cardButton:hover .revealInner,
+  .cardButton:focus-visible .revealInner {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cardButton:hover .image,
+  .cardButton:focus-visible .image {
+    transform: scale(1.05);
+    filter: brightness(0.8);
+  }
+
+  .cardButton:hover .cursorBubble {
+    scale: 1;
+  }
 }
 
-.projectId {
-  @apply text-xs font-mono text-accent/70 font-bold tracking-widest;
-}
-
-.panelTitle {
-  @apply text-xl md:text-2xl font-bold text-white tracking-tight leading-snug;
-}
-
-.summary {
-  @apply text-sm md:text-base text-slate-400 leading-relaxed;
-}
+/* ---------- Links e tags (modal) ---------- */
 
 .tagsContainer {
   @apply flex flex-wrap gap-2;
@@ -233,139 +280,88 @@
   @apply w-1.5 h-1.5 rounded-full bg-accent shrink-0;
 }
 
-.actions {
-  @apply flex flex-wrap gap-3 pt-1;
-}
-
-.processButton {
-  @apply inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent/40 bg-accent/10 text-accent
-         text-xs font-mono font-bold uppercase tracking-widest cursor-pointer transition-colors duration-200;
-}
-
-.processButton:hover {
-  @apply bg-accent/20 border-accent/60;
-}
-
-.linkButton {
-  @apply inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-800 text-slate-300
-         text-xs font-mono font-bold uppercase tracking-widest transition-colors duration-200;
-}
-
-.linkButton:hover {
-  @apply border-accent/40 text-accent;
-}
-
 .arrow {
   @apply transition-transform duration-200 inline-block font-bold;
 }
 
-.linkButton:hover .arrow,
 .projectLink:hover .arrow {
   transform: translateX(4px);
 }
 
-@media (hover: hover) and (min-width: 768px) {
-  .panel {
-    @apply absolute top-0 right-0 h-full w-3/5 justify-center overflow-y-auto
-           border-l border-slate-900 bg-surface/90 backdrop-blur-md;
-    transform: translateX(100%);
-    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-
-  .panelHeader {
-    @apply flex flex-col gap-2;
-  }
-
-  .card:hover .panel,
-  .card:focus-within .panel {
-    transform: translateX(0);
-  }
-
-  .hoverHint {
-    @apply flex;
-  }
-
-  .card:hover .overlay,
-  .card:focus-within .overlay,
-  .card:hover .hoverHint,
-  .card:focus-within .hoverHint {
-    @apply opacity-0;
-  }
-
-  .card:hover .image,
-  .card:focus-within .image {
-    transform: scale(1.02);
-  }
-}
+/* ---------- Modal ---------- */
 
 @keyframes modalIn {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
   to { opacity: 1; transform: none; }
 }
 
+@keyframes backdropIn {
+  from { opacity: 0; }
+}
+
+@keyframes blockIn {
+  from { opacity: 0; transform: translateY(14px); }
+}
+
 .modal {
-  @apply p-0 m-auto w-[min(920px,calc(100%-2rem))] max-h-[90vh] rounded-2xl border border-slate-800
-         bg-surface text-slate-300 shadow-2xl overflow-hidden;
+  @apply p-0 m-auto w-[min(1180px,calc(100%-2rem))] h-[min(860px,calc(100dvh-2rem))] max-w-none max-h-none
+         rounded-3xl border border-slate-800 bg-surface text-slate-300 shadow-2xl overflow-hidden;
 }
 
 .modal[open] {
-  animation: modalIn 0.25s ease-out;
+  animation: modalIn 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .modal::backdrop {
-  background-color: rgb(0 0 0 / 0.7);
-  backdrop-filter: blur(4px);
+  background-color: rgb(0 0 0 / 0.75);
+  backdrop-filter: blur(8px);
+  animation: backdropIn 0.3s ease-out;
 }
 
-.modalContent {
-  @apply relative max-h-[90vh] overflow-y-auto;
-}
-
-.closeButton {
-  @apply absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center
-         text-2xl leading-none cursor-pointer border transition-colors duration-200;
-  color: #ffffff;
-  background-color: rgb(0 0 0 / 0.55);
-  border-color: rgb(255 255 255 / 0.2);
-}
-
-.closeButton:hover {
-  background-color: rgb(0 0 0 / 0.8);
-}
-
-.modalImage {
-  @apply block w-full h-auto;
+.modalLayout {
+  @apply h-full overflow-y-auto lg:overflow-hidden lg:grid lg:grid-cols-[1.4fr_1fr];
 }
 
 /* ---------- Galeria ---------- */
 
 .gallery {
-  @apply flex flex-col bg-slate-950;
+  @apply relative flex flex-col bg-black lg:h-full;
 }
 
 .galleryViewport {
-  @apply relative overflow-hidden;
+  @apply relative aspect-video lg:aspect-auto lg:flex-1 overflow-hidden;
 }
 
-.galleryTrack {
-  @apply flex transition-transform duration-500;
-  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+/* a mesma foto, ampliada e desfocada, preenche as sobras ao redor da imagem */
+.galleryBackdrop {
+  @apply absolute inset-0 w-full h-full object-cover pointer-events-none;
+  filter: blur(40px) brightness(0.45) saturate(1.2);
+  transform: scale(1.2);
+  animation: backdropIn 0.6s ease-out;
 }
 
 .gallerySlide {
-  @apply block w-full h-auto shrink-0 select-none;
+  @apply absolute inset-0 w-full h-full object-contain select-none opacity-0;
+  transform: scale(1.03);
+  transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.gallerySlideActive {
+  @apply opacity-100;
+  transform: none;
 }
 
 .galleryNav {
-  @apply absolute top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center
-         text-3xl leading-none cursor-pointer border transition-colors duration-200;
+  @apply absolute top-1/2 -translate-y-1/2 w-11 h-11 rounded-full flex items-center justify-center
+         text-3xl leading-none cursor-pointer border backdrop-blur-sm transition-all duration-200;
   color: #ffffff;
-  background-color: rgb(0 0 0 / 0.55);
-  border-color: rgb(255 255 255 / 0.2);
+  background-color: rgb(0 0 0 / 0.45);
+  border-color: rgb(255 255 255 / 0.15);
 }
 
 .galleryNav:hover {
   background-color: rgb(0 0 0 / 0.8);
+  border-color: var(--color-accent);
 }
 
 .galleryPrev {
@@ -377,18 +373,18 @@
 }
 
 .galleryCounter {
-  @apply absolute bottom-4 left-4 px-3 py-1 rounded-full font-mono text-[11px] font-bold tracking-widest backdrop-blur-sm;
+  @apply absolute top-4 left-4 px-3 py-1 rounded-full font-mono text-[11px] font-bold tracking-widest backdrop-blur-sm;
   color: #ffffff;
   background-color: rgb(0 0 0 / 0.55);
 }
 
 .galleryThumbs {
-  @apply flex gap-3 p-4 overflow-x-auto border-b border-slate-900;
+  @apply flex justify-center gap-2 p-3 overflow-x-auto bg-black;
 }
 
 .galleryThumb {
-  @apply shrink-0 w-24 md:w-32 aspect-[16/10] p-0 rounded-lg overflow-hidden cursor-pointer
-         border-2 border-transparent opacity-50 transition-all duration-200 bg-transparent;
+  @apply shrink-0 w-20 md:w-24 aspect-[16/10] p-0 rounded-lg overflow-hidden cursor-pointer
+         border-2 border-transparent opacity-40 transition-all duration-200 bg-transparent;
 }
 
 .galleryThumb img {
@@ -399,47 +395,93 @@
   @apply opacity-80;
 }
 
-.galleryThumbActive {
+.galleryThumbActive,
+.galleryThumbActive:hover {
   @apply border-accent opacity-100;
 }
 
-.galleryThumbActive:hover {
-  @apply opacity-100;
-}
+/* ---------- Conteúdo ---------- */
 
 .modalBody {
-  @apply flex flex-col gap-8 p-6 md:p-10;
+  @apply relative flex flex-col gap-8 p-6 md:p-10 lg:h-full lg:overflow-y-auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-slate-800) transparent;
+}
+
+.modalBody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-800;
+}
+
+.modalBody::-webkit-scrollbar-thumb:hover {
+  @apply bg-accent/60;
+}
+
+.modalBody > :not(.closeButton) {
+  animation: blockIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(0.12s + var(--i, 0) * 0.07s);
+}
+
+.closeButton {
+  @apply fixed lg:absolute top-6 right-6 lg:top-5 lg:right-5 z-10 w-10 h-10 rounded-full flex items-center justify-center
+         cursor-pointer border border-slate-800 bg-surface text-slate-400 transition-all duration-300;
+}
+
+.closeButton:hover {
+  @apply text-accent border-accent/50;
+  transform: rotate(90deg);
+}
+
+.closeButton svg {
+  @apply w-4 h-4 fill-none stroke-current;
+  stroke-width: 2;
+  stroke-linecap: round;
 }
 
 .modalHeader {
-  @apply flex flex-col items-start gap-3;
+  @apply flex flex-col items-start gap-3 pr-12;
 }
 
 .categoryBadge {
   @apply px-3 py-1 text-[10px] font-mono font-bold tracking-widest uppercase rounded-full
-         border border-slate-800 text-slate-500;
+         border border-accent/30 text-accent bg-accent/10;
 }
 
 .modalTitle {
-  @apply text-2xl md:text-4xl font-bold text-white tracking-tight leading-tight;
+  @apply text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight;
 }
 
-/* ---------- Meta (onde / quando / papel) ---------- */
+.modalLinks {
+  @apply flex flex-wrap gap-2 pt-1;
+}
 
+.projectLink {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-800 text-slate-300
+         text-xs font-mono font-bold uppercase tracking-widest transition-colors duration-200;
+}
+
+.projectLink:hover {
+  @apply border-accent/50 text-accent;
+}
+
+/* onde / quando / papel / resultado: lista de duas colunas sem caixas */
 .metaGrid {
-  @apply flex flex-col gap-2.5 m-0;
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 m-0 py-5 border-y border-slate-900;
 }
 
 .metaItem {
-  @apply flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4;
+  @apply flex flex-col gap-1 min-w-0;
 }
 
 .metaKey {
-  @apply text-[10px] font-mono uppercase tracking-[0.2em] text-slate-600 sm:w-24 shrink-0;
+  @apply text-[10px] font-mono uppercase tracking-[0.2em] text-slate-600;
 }
 
 .metaValue {
-  @apply text-sm text-slate-400 m-0 leading-relaxed;
+  @apply text-sm text-slate-300 m-0 leading-snug;
 }
 
 .metaHighlight {
@@ -447,10 +489,8 @@
 }
 
 .projectDescription {
-  @apply text-base md:text-lg text-slate-300 leading-relaxed;
+  @apply text-base text-slate-300 leading-relaxed m-0;
 }
-
-/* ---------- Detalhes ---------- */
 
 .detailBlock {
   @apply flex flex-col gap-4;
@@ -461,35 +501,54 @@
 }
 
 .detailText {
-  @apply text-base text-slate-400 leading-relaxed m-0;
+  @apply text-[15px] text-slate-400 leading-relaxed m-0;
 }
 
-.detailList {
-  @apply flex flex-col gap-3 list-none p-0 m-0;
+/* processo: linha do tempo numerada */
+.steps {
+  @apply relative flex flex-col gap-5 list-none p-0 m-0;
 }
 
-.detailItem {
-  @apply flex gap-3 text-base text-slate-400 leading-relaxed;
+.steps::before {
+  content: "";
+  @apply absolute left-[13px] top-2 bottom-2 w-px bg-slate-800;
+}
+
+.step {
+  @apply relative flex gap-4 text-[15px] text-slate-400 leading-relaxed;
 }
 
 .stepNumber {
-  @apply font-mono text-xs font-bold text-accent/50 pt-1 shrink-0;
+  @apply relative z-[1] shrink-0 w-7 h-7 rounded-full flex items-center justify-center
+         font-mono text-xs font-bold text-accent bg-surface border border-accent/40;
 }
 
-.stepBullet {
-  @apply font-mono font-bold text-accent/60 shrink-0;
+.stepText {
+  @apply pt-0.5;
 }
 
-/* ---------- Footer ---------- */
-
-.modalLinks {
-  @apply pt-6 border-t border-slate-900/60 flex flex-wrap gap-x-8 gap-y-3;
+.learnings {
+  @apply flex flex-col gap-3 list-none p-0 m-0;
 }
 
-.projectLink {
-  @apply inline-flex items-center gap-2 text-sm font-mono uppercase tracking-widest font-extrabold text-accent transition-colors;
+.learning {
+  @apply relative pl-5 text-[15px] text-slate-400 leading-relaxed;
 }
 
-.projectLink:hover {
-  @apply text-accent-strong;
+.learning::before {
+  content: "";
+  @apply absolute left-0 top-[0.7em] w-2.5 h-px bg-accent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image,
+  .reveal,
+  .revealInner,
+  .cursorBubble,
+  .gallerySlide,
+  .modal[open],
+  .modalBody > :not(.closeButton) {
+    transition: none;
+    animation: none;
+  }
 }

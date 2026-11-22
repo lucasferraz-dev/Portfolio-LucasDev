@@ -57,6 +57,8 @@ const PROJECTS = [
 
 const SWIPE_THRESHOLD = 40;
 
+const plainText = (text) => text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+
 function ProjectLinks({ project, className }) {
   const { t } = useLanguage();
 
@@ -67,6 +69,11 @@ function ProjectLinks({ project, className }) {
   ));
 }
 
+/*
+ * Card: a foto inteira com título e período por cima. No hover a imagem dá um
+ * zoom leve, o resumo sobe por baixo do título e uma bolinha "Ver processo"
+ * acompanha o mouse. O card todo é um botão que abre o modal.
+ */
 function ProjectCard({ project, onOpenProcess }) {
   const { t } = useLanguage();
   const [ratio, setRatio] = useState(DEFAULT_RATIO);
@@ -77,93 +84,92 @@ function ProjectCard({ project, onOpenProcess }) {
     setRatio(Math.min(Math.max(naturalWidth / naturalHeight, MIN_RATIO), MAX_RATIO));
   };
 
+  const handlePointerMove = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    event.currentTarget.style.setProperty('--x', `${event.clientX - rect.left}px`);
+    event.currentTarget.style.setProperty('--y', `${event.clientY - rect.top}px`);
+  };
+
   const cover = project.images[0];
 
   return (
     <article id={`project-${project.id}`} className={styles.card}>
-      <div className={styles.media} style={{ aspectRatio: ratio }}>
-        {cover ? (
-          <img
-            src={cover}
-            alt={t.projects.imageAlt(project.title)}
-            className={styles.image}
-            style={{ objectPosition: project.imagePosition }}
-            loading="lazy"
-            decoding="async"
-            onLoad={handleImageLoad}
-          />
-        ) : (
-          <div className={styles.imagePlaceholder}>
-            <span className={styles.placeholderText}>[ {project.title.toUpperCase()} ]</span>
-            <span className={styles.placeholderSub}>NO_PREVIEW_AVAILABLE</span>
+      <button
+        type="button"
+        className={styles.cardButton}
+        onClick={() => onOpenProcess(project.id)}
+        onPointerMove={handlePointerMove}
+        aria-label={`${t.projects.viewProcess}: ${project.title}`}
+      >
+        <div className={styles.media} style={{ aspectRatio: ratio }}>
+          {cover ? (
+            <img
+              src={cover}
+              alt={t.projects.imageAlt(project.title)}
+              className={styles.image}
+              style={{ objectPosition: project.imagePosition }}
+              loading="lazy"
+              decoding="async"
+              onLoad={handleImageLoad}
+            />
+          ) : (
+            <div className={styles.imagePlaceholder}>
+              <span className={styles.placeholderText}>[ {project.title.toUpperCase()} ]</span>
+            </div>
+          )}
+
+          {project.images.length > 1 && (
+            <span className={styles.photoCount}>
+              <svg viewBox="0 0 24 24" className={styles.photoCountIcon} aria-hidden="true">
+                <rect x="3" y="6" width="14" height="12" rx="2" />
+                <path d="M7 3h12a2 2 0 0 1 2 2v10" />
+              </svg>
+              {t.projects.gallery.count(project.images.length)}
+            </span>
+          )}
+
+          <div className={styles.overlay}>
+            <span className={styles.overlayBadge}>{project.categoryLabel}</span>
+            <h3 className={styles.overlayTitle}>{project.title}</h3>
+            <span className={styles.overlayPeriod}>{project.period}</span>
+
+            <div className={styles.reveal}>
+              <div className={styles.revealInner}>
+                <p className={styles.revealSummary}>{plainText(project.summary)}</p>
+                <div className={styles.revealTags}>
+                  {(project.cardTags ?? project.tags).slice(0, 5).map((tag) => (
+                    <span key={tag} className={styles.revealTag}>{tag}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        )}
 
-        <span className={styles.hoverHint} aria-hidden="true">
-          <svg viewBox="0 0 24 24" className={styles.hoverHintIcon}>
-            <path d="M4 3l7 17 2.5-7.5L21 10z" />
-          </svg>
-          {t.projects.hoverHint}
-        </span>
-
-        {project.images.length > 1 && (
-          <span className={styles.photoCount}>
-            <svg viewBox="0 0 24 24" className={styles.photoCountIcon} aria-hidden="true">
-              <rect x="3" y="6" width="14" height="12" rx="2" />
-              <path d="M7 3h12a2 2 0 0 1 2 2v10" />
-            </svg>
-            {t.projects.gallery.count(project.images.length)}
-          </span>
-        )}
-
-        <div className={styles.overlay}>
-          <span className={styles.overlayBadge}>{project.categoryLabel}</span>
-          <h3 className={styles.overlayTitle}>{project.title}</h3>
-          <span className={styles.overlayPeriod}>{project.period}</span>
-        </div>
-      </div>
-
-      <div className={styles.panel}>
-        <div className={styles.panelHeader}>
-          <span className={styles.projectId}>{project.id}</span>
-          <h4 className={styles.panelTitle}>{project.title}</h4>
-        </div>
-
-        <p className={styles.summary}>
-          <RichText text={project.summary} />
-        </p>
-
-        <div className={styles.tagsContainer}>
-          {(project.cardTags ?? project.tags).map((tag) => (
-            <span key={tag} className={styles.tag}>{tag}</span>
-          ))}
-        </div>
-
-        <div className={styles.actions}>
-          <button type="button" className={styles.processButton} onClick={() => onOpenProcess(project.id)}>
+          <span className={styles.cursorBubble} aria-hidden="true">
             {t.projects.viewProcess}
-          </button>
-          <ProjectLinks project={project} className={styles.linkButton} />
+          </span>
         </div>
-      </div>
+      </button>
     </article>
   );
 }
 
+/*
+ * Galeria do modal: a foto aparece inteira (sem corte) ocupando o painel,
+ * com setas, contador e miniaturas quando o projeto tem mais de uma imagem.
+ */
 function ProjectGallery({ images, title }) {
   const { t } = useLanguage();
   const [index, setIndex] = useState(0);
   const touchStartX = useRef(null);
 
-  if (images.length === 0) return null;
+  if (images.length === 0) return <div className={styles.gallery} />;
 
-  if (images.length === 1) {
-    return <img src={images[0]} alt="" className={styles.modalImage} decoding="async" />;
-  }
-
+  const multiple = images.length > 1;
   const go = (step) => setIndex((current) => (current + step + images.length) % images.length);
 
   const handleKeyDown = (event) => {
+    if (!multiple) return;
     if (event.key === 'ArrowRight') go(1);
     else if (event.key === 'ArrowLeft') go(-1);
   };
@@ -173,7 +179,7 @@ function ProjectGallery({ images, title }) {
   };
 
   const handleTouchEnd = (event) => {
-    if (touchStartX.current === null) return;
+    if (!multiple || touchStartX.current === null) return;
     const delta = event.changedTouches[0].clientX - touchStartX.current;
     touchStartX.current = null;
     if (Math.abs(delta) > SWIPE_THRESHOLD) go(delta < 0 ? 1 : -1);
@@ -182,65 +188,74 @@ function ProjectGallery({ images, title }) {
   return (
     <div
       className={styles.gallery}
-      role="region"
-      aria-roledescription="carousel"
-      aria-label={t.projects.gallery.label(title)}
+      role={multiple ? 'region' : undefined}
+      aria-roledescription={multiple ? 'carousel' : undefined}
+      aria-label={multiple ? t.projects.gallery.label(title) : undefined}
       onKeyDown={handleKeyDown}
     >
       <div className={styles.galleryViewport} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-        <div className={styles.galleryTrack} style={{ transform: `translateX(-${index * 100}%)` }}>
+        <img key={`backdrop-${index}`} src={images[index]} alt="" aria-hidden="true" className={styles.galleryBackdrop} />
+        {images.map((src, i) => (
+          <img
+            key={src}
+            src={src}
+            alt={multiple ? t.projects.gallery.imageAlt(title, i + 1, images.length) : t.projects.imageAlt(title)}
+            aria-hidden={i !== index}
+            className={`${styles.gallerySlide} ${i === index ? styles.gallerySlideActive : ''}`}
+            decoding="async"
+          />
+        ))}
+
+        {multiple && (
+          <>
+            <button
+              type="button"
+              className={`${styles.galleryNav} ${styles.galleryPrev}`}
+              onClick={() => go(-1)}
+              aria-label={t.projects.gallery.prev}
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              className={`${styles.galleryNav} ${styles.galleryNext}`}
+              onClick={() => go(1)}
+              aria-label={t.projects.gallery.next}
+            >
+              ›
+            </button>
+            <span className={styles.galleryCounter} aria-live="polite">
+              {String(index + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
+            </span>
+          </>
+        )}
+      </div>
+
+      {multiple && (
+        <div className={styles.galleryThumbs}>
           {images.map((src, i) => (
-            <img
+            <button
               key={src}
-              src={src}
-              alt={t.projects.gallery.imageAlt(title, i + 1, images.length)}
-              aria-hidden={i !== index}
-              className={styles.gallerySlide}
-              decoding="async"
-            />
+              type="button"
+              className={`${styles.galleryThumb} ${i === index ? styles.galleryThumbActive : ''}`}
+              onClick={() => setIndex(i)}
+              aria-label={t.projects.gallery.goTo(i + 1)}
+              aria-current={i === index}
+            >
+              <img src={src} alt="" decoding="async" />
+            </button>
           ))}
         </div>
-
-        <button
-          type="button"
-          className={`${styles.galleryNav} ${styles.galleryPrev}`}
-          onClick={() => go(-1)}
-          aria-label={t.projects.gallery.prev}
-        >
-          ‹
-        </button>
-        <button
-          type="button"
-          className={`${styles.galleryNav} ${styles.galleryNext}`}
-          onClick={() => go(1)}
-          aria-label={t.projects.gallery.next}
-        >
-          ›
-        </button>
-
-        <span className={styles.galleryCounter} aria-live="polite">
-          {String(index + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
-        </span>
-      </div>
-
-      <div className={styles.galleryThumbs}>
-        {images.map((src, i) => (
-          <button
-            key={src}
-            type="button"
-            className={`${styles.galleryThumb} ${i === index ? styles.galleryThumbActive : ''}`}
-            onClick={() => setIndex(i)}
-            aria-label={t.projects.gallery.goTo(i + 1)}
-            aria-current={i === index}
-          >
-            <img src={src} alt="" decoding="async" />
-          </button>
-        ))}
-      </div>
+      )}
     </div>
   );
 }
 
+/*
+ * Modal em duas colunas no desktop: a galeria à esquerda e o conteúdo à direita,
+ * que rola sozinho com uma barra fina. Cada bloco entra em cascata (--i).
+ * No celular vira uma coluna só, com a foto em cima.
+ */
 function ProjectModal({ project, onClose }) {
   const { t } = useLanguage();
   const dialogRef = useRef(null);
@@ -249,7 +264,10 @@ function ProjectModal({ project, onClose }) {
     const dialog = dialogRef.current;
 
     if (project) {
-      if (!dialog.open) dialog.showModal();
+      if (!dialog.open) {
+        dialog.showModal();
+        dialog.querySelector('[data-autofocus]')?.focus({ focusVisible: false });
+      }
       document.documentElement.style.overflow = 'hidden';
     } else if (dialog.open) {
       dialog.close();
@@ -264,6 +282,18 @@ function ProjectModal({ project, onClose }) {
     if (event.target === dialogRef.current) onClose();
   };
 
+  let block = 0;
+  const reveal = () => ({ '--i': block++ });
+
+  const meta = project
+    ? [
+        { key: t.projects.meta.where, value: project.context },
+        { key: t.projects.meta.when, value: project.when ?? project.period },
+        { key: t.projects.meta.role, value: project.role },
+        project.result && { key: t.projects.meta.result, value: project.result, highlight: true },
+      ].filter(Boolean)
+    : [];
+
   return (
     <dialog
       ref={dialogRef}
@@ -273,90 +303,84 @@ function ProjectModal({ project, onClose }) {
       aria-labelledby="project-modal-title"
     >
       {project && (
-        <div className={styles.modalContent}>
-          <button type="button" className={styles.closeButton} onClick={onClose} aria-label={t.projects.close}>
-            ×
-          </button>
-
-          <ProjectGallery key={project.id} images={project.images} title={project.title} />
+        <div key={project.id} className={styles.modalLayout}>
+          <ProjectGallery images={project.images} title={project.title} />
 
           <div className={styles.modalBody}>
-            <div className={styles.modalHeader}>
+            <button
+              type="button"
+              className={styles.closeButton}
+              onClick={onClose}
+              aria-label={t.projects.close}
+              data-autofocus
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
+
+            <header className={styles.modalHeader} style={reveal()}>
               <span className={styles.categoryBadge}>{project.categoryLabel}</span>
               <h3 id="project-modal-title" className={styles.modalTitle}>{project.title}</h3>
-            </div>
-
-            <dl className={styles.metaGrid}>
-              <div className={styles.metaItem}>
-                <dt className={styles.metaKey}>{t.projects.meta.where}</dt>
-                <dd className={styles.metaValue}>{project.context}</dd>
-              </div>
-              <div className={styles.metaItem}>
-                <dt className={styles.metaKey}>{t.projects.meta.when}</dt>
-                <dd className={styles.metaValue}>{project.when ?? project.period}</dd>
-              </div>
-              <div className={styles.metaItem}>
-                <dt className={styles.metaKey}>{t.projects.meta.role}</dt>
-                <dd className={styles.metaValue}>{project.role}</dd>
-              </div>
-              {project.result && (
-                <div className={styles.metaItem}>
-                  <dt className={styles.metaKey}>{t.projects.meta.result}</dt>
-                  <dd className={`${styles.metaValue} ${styles.metaHighlight}`}>{project.result}</dd>
+              {project.links.length > 0 && (
+                <div className={styles.modalLinks}>
+                  <ProjectLinks project={project} className={styles.projectLink} />
                 </div>
               )}
+            </header>
+
+            <dl className={styles.metaGrid} style={reveal()}>
+              {meta.map((item) => (
+                <div key={item.key} className={styles.metaItem}>
+                  <dt className={styles.metaKey}>{item.key}</dt>
+                  <dd className={`${styles.metaValue} ${item.highlight ? styles.metaHighlight : ''}`}>{item.value}</dd>
+                </div>
+              ))}
             </dl>
 
-            <p className={styles.projectDescription}>
+            <p className={styles.projectDescription} style={reveal()}>
               <RichText text={project.description} />
             </p>
 
             {project.problem && (
-              <div className={styles.detailBlock}>
+              <section className={styles.detailBlock} style={reveal()}>
                 <h4 className={styles.detailTitle}>{t.projects.problemTitle}</h4>
                 <p className={styles.detailText}><RichText text={project.problem} /></p>
-              </div>
+              </section>
             )}
 
             {project.process?.length > 0 && (
-              <div className={styles.detailBlock}>
+              <section className={styles.detailBlock} style={reveal()}>
                 <h4 className={styles.detailTitle}>{t.projects.processTitle}</h4>
-                <ul className={styles.detailList}>
+                <ol className={styles.steps}>
                   {project.process.map((step, i) => (
-                    <li key={step} className={styles.detailItem}>
-                      <span className={styles.stepNumber}>{String(i + 1).padStart(2, '0')}</span>
-                      <RichText text={step} />
+                    <li key={step} className={styles.step}>
+                      <span className={styles.stepNumber}>{i + 1}</span>
+                      <span className={styles.stepText}><RichText text={step} /></span>
                     </li>
                   ))}
-                </ul>
-              </div>
+                </ol>
+              </section>
             )}
 
             {project.learnings?.length > 0 && (
-              <div className={styles.detailBlock}>
+              <section className={styles.detailBlock} style={reveal()}>
                 <h4 className={styles.detailTitle}>{t.projects.learningsTitle}</h4>
-                <ul className={styles.detailList}>
+                <ul className={styles.learnings}>
                   {project.learnings.map((item) => (
-                    <li key={item} className={styles.detailItem}>
-                      <span className={styles.stepBullet}>&gt;</span>
+                    <li key={item} className={styles.learning}>
                       <RichText text={item} />
                     </li>
                   ))}
                 </ul>
-              </div>
+              </section>
             )}
 
-            <div className={styles.tagsContainer}>
+            <div className={styles.tagsContainer} style={reveal()}>
               {project.tags.map((tag) => (
                 <span key={tag} className={styles.tag}>{tag}</span>
               ))}
             </div>
-
-            {project.links.length > 0 && (
-              <div className={styles.modalLinks}>
-                <ProjectLinks project={project} className={styles.projectLink} />
-              </div>
-            )}
           </div>
         </div>
       )}

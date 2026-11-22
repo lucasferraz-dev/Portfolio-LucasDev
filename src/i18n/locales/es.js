@@ -75,7 +75,6 @@ export default {
       result: 'resultado',
     },
     viewProcess: 'Ver proceso',
-    hoverHint: 'Pasa el cursor para ver más',
     close: 'Cerrar',
     gallery: {
       label: (title) => `Galería de imágenes del proyecto ${title}`,
