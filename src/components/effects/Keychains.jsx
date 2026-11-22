@@ -2,18 +2,18 @@ import { useEffect, useRef } from 'react';
 import styles from './Keychains.module.css';
 
 /*
- * Chaveiros pendurados embaixo de um card: argola, correntinha e um medalhão
- * redondo de metal escuro com o logo de cada tecnologia. Eles não saem dali,
+ * Chaveiros pendurados embaixo de um card: um fiozinho e o próprio logo de cada
+ * tecnologia, sem fundo (logos escuros ficam brancos). Eles não saem dali,
  * mas dá para segurar e arrastar para o lado: o chaveiro gira em volta da
- * argola seguindo o mouse e, ao soltar, balança como pêndulo. Os medalhões são
+ * ponta do fio seguindo o mouse e, ao soltar, balança como pêndulo. Os logos são
  * círculos que batem uns nos outros: empurrar um contra o vizinho joga o
  * vizinho para o lado, que pode bater no próximo, em cadeia.
  */
 const GRAVITY = 22; // (g / comprimento) em 1/s²: define o ritmo do balanço
 const DAMPING = 1.1; // quanto o balanço perde por segundo
 const MAX_ANGLE = 1.35; // até onde dá para puxar (radianos, ~77°)
-const ARM = 50; // distância da argola ao centro do medalhão (px)
-const RADIUS = 23; // raio do medalhão (px), usado na colisão
+const ARM = 46; // distância da ponta do fio ao centro do logo (px)
+const RADIUS = 18; // raio do logo (px), usado na colisão
 const BOUNCE = 0.75; // quanto da velocidade sobra numa batida
 
 // logos muito escuros ficam brancos para aparecer no metal escuro
@@ -68,7 +68,7 @@ export default function Keychains({ items, side = 'left' }) {
         }
       });
 
-      // batidas entre vizinhos: se os medalhões se sobrepõem, afasta e troca o impulso
+      // batidas entre vizinhos: se os logos se sobrepõem, afasta e troca o impulso
       for (let pass = 0; pass < 2; pass++) {
         for (let i = 0; i < list.length - 1; i++) {
           const a = list[i];
@@ -108,7 +108,7 @@ export default function Keychains({ items, side = 'left' }) {
         const el = refs.current[i];
         if (!el) return;
         el.style.setProperty('--swing', `${s.angle}rad`);
-        // o medalhão fica para trás quando o chaveiro acelera
+        // o logo fica para trás quando o chaveiro acelera
         el.style.setProperty('--lag', `${Math.max(Math.min(-s.speed * 0.05, 0.4), -0.4)}rad`);
       });
     };
@@ -122,7 +122,7 @@ export default function Keychains({ items, side = 'left' }) {
     const s = state.current[index];
     const pivot = refs.current[index].querySelector(`.${styles.ring}`).getBoundingClientRect();
     const px = pivot.left + pivot.width / 2;
-    const py = pivot.top + pivot.height / 2;
+    const py = pivot.top; // o fio gira a partir de onde prende no card
 
     const aim = (e) => {
       // ângulo do mouse em relação à argola (0 = pendurado reto para baixo)
@@ -149,11 +149,6 @@ export default function Keychains({ items, side = 'left' }) {
       {items.map(({ name, icon }, i) => (
         <div key={name} ref={(el) => (refs.current[i] = el)} className={styles.keychain}>
           <span className={styles.ring} aria-hidden="true" />
-          <span className={styles.chain} aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
           <span className={styles.charm} onPointerDown={grab(i)} title={name}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d={icon.path} fill={charmColor(icon.hex)} />

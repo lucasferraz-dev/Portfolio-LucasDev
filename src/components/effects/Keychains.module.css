@@ -2,7 +2,7 @@
 
 /* fileira de chaveiros presa na borda de baixo do card */
 .keychains {
-  @apply absolute left-8 top-full z-10 flex gap-3.5 pointer-events-none;
+  @apply absolute left-8 top-full z-10 flex gap-5 pointer-events-none;
 }
 
 .right {
@@ -16,50 +16,28 @@
   rotate: var(--swing, 0rad);
 }
 
-/* argola de metal */
+/* fiozinho preso na borda do card (é a referência de onde o chaveiro gira) */
 .ring {
-  @apply block w-3.5 h-3.5 -mt-1.5 rounded-full border-2;
-  border-color: #b8bcc4;
-  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.35), 0 1px 2px rgb(0 0 0 / 0.5);
+  @apply block w-px h-7 -mt-px bg-slate-500;
 }
 
-/* correntinha de elos */
-.chain {
-  @apply flex flex-col items-center -mt-0.5;
-}
-
-.chain i {
-  @apply block w-1.5 h-2.5 -mt-0.5 rounded-full border;
-  border-color: #9aa0aa;
-}
-
-.chain i:nth-child(even) {
-  @apply w-1 border-x-0;
-}
-
-/* medalhão redondo de metal escuro com aro prateado; balança um pouco atrasado (--lag) */
+/* o próprio logo, sem fundo; balança um pouco atrasado (--lag) */
 .charm {
-  @apply flex items-center justify-center w-11 h-11 -mt-0.5 p-2 rounded-full border-2 pointer-events-auto
-         cursor-grab select-none;
+  @apply block w-9 h-9 pointer-events-auto cursor-grab select-none;
   touch-action: none;
   transform-origin: 50% 0;
   rotate: var(--lag, 0rad);
-  border-color: #a9aeb7;
-  background: radial-gradient(circle at 35% 30%, #3a3c42, #17181b 70%);
-  box-shadow:
-    inset 0 0 0 1.5px rgb(0 0 0 / 0.5),
-    inset 0 1px 1px rgb(255 255 255 / 0.25),
-    0 5px 8px rgb(0 0 0 / 0.5);
+  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.55));
   transition: scale 0.15s;
 }
 
 .charm:hover {
-  scale: 1.06;
+  scale: 1.08;
 }
 
 .held .charm {
   cursor: grabbing;
-  scale: 1.1;
+  scale: 1.12;
 }
 
 .charm svg {
