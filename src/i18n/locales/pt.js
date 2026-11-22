@@ -167,6 +167,8 @@ export default {
       role: 'meu papel',
       result: 'resultado',
     },
+    achievementLabel: 'Conquista',
+    rank: (n) => n,
     viewProcess: 'Ver processo',
     close: 'Fechar',
     gallery: {
@@ -187,6 +189,7 @@ export default {
     },
     items: {
       ROW_01: {
+        achievement: { big: 'ISO', detail: '9001 + 37001 viraram regras do sistema' },
         title: 'Sistema de Rotinas - GOB/PR Digital',
         categoryLabel: 'Full Stack',
         period: 'Set/2026 - Nov/2026',
@@ -216,6 +219,7 @@ export default {
       },
 
       ROW_02: {
+        achievement: { big: '10º', detail: 'Top 10 geral · ~35 mil pontos' },
         title: 'Hackathon Recarga Inteligente - Localiza&Co',
         categoryLabel: 'Liderança',
         period: '21/Out/2026 - 11 horas (8h às 19h)',
@@ -273,6 +277,7 @@ export default {
       },
 
       ROW_04: {
+        achievement: { big: '8,1%', detail: 'MAPE no teste · 21% melhor que o baseline' },
         title: 'Skinomics - Previsão de Preços do Mercado da Steam',
         categoryLabel: 'Full Stack',
         period: 'Ago–Nov/2026 · 12 semanas',

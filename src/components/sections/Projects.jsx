@@ -13,15 +13,18 @@ import {
   siDocker,
   siExpress,
   siFastapi,
+  siHtml5,
   siGithub,
   siMysql,
   siNodedotjs,
   siPostgresql,
   siPython,
   siReact,
+  siScikitlearn,
   siTypescript,
 } from 'simple-icons';
 import Keychains from '../effects/Keychains';
+import Medals, { Achievement } from '../effects/Medals';
 
 const CATEGORY_IDS = ['todos', 'software', 'hackathon', 'academico', 'social', 'experimento'];
 
@@ -40,6 +43,11 @@ const PROJECTS = [
       { name: 'Python', icon: siPython },
       { name: 'Django', icon: siDjango },
     ],
+    medals: [
+      { name: 'Django', icon: siDjango },
+      { name: 'Python', icon: siPython },
+      { name: 'HTML', icon: siHtml5 },
+    ],
   },
 
   {
@@ -49,6 +57,7 @@ const PROJECTS = [
     imagePosition: 'center',
     links: [],
     keychains: [{ name: 'Python', icon: siPython }],
+    medals: [{ name: 'Python', icon: siPython }],
   },
 
   {
@@ -66,6 +75,11 @@ const PROJECTS = [
       { name: 'Express', icon: siExpress },
       { name: 'MySQL', icon: siMysql },
       { name: 'GitHub', icon: siGithub },
+    ],
+    medals: [
+      { name: 'React', icon: siReact },
+      { name: 'Node.js', icon: siNodedotjs },
+      { name: 'MySQL', icon: siMysql },
     ],
   },
 
@@ -85,6 +99,11 @@ const PROJECTS = [
       { name: 'React', icon: siReact },
       { name: 'TypeScript', icon: siTypescript },
       { name: 'Docker', icon: siDocker },
+    ],
+    medals: [
+      { name: 'Python', icon: siPython },
+      { name: 'PostgreSQL', icon: siPostgresql },
+      { name: 'scikit-learn', icon: siScikitlearn },
     ],
   },
 ];
@@ -119,9 +138,22 @@ function ProjectCard({ project, onOpenProcess }) {
   };
 
   const cover = project.images[0];
+  const [hover, setHover] = useState(false);
 
   return (
-    <article id={`project-${project.id}`} className={styles.card} data-sticky={`project-${project.id}`}>
+    <article
+      id={`project-${project.id}`}
+      className={styles.card}
+      data-sticky={`project-${project.id}`}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+      onFocus={() => setHover(true)}
+      onBlur={() => setHover(false)}
+    >
+      {/* conquista (esquerda) e pódio das tecnologias (direita), penduradas na borda de cima */}
+      <Achievement achievement={project.achievement} show={hover} label={t.projects.achievementLabel} />
+      <Medals medals={project.medals} show={hover} label={t.projects.rank} />
+
       <button
         type="button"
         className={styles.cardButton}
@@ -342,6 +374,9 @@ function ProjectModal({ project, onClose }) {
             <path d="M6 6l12 12M18 6L6 18" />
           </svg>
         </button>
+
+        <Achievement achievement={project.achievement} mode="modal" label={t.projects.achievementLabel} />
+        <Medals medals={project.medals} mode="modal" label={t.projects.rank} />
 
         <div key={project.id} className={styles.modalLayout}>
           <ProjectGallery images={project.images} title={project.title} />

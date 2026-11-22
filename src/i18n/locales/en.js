@@ -167,6 +167,8 @@ export default {
       role: 'my role',
       result: 'result',
     },
+    achievementLabel: 'Achievement',
+    rank: (n) => ({ '1º': '1st', '2º': '2nd', '3º': '3rd' })[n] ?? n,
     viewProcess: 'See process',
     close: 'Close',
     gallery: {
@@ -187,6 +189,7 @@ export default {
     },
     items: {
       ROW_01: {
+        achievement: { big: 'ISO', detail: '9001 + 37001 turned into system rules' },
         title: 'Routines System - GOB/PR Digital',
         categoryLabel: 'Full Stack',
         period: 'Sep/2026 - Nov/2026',
@@ -216,6 +219,7 @@ export default {
       },
 
       ROW_02: {
+        achievement: { big: '10th', detail: 'Top 10 overall · ~35k points' },
         title: 'Smart Charging Hackathon - Localiza&Co',
         categoryLabel: 'Leadership',
         period: 'Oct 21, 2026 - 11 hours (8 am to 7 pm)',
@@ -273,6 +277,7 @@ export default {
       },
 
       ROW_04: {
+        achievement: { big: '8.1%', detail: 'Test MAPE · 21% better than the baseline' },
         title: 'Skinomics - Steam Market Price Forecasting',
         categoryLabel: 'Full Stack',
         period: 'Aug–Nov/2026 · 12 weeks',
