@@ -1,25 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useId, useState } from 'react';
 import styles from './Header.module.css';
 import { LANGUAGES, useLanguage } from '../../i18n/useLanguage';
 import { useTheme } from '../../theme/useTheme';
 
+/*
+ * Um único desenho que vira sol ou lua: o círculo cresce, uma máscara desliza
+ * por cima e recorta a lua crescente, e os raios giram e somem. O ícone mostra
+ * o tema para o qual o clique leva (sol no escuro, lua no claro).
+ */
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
+  const maskId = useId();
   const label = theme === 'dark' ? t.header.lightMode : t.header.darkMode;
+  const isMoon = theme === 'light';
 
   return (
     <button type="button" className={styles.themeButton} onClick={toggleTheme} aria-label={label} title={label}>
-      {theme === 'dark' ? (
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-        </svg>
-      ) : (
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg>
-      )}
+      <svg viewBox="0 0 24 24" aria-hidden="true" className={`${styles.themeIcon} ${isMoon ? styles.moon : ''}`}>
+        <mask id={maskId}>
+          <rect width="24" height="24" fill="white" stroke="none" />
+          <circle className={styles.moonShadow} cx="16.5" cy="7.5" r="7" fill="black" stroke="none" />
+        </mask>
+        <circle className={styles.sunBody} cx="12" cy="12" r="8" mask={`url(#${maskId})`} />
+        <path
+          className={styles.sunRays}
+          d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+        />
+      </svg>
     </button>
   );
 }

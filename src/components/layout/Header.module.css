@@ -48,6 +48,51 @@
   stroke-linejoin: round;
 }
 
+/*
+ * Sol ↔ lua. No sol o círculo fica pequeno, a sombra fica fora do desenho e
+ * os raios aparecem. Na lua o círculo cresce, a sombra desliza para cima dele
+ * e recorta o crescente, e os raios giram e encolhem até sumir.
+ */
+.themeIcon {
+  transform: rotate(0deg);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.themeIcon.moon {
+  transform: rotate(-20deg);
+}
+
+.sunBody {
+  fill: currentColor;
+  stroke: none;
+  transform-origin: 12px 12px;
+  transform: scale(0.55);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.moon .sunBody {
+  transform: scale(1);
+}
+
+.moonShadow {
+  transform: translate(9px, -9px);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.moon .moonShadow {
+  transform: translate(0, 0);
+}
+
+.sunRays {
+  transform-origin: 12px 12px;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+}
+
+.moon .sunRays {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.4);
+}
+
 .langButton {
   @apply flex items-center gap-2 h-12 pl-4 pr-4.5 rounded-full border border-slate-900 bg-transparent
          font-mono text-base font-bold tracking-wider text-slate-400 cursor-pointer transition-colors duration-200;
