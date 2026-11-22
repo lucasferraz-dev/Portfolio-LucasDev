@@ -1,50 +1,86 @@
 import styles from './About.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
 import RichText from '../common/RichText';
+import TerminalWindow from '../common/TerminalWindow';
 import TypedText from '../effects/TypedText';
 import useTilt from '../effects/useTilt';
 import useInView from '../effects/useInView';
 import useTypingProgress, { tokensLength } from '../effects/useTypingProgress';
 
+/*
+ * Editor de JSON: o arquivo é “digitado” campo a campo, com números de linha,
+ * cores de sintaxe (chave, texto, pontuação) e a barra de status mostrando a
+ * linha e a coluna do cursor, como num editor de verdade.
+ */
 function ProfileRecord({ facts }) {
+  const { t } = useLanguage();
   const [cardRef, inView] = useInView(0.3);
 
-  const rows = facts.map((fact) => [
+  const rows = facts.map((fact, i) => [
     { text: `"${fact.key}"`, className: styles.factKey },
-    { text: ':', className: styles.colon },
+    { text: ': ', className: styles.colon },
     { text: `"${fact.value}"`, className: styles.factValue },
+    ...(i < facts.length - 1 ? [{ text: ',', className: styles.colon }] : []),
   ]);
-  const total = rows.reduce((sum, tokens) => sum + tokensLength(tokens), 0);
+  const lengths = rows.map(tokensLength);
+  const total = lengths.reduce((sum, n) => sum + n, 0);
   const typed = useTypingProgress(total, { active: inView, startDelay: 400, charDelay: 18 });
   const isDone = typed >= total;
+
+  // linha e coluna do cursor (a linha 1 é a chave de abertura)
+  let line = 1;
+  let column = 2;
+  let rest = typed;
+  for (let i = 0; i < lengths.length && rest > 0; i++) {
+    line = i + 2;
+    column = Math.min(rest, lengths[i]) + 3;
+    rest -= lengths[i];
+  }
+  if (isDone) {
+    line = rows.length + 2;
+    column = 2;
+  }
 
   let offset = 0;
 
   return (
-    <aside ref={cardRef} className={styles.factsCard}>
-      <div className={styles.factsHeader}>
-        <span className={styles.factsFile}>profile_record.json</span>
-      </div>
-
+    <TerminalWindow
+      ref={cardRef}
+      title="profile_record.json"
+      app="json"
+      status={t.about.terminal.readonly}
+      statusRight={`Ln ${line}, Col ${column} · UTF-8`}
+      live={false}
+      className={styles.factsCard}
+      bodyClassName={styles.factsBody}
+    >
       <p className="sr-only">{facts.map((fact) => `${fact.key}: ${fact.value}`).join(', ')}</p>
 
-      <div className={styles.factsBody} aria-hidden="true">
-        <span className={styles.brace}>{'{'}</span>
+      <ol className={styles.code} aria-hidden="true">
+        <li className={styles.codeLine}>
+          <span className={styles.codeText}><span className={styles.brace}>{'{'}</span></span>
+        </li>
         {rows.map((tokens, i) => {
           const rowOffset = offset;
-          offset += tokensLength(tokens);
+          offset += lengths[i];
           return (
-            <div key={facts[i].key} className={styles.factRow}>
-              <TypedText tokens={tokens} typed={typed} offset={rowOffset} showCaret={!isDone} />
-            </div>
+            <li
+              key={facts[i].key}
+              className={`${styles.codeLine} ${styles.factRow} ${typed > rowOffset ? '' : styles.pending} ${line === i + 2 && !isDone ? styles.activeLine : ''}`}
+            >
+              <span className={styles.codeText}>
+                <TypedText tokens={tokens} typed={typed} offset={rowOffset} showCaret={!isDone} />
+              </span>
+            </li>
           );
         })}
-        <span className={`${styles.brace} ${isDone ? '' : styles.pending}`}>{'}'}</span>
-      </div>
-    </aside>
+        <li className={`${styles.codeLine} ${isDone ? '' : styles.pending}`}>
+          <span className={styles.codeText}><span className={styles.brace}>{'}'}</span></span>
+        </li>
+      </ol>
+    </TerminalWindow>
   );
 }
-
 
 /*
  * Ícones animados do “Como eu trabalho”, no espírito dos mascotes das skills.

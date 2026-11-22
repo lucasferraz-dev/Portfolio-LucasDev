@@ -46,6 +46,7 @@ export default {
   },
 
   hero: {
+    terminal: { connected: 'conectado · portfolio_db', typing: 'escribiendo…', running: 'ejecutando…' },
     typedPrefix: 'construyo',
     typedPhrases: ['sistemas web', 'sistemas internos', 'automatizaciones', 'APIs REST', 'soluciones a problemas reales'],
     subtitle:
@@ -61,6 +62,7 @@ export default {
   },
 
   about: {
+    terminal: { readonly: 'solo lectura' },
     title: 'Quién soy',
     lead: 'Empecé a programar porque quería entender cómo funcionaban por dentro las cosas que usaba todos los días. Hoy lo que más me atrapa es el otro lado: descubrir por qué un proceso no funciona antes de decidir qué construir.',
     paragraphs: [
@@ -365,6 +367,29 @@ export default {
   },
 
   contact: {
+    shell: {
+      user: 'visitante',
+      status: 'en línea',
+      placeholder: 'escribe help y presiona Enter',
+      inputLabel: 'Comando de la terminal',
+      hint: '# ahora es tu turno: escribe help para ver los comandos',
+      help: [
+        'comandos disponibles:',
+        '  email      copia mi correo',
+        '  linkedin   abre mi LinkedIn',
+        '  github     abre mi GitHub',
+        '  whatsapp   abre un chat de WhatsApp',
+        '  cv         abre mi currículum',
+        '  whoami     quién eres',
+        '  clear      limpia la terminal',
+      ],
+      emailCopied: 'correo copiado:',
+      opening: (name) => `abriendo ${name}...`,
+      cv: 'abriendo el currículum...',
+      whoami: 'alguien con buen gusto para portafolios. ¿hablamos?',
+      sudo: 'permiso concedido. contratación desbloqueada: solo envíame un correo.',
+      notFound: (cmd) => `comando no encontrado: ${cmd}. escribe help para ver los comandos.`,
+    },
     title: '¿Tienes un problema que resolver?',
     subtitle: 'Escríbeme. Me gusta entender el proceso antes de escribir la primera línea de código.',
     copyEmail: 'Copiar correo',

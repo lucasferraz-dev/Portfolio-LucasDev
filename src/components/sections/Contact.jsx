@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { siGithub, siWhatsapp } from 'simple-icons';
 import styles from './Contact.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
 import TypedText from '../effects/TypedText';
 import useInView from '../effects/useInView';
+import TerminalWindow from '../common/TerminalWindow';
 import useTypingProgress, { tokensLength } from '../effects/useTypingProgress';
 
 const EMAIL = 'lucasferrazsantos@hotmail.com';
@@ -39,50 +40,196 @@ function CopyIcon({ className }) {
   );
 }
 
-function PingTerminal({ rows }) {
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    document.body.appendChild(field);
+    field.select();
+    document.execCommand('copy');
+    field.remove();
+  }
+}
+
+const COMMANDS = ['help', 'email', 'linkedin', 'github', 'whatsapp', 'cv', 'whoami', 'clear'];
+const CHIPS = ['help', 'email', 'linkedin', 'github', 'cv'];
+const LINK_COMMANDS = { linkedin: 'LinkedIn', github: 'GitHub', whatsapp: 'WhatsApp' };
+
+/*
+ * Terminal do contato. Primeiro roda um “ping lucas” com o status, o local e os
+ * idiomas; depois vira um shell de verdade: dá para digitar comandos (help,
+ * email, linkedin, github, whatsapp, cv, whoami, clear e um easter egg com sudo),
+ * completar com Tab e voltar aos anteriores com a seta para cima. No celular,
+ * os botões embaixo rodam os comandos mais comuns.
+ */
+function ContactShell({ rows }) {
+  const { t } = useLanguage();
+  const shell = t.contact.shell;
   const [cardRef, inView] = useInView(0.5);
   const typed = useTypingProgress(PING_LENGTH, { active: inView, startDelay: 500, charDelay: 70 });
   const [revealed, setRevealed] = useState(0);
+  const [history, setHistory] = useState([]);
+  const [input, setInput] = useState('');
+  const [cleared, setCleared] = useState(false);
+  const recall = useRef({ list: [], index: -1 });
+  const inputRef = useRef(null);
+  const bodyRef = useRef(null);
 
   const isTyping = typed < PING_LENGTH;
-  const isDone = revealed >= rows.length;
+  const isReady = revealed >= rows.length;
 
   useEffect(() => {
-    if (isTyping || isDone) return;
+    if (isTyping || isReady) return;
     const timer = setTimeout(() => setRevealed((n) => n + 1), ROW_DELAY);
     return () => clearTimeout(timer);
-  }, [isTyping, isDone, revealed]);
+  }, [isTyping, isReady, revealed]);
+
+  // mantém a última linha à vista quando aparece saída nova
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (body) body.scrollTop = body.scrollHeight;
+  }, [history, revealed]);
+
+  const run = (raw) => {
+    const command = raw.trim();
+    const name = command.toLowerCase().split(/\s+/)[0];
+    if (!command) return;
+
+    recall.current = { list: [command, ...recall.current.list], index: -1 };
+
+    if (name === 'clear') {
+      setHistory([]);
+      setCleared(true);
+      return;
+    }
+
+    let output;
+    if (name === 'help') output = shell.help;
+    else if (name === 'email') {
+      copyToClipboard(EMAIL);
+      output = [`${shell.emailCopied} ${EMAIL}`];
+    } else if (LINK_COMMANDS[name]) {
+      const link = LINKS.find((item) => item.label === LINK_COMMANDS[name]);
+      window.open(link.url, '_blank', 'noopener');
+      output = [shell.opening(link.label)];
+    } else if (name === 'cv') {
+      window.open(t.hero.resumeFile, '_blank', 'noopener');
+      output = [shell.cv];
+    } else if (name === 'whoami') output = [shell.whoami];
+    else if (name === 'sudo') output = [shell.sudo];
+    else output = [shell.notFound(name)];
+
+    setHistory((lines) => [...lines, { command, output }]);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    run(input);
+    setInput('');
+  };
+
+  const handleKeyDown = (event) => {
+    const { list, index } = recall.current;
+    if (event.key === 'ArrowUp' && list.length) {
+      event.preventDefault();
+      const next = Math.min(index + 1, list.length - 1);
+      recall.current.index = next;
+      setInput(list[next]);
+    } else if (event.key === 'ArrowDown' && index >= 0) {
+      event.preventDefault();
+      const next = index - 1;
+      recall.current.index = next;
+      setInput(next >= 0 ? list[next] : '');
+    } else if (event.key === 'Tab' && input) {
+      const match = COMMANDS.find((command) => command.startsWith(input.toLowerCase()));
+      if (match) {
+        event.preventDefault();
+        setInput(match);
+      }
+    }
+  };
+
+  const prompt = (
+    <span className={styles.promptLabel}>
+      <span className={styles.promptUser}>{shell.user}@lucas</span>
+      <span className={styles.promptPath}>:~$</span>
+    </span>
+  );
 
   return (
-    <div ref={cardRef} className={styles.terminal}>
-      <div className={styles.terminalHeader}>
-        <span className={styles.terminalDot} />
-        <span className={styles.terminalDot} />
-        <span className={styles.terminalDot} />
-        <span className={styles.terminalTitle}>terminal</span>
-      </div>
-
+    <TerminalWindow
+      ref={cardRef}
+      title="ping lucas — zsh"
+      app="zsh"
+      status={shell.status}
+      statusRight="UTF-8"
+      className={styles.terminal}
+      bodyClassName={styles.terminalBody}
+    >
       <p className="sr-only">{rows.map(([key, value]) => `${key}: ${value}`).join(', ')}</p>
 
-      <div className={styles.terminalBody} aria-hidden="true">
-        <div className={styles.terminalLine}>
-          <span className={styles.prompt}>$</span>
-          <TypedText tokens={PING_TOKENS} typed={typed} showCaret={isTyping} />
-        </div>
-
-        {rows.map(([key, value], i) => (
-          <div key={key} className={`${styles.terminalLine} ${revealed > i ? '' : styles.pending}`}>
-            <span className={styles.pingKey}>{key}:</span>
-            <span className={styles.pingValue}>{value}</span>
+      <div ref={bodyRef} className={styles.screen} onClick={() => inputRef.current?.focus({ preventScroll: true })}>
+        {!cleared && (
+          <div aria-hidden="true">
+            <div className={styles.terminalLine}>
+              {prompt}
+              <TypedText tokens={PING_TOKENS} typed={typed} showCaret={isTyping} />
+            </div>
+            {rows.map(([key, value], i) => (
+              <div key={key} className={`${styles.terminalLine} ${revealed > i ? '' : styles.pending}`}>
+                <span className={styles.pingKey}>{key}</span>
+                <span className={styles.pingValue}>{value}</span>
+              </div>
+            ))}
+            <div className={`${styles.terminalLine} ${styles.hint} ${isReady ? '' : styles.pending}`}>{shell.hint}</div>
           </div>
-        ))}
+        )}
 
-        <div className={`${styles.terminalLine} ${isDone ? '' : styles.pending}`}>
-          <span className={styles.prompt}>$</span>
-          <span className={styles.caret} />
+        <div aria-live="polite">
+          {history.map((entry, i) => (
+            <div key={i} className={styles.entry}>
+              <div className={styles.terminalLine}>
+                {prompt}
+                <span className={styles.typedCommand}>{entry.command}</span>
+              </div>
+              {entry.output.map((line) => (
+                <div key={line} className={`${styles.terminalLine} ${styles.outputLine}`}>{line}</div>
+              ))}
+            </div>
+          ))}
         </div>
+
+        <form className={`${styles.terminalLine} ${styles.inputLine} ${isReady ? '' : styles.pending}`} onSubmit={handleSubmit}>
+          {prompt}
+          <input
+            ref={inputRef}
+            className={styles.input}
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={shell.placeholder}
+            aria-label={shell.inputLabel}
+            autoComplete="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            disabled={!isReady}
+          />
+        </form>
       </div>
-    </div>
+
+      <div className={`${styles.chips} ${isReady ? '' : styles.pending}`}>
+        {CHIPS.map((command) => (
+          <button key={command} type="button" className={styles.chip} onClick={() => run(command)} disabled={!isReady}>
+            {command}
+          </button>
+        ))}
+      </div>
+    </TerminalWindow>
   );
 }
 
@@ -97,19 +244,7 @@ export default function Contact() {
   }, [copied]);
 
   const copyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(EMAIL);
-    } catch {
-      const field = document.createElement('textarea');
-      field.value = EMAIL;
-      field.setAttribute('readonly', '');
-      field.style.position = 'fixed';
-      field.style.opacity = '0';
-      document.body.appendChild(field);
-      field.select();
-      document.execCommand('copy');
-      field.remove();
-    }
+    await copyToClipboard(EMAIL);
     setCopied(true);
   };
 
@@ -144,7 +279,7 @@ export default function Contact() {
         </div>
       </div>
 
-      <PingTerminal key={lang} rows={t.contact.ping} />
+      <ContactShell key={lang} rows={t.contact.ping} />
     </section>
   );
 }

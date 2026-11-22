@@ -107,24 +107,14 @@
   @apply grayscale-0;
 }
 
-.dbStatusCard {
-  @apply bg-page border border-slate-900 rounded-2xl p-8 shadow-xl font-mono text-sm md:text-base;
+/* ---------- terminal do MySQL ---------- */
+
+.query {
+  @apply text-[13px] md:text-sm text-slate-400;
 }
 
-.dbHeader {
-  @apply border-b border-slate-900/60 pb-3 mb-4;
-}
-
-.dbTitle {
-  @apply text-slate-600 uppercase tracking-widest text-xs font-bold;
-}
-
-.dbContent {
-  @apply space-y-3 text-slate-400;
-}
-
-.dbLine {
-  @apply tracking-wide leading-relaxed;
+.line {
+  @apply leading-relaxed tracking-wide;
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
@@ -147,12 +137,24 @@
   animation: blink 1s step-end infinite;
 }
 
-.dbFooter {
-  @apply text-xs text-slate-600 pt-1;
+.rowSep {
+  @apply mt-3 mb-1 text-[11px] md:text-xs text-slate-700 whitespace-nowrap overflow-hidden;
 }
 
-.dbResult {
-  @apply border-t border-slate-900/40 pt-4 mt-2 space-y-1.5;
+.fieldKey {
+  @apply text-accent whitespace-pre;
+}
+
+.fieldValue {
+  @apply text-slate-200;
+}
+
+.footer {
+  @apply mt-2 text-xs text-slate-600;
+}
+
+.nextPrompt {
+  @apply mt-3;
 }
 
 .keyword {
@@ -161,10 +163,6 @@
 
 .string {
   @apply text-slate-200;
-}
-
-.output {
-  @apply text-slate-500;
 }
 
 @media (min-width: 1024px) {

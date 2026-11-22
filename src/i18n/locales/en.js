@@ -46,6 +46,7 @@ export default {
   },
 
   hero: {
+    terminal: { connected: 'connected · portfolio_db', typing: 'typing…', running: 'running…' },
     typedPrefix: 'i build',
     typedPhrases: ['web systems', 'internal tools', 'automations', 'REST APIs', 'solutions to real problems'],
     subtitle:
@@ -61,6 +62,7 @@ export default {
   },
 
   about: {
+    terminal: { readonly: 'read-only' },
     title: 'Who I am',
     lead: 'I started programming because I wanted to understand how the things I used every day worked behind the scenes. Today, what grips me most is the other side: figuring out why a process isn’t working before deciding what to build.',
     paragraphs: [
@@ -365,6 +367,29 @@ export default {
   },
 
   contact: {
+    shell: {
+      user: 'visitor',
+      status: 'online',
+      placeholder: 'type help and press Enter',
+      inputLabel: 'Terminal command',
+      hint: '# your turn: type help to see the commands',
+      help: [
+        'available commands:',
+        '  email      copies my email',
+        '  linkedin   opens my LinkedIn',
+        '  github     opens my GitHub',
+        '  whatsapp   opens a WhatsApp chat',
+        '  cv         opens my resume',
+        '  whoami     who you are',
+        '  clear      clears the terminal',
+      ],
+      emailCopied: 'email copied:',
+      opening: (name) => `opening ${name}...`,
+      cv: 'opening the resume...',
+      whoami: 'someone with good taste in portfolios. shall we talk?',
+      sudo: 'permission granted. hiring unlocked: just send me an email.',
+      notFound: (cmd) => `command not found: ${cmd}. type help to see the commands.`,
+    },
     title: 'Got a problem to solve?',
     subtitle: 'Reach out. I like to understand the process before writing the first line of code.',
     copyEmail: 'Copy email',

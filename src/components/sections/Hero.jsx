@@ -8,6 +8,7 @@ import TypedText from '../effects/TypedText';
 import useInView from '../effects/useInView';
 import useTypingProgress, { tokensLength } from '../effects/useTypingProgress';
 import RichText from '../common/RichText';
+import TerminalWindow from '../common/TerminalWindow';
 
 const QUERY_TOKENS = [
   { text: 'SELECT', className: styles.keyword },
@@ -17,7 +18,7 @@ const QUERY_TOKENS = [
   { text: 'WHERE', className: styles.keyword },
   { text: ' id = ' },
   { text: "'lucas_ferraz'", className: styles.string },
-  { text: ';' },
+  { text: '\\G', className: styles.keyword },
 ];
 
 const QUERY_TEXT = QUERY_TOKENS.map((token) => token.text).join('');
@@ -25,17 +26,24 @@ const QUERY_LENGTH = tokensLength(QUERY_TOKENS);
 const EXECUTE_DELAY = 700;
 const ROW_DELAY = 220;
 
+/*
+ * Terminal do MySQL: digita a consulta e mostra o resultado no formato vertical
+ * do \G (a linha de “1. row” e os campos alinhados pela direita), como o cliente
+ * de verdade. A barra de status mostra a conexão e o que está acontecendo.
+ */
 function DeveloperQuery({ role }) {
+  const { t } = useLanguage();
   const [cardRef, inView] = useInView();
   const typed = useTypingProgress(QUERY_LENGTH, { active: inView });
   const [revealed, setRevealed] = useState(0);
 
   const results = [
-    ['Name', 'Lucas Ferraz dos Santos'],
-    ['Role', role],
-    ['Focus', 'Python · Django · React'],
+    ['name', 'Lucas Ferraz dos Santos'],
+    ['role', role],
+    ['focus', 'Python · Django · React'],
   ];
-  const totalSteps = results.length + 1;
+  const keyWidth = Math.max(...results.map(([key]) => key.length));
+  const totalSteps = results.length + 2;
   const isTyping = typed < QUERY_LENGTH;
   const isDone = revealed >= totalSteps;
 
@@ -45,41 +53,43 @@ function DeveloperQuery({ role }) {
     return () => clearTimeout(timer);
   }, [isTyping, isDone, revealed]);
 
-  const queryParts = <TypedText tokens={QUERY_TOKENS} typed={typed} showCaret={isTyping} />;
-
-  const lineClass = (step) => `${styles.dbLine} ${revealed > step ? '' : styles.pending}`;
+  const lineClass = (step, extra = '') => `${styles.line} ${extra} ${revealed > step ? '' : styles.pending}`;
+  const status = isTyping ? t.hero.terminal.typing : isDone ? '0.01 sec' : t.hero.terminal.running;
 
   return (
-    <div ref={cardRef} className={styles.dbStatusCard}>
-      <div className={styles.dbHeader}>
-        <span className={styles.dbTitle}>developer_query.sql</span>
-      </div>
-
+    <TerminalWindow
+      ref={cardRef}
+      title="developer_query.sql"
+      app="mysql 8.0"
+      status={t.hero.terminal.connected}
+      statusRight={status}
+      bodyClassName={styles.query}
+    >
       <p className="sr-only">
         {QUERY_TEXT} {results.map(([label, value]) => `${label}: ${value}`).join(', ')}
       </p>
 
-      <div className={styles.dbContent} aria-hidden="true">
-        <div className={styles.dbLine}>
+      <div aria-hidden="true">
+        <div className={styles.line}>
           <span className={styles.prompt}>mysql&gt;</span>
-          {queryParts}
+          <TypedText tokens={QUERY_TOKENS} typed={typed} showCaret={isTyping} />
         </div>
 
-        <div className={styles.dbResult}>
-          {results.map(([label, value], i) => (
-            <div key={label} className={lineClass(i)}>
-              <span className={styles.output}>&gt; {label}:</span> <span className={styles.string}>'{value}'</span>
-            </div>
-          ))}
-          <div className={`${lineClass(results.length)} ${styles.dbFooter}`}>1 row in set (0.01 sec)</div>
-        </div>
+        <div className={lineClass(0, styles.rowSep)}>*************** 1. row ***************</div>
+        {results.map(([key, value], i) => (
+          <div key={key} className={lineClass(i + 1, styles.field)}>
+            <span className={styles.fieldKey}>{key.padStart(keyWidth, ' ')}:</span>{' '}
+            <span className={styles.fieldValue}>{value}</span>
+          </div>
+        ))}
+        <div className={lineClass(results.length + 1, styles.footer)}>1 row in set (0.01 sec)</div>
 
-        <div className={`${styles.dbLine} ${isDone ? '' : styles.pending}`}>
+        <div className={`${styles.line} ${styles.nextPrompt} ${isDone ? '' : styles.pending}`}>
           <span className={styles.prompt}>mysql&gt;</span>
           <span className={styles.caret} />
         </div>
       </div>
-    </div>
+    </TerminalWindow>
   );
 }
 
