@@ -52,12 +52,36 @@ export default {
     ],
     dragHint: 'drag me',
     strips: [
-      'top 10 overall at the Localiza&Co hackathon, reaching top 4 midday',
-      'turned ISO 9001 and ISO 37001 requirements into system rules',
-      'Skinomics forecasts Steam prices with an 8.1% MAPE',
-      'Save Point: a game library with a REST API, a database and React',
-      'software development intern at Pilgrims since Nov/2026',
-      'native PT · technical EN · basic ES, and a terminal always open',
+      [
+        'top 10 overall at the Localiza&Co hackathon, reaching top 4 midday',
+        'led a team of 5 people through an 11-hour hackathon',
+        'we scored about 35k points at the hackathon; first place scored 37k',
+      ],
+      [
+        'turned ISO 9001 and ISO 37001 requirements into system rules',
+        'my first internship was at Grande Oriente do Brasil - Paraná, in Oct/2025',
+        'started in support and spreadsheet automation before building systems',
+      ],
+      [
+        'Skinomics forecasts Steam prices with an 8.1% MAPE',
+        'my forecasting model makes 21% less error than the naive forecast',
+        'Skinomics went live on 11/13/2026, with Steam login',
+      ],
+      [
+        'Save Point: a game library with a REST API, a database and React',
+        'Python is my internship language and powered the hackathon engine',
+        'I monitor infrastructure with Zabbix and Grafana at Pilgrims',
+      ],
+      [
+        'software development intern at Pilgrims since Nov/2026',
+        'in the 6th semester of Computer Science at PUCPR',
+        'studying artificial intelligence and machine learning in college',
+      ],
+      [
+        'native PT · technical EN · basic ES, and a terminal always open',
+        'I live in São José dos Pinhais, in Greater Curitiba',
+        'I code in the terminal, with kitty and Claude Code',
+      ],
     ],
   },
 
@@ -410,6 +434,7 @@ export default {
       placeholder: 'type help and press Enter',
       inputLabel: 'Terminal command',
       hint: '# your turn: type help to see the commands',
+      tuxHint: '# psst: tap Tux up here for life tips and fun facts about Lucas',
       help: [
         'available commands:',
         '  email      copies my email',

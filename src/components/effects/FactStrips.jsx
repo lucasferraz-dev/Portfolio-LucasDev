@@ -18,12 +18,6 @@ const ANCHORS = [
 const STORAGE_KEY = 'fact-strips';
 const MOVED_KEY = 'fact-strips-moved';
 
-// física: quanto o movimento gira a fita e quanto ela perde de velocidade por quadro
-const TORQUE = 0.0022;
-const SPIN_DAMPING_HELD = 0.9;
-const SPIN_DAMPING_FREE = 0.95;
-const FRICTION = 0.92;
-
 function load(key, fallback) {
   try {
     return JSON.parse(localStorage.getItem(key)) ?? fallback;
@@ -39,14 +33,22 @@ function save(key, value) {
 }
 
 /*
- * Uma fita com física simples de corpo rígido. Segurando, ela acompanha o
- * ponteiro e gira em torno do ponto onde foi pega (o movimento do ponteiro em
- * relação ao centro vira torque). Ao soltar, continua deslizando e girando com
- * o embalo até parar, e então “cola” como um selo, guardando posição e ângulo.
+ * Física de “adesivo arrastado numa mesa”, vista de cima:
+ * o ponto onde a fita foi pega fica preso no cursor e a fita gira em torno dele.
+ * O atrito com a mesa age no centro da fita: quando o ponto de pega se move, o
+ * centro fica para trás e a fita se alinha atrás do movimento. Pegando no meio
+ * não há alavanca, então ela só acompanha, sem girar. Ao soltar, segue com a
+ * velocidade do próprio corpo até parar, e quica nas bordas da página.
  */
-function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHint, hintText }) {
+const DRAG = 0.5; // força do atrito que alinha a fita atrás do movimento
+const MAX_SPIN = 0.22; // giro máximo por quadro (radianos)
+const FRICTION = 0.92;
+const SPIN_FRICTION = 0.92;
+const BOUNCE = 0.45;
+
+function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHint, hintText, layerRef }) {
   const ref = useRef(null);
-  const body = useRef({ x: saved.x, y: saved.y, a: saved.a ?? 0, vx: 0, vy: 0, va: 0 });
+  const body = useRef({ x: saved.x, y: saved.y, a: saved.a ?? 0, vx: 0, vy: 0, w: 0, baseX: 0, baseY: 0 });
   const drag = useRef(null);
   const frame = useRef(0);
   const last = useRef(0);
@@ -59,17 +61,55 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     el.style.setProperty('--angle', `${a}deg`);
   };
 
+  // centro da fita sem deslocamento, nas coordenadas da camada (= da página)
+  const measureBase = () => {
+    const el = ref.current;
+    const layer = layerRef.current.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
+    const b = body.current;
+    b.baseX = rect.left + rect.width / 2 - layer.left - b.x;
+    b.baseY = rect.top + rect.height / 2 - layer.top - b.y;
+  };
+
+  // mantém a fita inteira dentro da página; devolve em quais eixos bateu na borda
+  const keepInside = () => {
+    const b = body.current;
+    const el = ref.current;
+    const layer = layerRef.current;
+    const rad = ((anchor.tilt + b.a) * Math.PI) / 180;
+    const w = el.offsetWidth / 2;
+    const h = el.offsetHeight / 2;
+    const hx = Math.abs(w * Math.cos(rad)) + Math.abs(h * Math.sin(rad));
+    const hy = Math.abs(w * Math.sin(rad)) + Math.abs(h * Math.cos(rad));
+    const cx = b.baseX + b.x;
+    const cy = b.baseY + b.y;
+    const nx = Math.min(Math.max(cx, hx + 4), layer.offsetWidth - hx - 4);
+    const ny = Math.min(Math.max(cy, hy + 4), layer.offsetHeight - hy - 4);
+    b.x += nx - cx;
+    b.y += ny - cy;
+    return { hitX: nx !== cx, hitY: ny !== cy };
+  };
+
   useLayoutEffect(() => {
     Object.assign(body.current, { x: saved.x, y: saved.y, a: saved.a ?? 0 });
     apply();
+    // fitas que tinham ficado fora da página (de versões antigas) voltam para dentro
+    measureBase();
+    const { hitX, hitY } = keepInside();
+    if (hitX || hitY) {
+      apply();
+      const { x, y, a } = body.current;
+      onSettle(index, { x, y, a });
+    }
+    // só deve rodar quando a posição salva muda, não a cada render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saved.x, saved.y, saved.a]);
 
   useEffect(() => () => cancelAnimationFrame(frame.current), []);
 
   const settle = () => {
     const el = ref.current;
-    el.classList.remove(styles.lifted);
-    el.classList.remove(styles.stuck);
+    el.classList.remove(styles.lifted, styles.stuck);
     void el.offsetWidth; // reinicia a animação de “colar”
     el.classList.add(styles.stuck);
     const { x, y, a } = body.current;
@@ -80,23 +120,42 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     const dt = Math.min((now - last.current) / 16.67, 3);
     last.current = now;
     const b = body.current;
-    const held = Boolean(drag.current);
+    const d = drag.current;
 
-    b.a += b.va * dt;
-    b.va *= held ? SPIN_DAMPING_HELD : SPIN_DAMPING_FREE;
+    if (d) {
+      // torque do atrito no centro em volta do ponto de pega (preso no cursor)
+      const r2 = d.rx * d.rx + d.ry * d.ry;
+      const inertia = r2 + d.i0;
+      const torque = -DRAG * (d.rx * d.vy - d.ry * d.vx) - DRAG * b.w * r2;
+      b.w = Math.max(Math.min(b.w + (torque / inertia) * dt, MAX_SPIN), -MAX_SPIN);
 
-    if (held) {
-      // o ponto de pega gira junto com a fita
-      const rad = (b.va * dt * Math.PI) / 180;
-      const { rx, ry } = drag.current;
-      drag.current.rx = rx * Math.cos(rad) - ry * Math.sin(rad);
-      drag.current.ry = rx * Math.sin(rad) + ry * Math.cos(rad);
+      const turn = b.w * dt;
+      const cos = Math.cos(turn);
+      const sin = Math.sin(turn);
+      const rx = d.rx * cos - d.ry * sin;
+      d.ry = d.rx * sin + d.ry * cos;
+      d.rx = rx;
+      b.a += (turn * 180) / Math.PI;
+
+      b.x = d.px + d.rx - b.baseX;
+      b.y = d.py + d.ry - b.baseY;
+      keepInside();
+      // sem eventos novos do mouse, a velocidade do ponteiro some aos poucos
+      d.vx *= 0.6;
+      d.vy *= 0.6;
     } else {
       b.x += b.vx * dt;
       b.y += b.vy * dt;
+      b.a += ((b.w * dt) * 180) / Math.PI;
       b.vx *= FRICTION;
       b.vy *= FRICTION;
-      if (Math.abs(b.vx) < 0.15 && Math.abs(b.vy) < 0.15 && Math.abs(b.va) < 0.1) {
+      b.w *= SPIN_FRICTION;
+
+      const { hitX, hitY } = keepInside();
+      if (hitX) b.vx *= -BOUNCE;
+      if (hitY) b.vy *= -BOUNCE;
+
+      if (Math.abs(b.vx) < 0.12 && Math.abs(b.vy) < 0.12 && Math.abs(b.w) < 0.002) {
         apply();
         settle();
         return;
@@ -107,21 +166,32 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     frame.current = requestAnimationFrame(loop);
   };
 
+  const pointerInLayer = (event) => {
+    const layer = layerRef.current.getBoundingClientRect();
+    return [event.clientX - layer.left, event.clientY - layer.top];
+  };
+
   const onPointerDown = (event) => {
     cancelAnimationFrame(frame.current);
     event.currentTarget.setPointerCapture(event.pointerId);
-    const rect = ref.current.getBoundingClientRect();
+    measureBase();
+    const b = body.current;
+    const [px, py] = pointerInLayer(event);
+    const el = ref.current;
     drag.current = {
-      lastX: event.clientX,
-      lastY: event.clientY,
-      lastT: performance.now(),
-      rx: event.clientX - (rect.left + rect.width / 2),
-      ry: event.clientY - (rect.top + rect.height / 2),
+      px,
+      py,
+      rx: b.baseX + b.x - px,
+      ry: b.baseY + b.y - py,
       vx: 0,
       vy: 0,
+      lastT: performance.now(),
+      // momento de inércia da própria fita (retângulo girando no centro)
+      i0: (el.offsetWidth ** 2 + el.offsetHeight ** 2) / 12,
     };
-    ref.current.classList.remove(styles.stuck);
-    ref.current.classList.add(styles.lifted);
+    b.w = 0;
+    el.classList.remove(styles.stuck);
+    el.classList.add(styles.lifted);
     onGrab();
     last.current = performance.now();
     frame.current = requestAnimationFrame(loop);
@@ -131,19 +201,12 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     const d = drag.current;
     if (!d) return;
     const now = performance.now();
-    const dx = event.clientX - d.lastX;
-    const dy = event.clientY - d.lastY;
-    const frames = Math.max((now - d.lastT) / 16.67, 0.25);
-    const b = body.current;
-
-    b.x += dx;
-    b.y += dy;
-    // movimento perpendicular ao braço (centro → ponto de pega) gira a fita
-    b.va += (d.rx * dy - d.ry * dx) * TORQUE;
-    d.vx = dx / frames;
-    d.vy = dy / frames;
-    d.lastX = event.clientX;
-    d.lastY = event.clientY;
+    const [px, py] = pointerInLayer(event);
+    const frames = Math.max((now - d.lastT) / 16.67, 0.5);
+    d.vx = d.vx * 0.4 + ((px - d.px) / frames) * 0.6;
+    d.vy = d.vy * 0.4 + ((py - d.py) / frames) * 0.6;
+    d.px = px;
+    d.py = py;
     d.lastT = now;
   };
 
@@ -151,10 +214,13 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     const d = drag.current;
     if (!d) return;
     drag.current = null;
-    // se o ponteiro estava parado na hora de soltar, não arremessa
+    const b = body.current;
+    // o centro sai com a velocidade do ponto de pega mais a do giro
     const idle = performance.now() - d.lastT > 80;
-    body.current.vx = idle ? 0 : d.vx;
-    body.current.vy = idle ? 0 : d.vy;
+    const vx = idle ? 0 : d.vx;
+    const vy = idle ? 0 : d.vy;
+    b.vx = vx - b.w * d.ry;
+    b.vy = vy + b.w * d.rx;
   };
 
   const reset = () => {
@@ -162,7 +228,7 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     drag.current = null;
     const el = ref.current;
     el.classList.add(styles.returning);
-    Object.assign(body.current, { x: 0, y: 0, a: 0, vx: 0, vy: 0, va: 0 });
+    Object.assign(body.current, { x: 0, y: 0, a: 0, vx: 0, vy: 0, w: 0 });
     apply();
     onSettle(index, { x: 0, y: 0, a: 0 });
     setTimeout(() => el.classList.remove(styles.returning, styles.lifted), 500);
@@ -201,8 +267,8 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
 }
 
 /*
- * Fitas com curiosidades sobre mim espalhadas pelo site, que dá para arrastar,
- * girar e deixar onde quiser. Enquanto ninguém mexeu nelas, tremem de vez em
+ * Fitas com curiosidades sobre mim espalhadas pelo site (cada uma sorteia uma
+ * entre algumas a cada visita), que dá para arrastar, girar e deixar onde quiser. Enquanto ninguém mexeu nelas, tremem de vez em
  * quando e a primeira mostra um “arraste-me”. Posição e ângulo ficam salvos no
  * navegador de quem visita; dois cliques devolvem a fita ao lugar.
  */
@@ -211,6 +277,8 @@ export default function FactStrips() {
   const [positions, setPositions] = useState([]);
   const [offsets, setOffsets] = useState(() => load(STORAGE_KEY, {}));
   const [moved, setMoved] = useState(() => load(MOVED_KEY, false));
+  // cada fita tem algumas curiosidades; a cada visita uma delas é sorteada
+  const [picks] = useState(() => ANCHORS.map(() => Math.random()));
   const layerRef = useRef(null);
 
   useEffect(() => {
@@ -249,11 +317,12 @@ export default function FactStrips() {
   return (
     <div ref={layerRef} className={`${styles.layer} ${moved ? '' : styles.invite}`}>
       {positions.length > 0 &&
-        t.fun.strips.map((text, i) => (
+        t.fun.strips.map((options, i) => (
           <Strip
             key={i}
             index={i}
-            text={text}
+            text={options[Math.floor(picks[i] * options.length)]}
+            layerRef={layerRef}
             anchor={ANCHORS[i]}
             position={positions[i]}
             saved={offsets[i] ?? { x: 0, y: 0, a: 0 }}

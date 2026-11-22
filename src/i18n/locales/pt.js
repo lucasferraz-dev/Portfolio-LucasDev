@@ -52,12 +52,36 @@ export default {
     ],
     dragHint: 'arraste-me',
     strips: [
-      'top 10 geral no hackathon da Localiza&Co, chegando ao top 4 no meio do dia',
-      'transformei os requisitos da ISO 9001 e da ISO 37001 em regras de sistema',
-      'o Skinomics prevê preços da Steam com MAPE de 8,1%',
-      'Save Point: biblioteca de jogos com API REST, banco de dados e React',
-      'estagiário de desenvolvimento na Pilgrims desde nov/2026',
-      'PT nativo · EN técnico · ES básico, e um terminal sempre aberto',
+      [
+        'top 10 geral no hackathon da Localiza&Co, chegando ao top 4 no meio do dia',
+        'liderei uma equipe de 5 pessoas num hackathon de 11 horas',
+        'fizemos cerca de 35 mil pontos no hackathon; o 1º lugar fez 37 mil',
+      ],
+      [
+        'transformei os requisitos da ISO 9001 e da ISO 37001 em regras de sistema',
+        'meu primeiro estágio foi no Grande Oriente do Brasil - Paraná, em out/2025',
+        'comecei no suporte e na automação de planilhas antes de construir sistemas',
+      ],
+      [
+        'o Skinomics prevê preços da Steam com MAPE de 8,1%',
+        'meu modelo de previsão erra 21% menos que a previsão ingênua',
+        'o Skinomics entrou no ar em 13/11/2026, com login pela Steam',
+      ],
+      [
+        'Save Point: biblioteca de jogos com API REST, banco de dados e React',
+        'Python é a linguagem do estágio e foi a base do motor do hackathon',
+        'monitoro infraestrutura com Zabbix e Grafana na Pilgrims',
+      ],
+      [
+        'estagiário de desenvolvimento na Pilgrims desde nov/2026',
+        'no 6º semestre de Ciência da Computação na PUCPR',
+        'estudando inteligência artificial e machine learning na faculdade',
+      ],
+      [
+        'PT nativo · EN técnico · ES básico, e um terminal sempre aberto',
+        'moro em São José dos Pinhais, na Grande Curitiba',
+        'desenvolvo no terminal, com kitty e Claude Code',
+      ],
     ],
   },
 
@@ -410,6 +434,7 @@ export default {
       placeholder: 'digite help e aperte Enter',
       inputLabel: 'Comando do terminal',
       hint: '# agora é com você: digite help para ver os comandos',
+      tuxHint: '# psiu: toque no Tux aqui em cima para dicas de vida e curiosidades sobre o Lucas',
       help: [
         'comandos disponíveis:',
         '  email      copia meu e-mail',

@@ -188,6 +188,7 @@ function ContactShell({ rows }) {
               </div>
             ))}
             <div className={`${styles.terminalLine} ${styles.hint} ${isReady ? '' : styles.pending}`}>{shell.hint}</div>
+            <div className={`${styles.terminalLine} ${styles.hint} ${styles.tuxHint} ${isReady ? '' : styles.pending}`}>{shell.tuxHint}</div>
           </div>
         )}
 

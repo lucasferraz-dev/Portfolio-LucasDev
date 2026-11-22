@@ -52,12 +52,36 @@ export default {
     ],
     dragHint: 'arrástrame',
     strips: [
-      'top 10 general en el hackathon de Localiza&Co, llegando al top 4 a mitad del día',
-      'convertí los requisitos de ISO 9001 e ISO 37001 en reglas del sistema',
-      'Skinomics predice precios de Steam con un MAPE de 8,1%',
-      'Save Point: biblioteca de juegos con API REST, base de datos y React',
-      'pasante de desarrollo en Pilgrims desde nov/2026',
-      'PT nativo · EN técnico · ES básico, y una terminal siempre abierta',
+      [
+        'top 10 general en el hackathon de Localiza&Co, llegando al top 4 a mitad del día',
+        'lideré un equipo de 5 personas en un hackathon de 11 horas',
+        'hicimos cerca de 35 mil puntos en el hackathon; el 1º lugar hizo 37 mil',
+      ],
+      [
+        'convertí los requisitos de ISO 9001 e ISO 37001 en reglas del sistema',
+        'mi primera pasantía fue en el Grande Oriente do Brasil - Paraná, en oct/2025',
+        'empecé en soporte y automatización de planillas antes de construir sistemas',
+      ],
+      [
+        'Skinomics predice precios de Steam con un MAPE de 8,1%',
+        'mi modelo de predicción se equivoca 21% menos que la predicción ingenua',
+        'Skinomics salió al aire el 13/11/2026, con login de Steam',
+      ],
+      [
+        'Save Point: biblioteca de juegos con API REST, base de datos y React',
+        'Python es el lenguaje de mi pasantía y fue la base del motor del hackathon',
+        'monitoreo infraestructura con Zabbix y Grafana en Pilgrims',
+      ],
+      [
+        'pasante de desarrollo en Pilgrims desde nov/2026',
+        'en el 6º semestre de Ciencias de la Computación en la PUCPR',
+        'estudiando inteligencia artificial y machine learning en la facultad',
+      ],
+      [
+        'PT nativo · EN técnico · ES básico, y una terminal siempre abierta',
+        'vivo en São José dos Pinhais, en el Gran Curitiba',
+        'programo en la terminal, con kitty y Claude Code',
+      ],
     ],
   },
 
@@ -410,6 +434,7 @@ export default {
       placeholder: 'escribe help y presiona Enter',
       inputLabel: 'Comando de la terminal',
       hint: '# ahora es tu turno: escribe help para ver los comandos',
+      tuxHint: '# psst: toca a Tux aquí arriba para consejos de vida y curiosidades sobre Lucas',
       help: [
         'comandos disponibles:',
         '  email      copia mi correo',
