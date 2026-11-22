@@ -16,105 +16,156 @@ const ANCHORS = [
 ];
 
 const STORAGE_KEY = 'fact-strips';
-const FRICTION = 0.9;
+const MOVED_KEY = 'fact-strips-moved';
 
-function loadOffsets() {
+// física: quanto o movimento gira a fita e quanto ela perde de velocidade por quadro
+const TORQUE = 0.0022;
+const SPIN_DAMPING_HELD = 0.9;
+const SPIN_DAMPING_FREE = 0.95;
+const FRICTION = 0.92;
+
+function load(key, fallback) {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? {};
+    return JSON.parse(localStorage.getItem(key)) ?? fallback;
   } catch {
-    return {};
+    return fallback;
   }
 }
 
-function saveOffsets(offsets) {
+function save(key, value) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(offsets));
+    localStorage.setItem(key, JSON.stringify(value));
   } catch {}
 }
 
 /*
- * Uma fita arrastável. Durante o arrasto ela segue o ponteiro e inclina na
- * direção do movimento; ao soltar, desliza um pouco com a velocidade do gesto
- * e para. Dois cliques devolvem a fita para o lugar original.
+ * Uma fita com física simples de corpo rígido. Segurando, ela acompanha o
+ * ponteiro e gira em torno do ponto onde foi pega (o movimento do ponteiro em
+ * relação ao centro vira torque). Ao soltar, continua deslizando e girando com
+ * o embalo até parar, e então “cola” como um selo, guardando posição e ângulo.
  */
-function Strip({ text, anchor, position, offset, onMove, index }) {
+function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHint, hintText }) {
   const ref = useRef(null);
+  const body = useRef({ x: saved.x, y: saved.y, a: saved.a ?? 0, vx: 0, vy: 0, va: 0 });
   const drag = useRef(null);
-  const current = useRef(offset);
-  const glide = useRef(0);
+  const frame = useRef(0);
+  const last = useRef(0);
 
-  const apply = (x, y, tilt = 0, lifted = false) => {
-    current.current = { x, y };
+  const apply = () => {
+    const { x, y, a } = body.current;
     const el = ref.current;
     el.style.setProperty('--dx', `${x}px`);
     el.style.setProperty('--dy', `${y}px`);
-    el.style.setProperty('--lean', `${tilt}deg`);
-    el.classList.toggle(styles.lifted, lifted);
+    el.style.setProperty('--angle', `${a}deg`);
   };
 
   useLayoutEffect(() => {
-    apply(offset.x, offset.y);
-  }, [offset.x, offset.y]);
+    Object.assign(body.current, { x: saved.x, y: saved.y, a: saved.a ?? 0 });
+    apply();
+  }, [saved.x, saved.y, saved.a]);
 
-  useEffect(() => () => cancelAnimationFrame(glide.current), []);
+  useEffect(() => () => cancelAnimationFrame(frame.current), []);
+
+  const settle = () => {
+    const el = ref.current;
+    el.classList.remove(styles.lifted);
+    el.classList.remove(styles.stuck);
+    void el.offsetWidth; // reinicia a animação de “colar”
+    el.classList.add(styles.stuck);
+    const { x, y, a } = body.current;
+    onSettle(index, { x, y, a });
+  };
+
+  const loop = (now) => {
+    const dt = Math.min((now - last.current) / 16.67, 3);
+    last.current = now;
+    const b = body.current;
+    const held = Boolean(drag.current);
+
+    b.a += b.va * dt;
+    b.va *= held ? SPIN_DAMPING_HELD : SPIN_DAMPING_FREE;
+
+    if (held) {
+      // o ponto de pega gira junto com a fita
+      const rad = (b.va * dt * Math.PI) / 180;
+      const { rx, ry } = drag.current;
+      drag.current.rx = rx * Math.cos(rad) - ry * Math.sin(rad);
+      drag.current.ry = rx * Math.sin(rad) + ry * Math.cos(rad);
+    } else {
+      b.x += b.vx * dt;
+      b.y += b.vy * dt;
+      b.vx *= FRICTION;
+      b.vy *= FRICTION;
+      if (Math.abs(b.vx) < 0.15 && Math.abs(b.vy) < 0.15 && Math.abs(b.va) < 0.1) {
+        apply();
+        settle();
+        return;
+      }
+    }
+
+    apply();
+    frame.current = requestAnimationFrame(loop);
+  };
 
   const onPointerDown = (event) => {
-    cancelAnimationFrame(glide.current);
+    cancelAnimationFrame(frame.current);
     event.currentTarget.setPointerCapture(event.pointerId);
+    const rect = ref.current.getBoundingClientRect();
     drag.current = {
-      startX: event.clientX - current.current.x,
-      startY: event.clientY - current.current.y,
       lastX: event.clientX,
       lastY: event.clientY,
       lastT: performance.now(),
+      rx: event.clientX - (rect.left + rect.width / 2),
+      ry: event.clientY - (rect.top + rect.height / 2),
       vx: 0,
       vy: 0,
     };
-    apply(current.current.x, current.current.y, 0, true);
+    ref.current.classList.remove(styles.stuck);
+    ref.current.classList.add(styles.lifted);
+    onGrab();
+    last.current = performance.now();
+    frame.current = requestAnimationFrame(loop);
   };
 
   const onPointerMove = (event) => {
     const d = drag.current;
     if (!d) return;
     const now = performance.now();
-    const dt = Math.max(now - d.lastT, 1);
-    d.vx = (event.clientX - d.lastX) / dt;
-    d.vy = (event.clientY - d.lastY) / dt;
+    const dx = event.clientX - d.lastX;
+    const dy = event.clientY - d.lastY;
+    const frames = Math.max((now - d.lastT) / 16.67, 0.25);
+    const b = body.current;
+
+    b.x += dx;
+    b.y += dy;
+    // movimento perpendicular ao braço (centro → ponto de pega) gira a fita
+    b.va += (d.rx * dy - d.ry * dx) * TORQUE;
+    d.vx = dx / frames;
+    d.vy = dy / frames;
     d.lastX = event.clientX;
     d.lastY = event.clientY;
     d.lastT = now;
-    apply(event.clientX - d.startX, event.clientY - d.startY, Math.max(Math.min(d.vx * 12, 14), -14), true);
   };
 
   const onPointerUp = () => {
     const d = drag.current;
     if (!d) return;
     drag.current = null;
-    let vx = d.vx * 16;
-    let vy = d.vy * 16;
-
-    // desliza com a velocidade do gesto até parar
-    const step = () => {
-      vx *= FRICTION;
-      vy *= FRICTION;
-      const { x, y } = current.current;
-      if (Math.abs(vx) < 0.3 && Math.abs(vy) < 0.3) {
-        apply(x, y);
-        onMove(index, current.current);
-        return;
-      }
-      apply(x + vx, y + vy, Math.max(Math.min(vx * 0.8, 10), -10));
-      glide.current = requestAnimationFrame(step);
-    };
-    step();
+    // se o ponteiro estava parado na hora de soltar, não arremessa
+    const idle = performance.now() - d.lastT > 80;
+    body.current.vx = idle ? 0 : d.vx;
+    body.current.vy = idle ? 0 : d.vy;
   };
 
   const reset = () => {
-    cancelAnimationFrame(glide.current);
-    ref.current.classList.add(styles.returning);
-    apply(0, 0);
-    onMove(index, { x: 0, y: 0 });
-    setTimeout(() => ref.current?.classList.remove(styles.returning), 500);
+    cancelAnimationFrame(frame.current);
+    drag.current = null;
+    const el = ref.current;
+    el.classList.add(styles.returning);
+    Object.assign(body.current, { x: 0, y: 0, a: 0, vx: 0, vy: 0, va: 0 });
+    apply();
+    onSettle(index, { x: 0, y: 0, a: 0 });
+    setTimeout(() => el.classList.remove(styles.returning, styles.lifted), 500);
   };
 
   return (
@@ -129,21 +180,37 @@ function Strip({ text, anchor, position, offset, onMove, index }) {
       onDoubleClick={reset}
       data-tour={index === 0 ? 'strip' : undefined}
     >
-      <span className={styles.grip} aria-hidden="true" />
-      <span className={styles.slashes}>//</span>
-      <span className={styles.text}>{text}</span>
+      <div className={styles.inner}>
+        <div className={styles.face}>
+          <span className={styles.grip} aria-hidden="true" />
+          <span className={styles.slashes}>//</span>
+          <span className={styles.text}>{text}</span>
+        </div>
+        <span className={styles.peel} aria-hidden="true" />
+      </div>
+      {showHint && (
+        <span className={styles.hint} aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1a6 6 0 0 1-4.8-2.4L4 15.5a1.6 1.6 0 0 1 2.5-2L9 16" />
+          </svg>
+          {hintText}
+        </span>
+      )}
     </div>
   );
 }
 
 /*
- * Fitas com curiosidades sobre mim espalhadas pelo site, que dá para arrastar
- * e deixar onde quiser. A posição fica salva no navegador de quem visita.
+ * Fitas com curiosidades sobre mim espalhadas pelo site, que dá para arrastar,
+ * girar e deixar onde quiser. Enquanto ninguém mexeu nelas, tremem de vez em
+ * quando e a primeira mostra um “arraste-me”. Posição e ângulo ficam salvos no
+ * navegador de quem visita; dois cliques devolvem a fita ao lugar.
  */
 export default function FactStrips() {
   const { t } = useLanguage();
   const [positions, setPositions] = useState([]);
-  const [offsets, setOffsets] = useState(loadOffsets);
+  const [offsets, setOffsets] = useState(() => load(STORAGE_KEY, {}));
+  const [moved, setMoved] = useState(() => load(MOVED_KEY, false));
   const layerRef = useRef(null);
 
   useEffect(() => {
@@ -165,29 +232,37 @@ export default function FactStrips() {
     return () => observer.disconnect();
   }, []);
 
-  const handleMove = (index, offset) => {
+  const handleSettle = (index, offset) => {
     setOffsets((previous) => {
       const next = { ...previous, [index]: offset };
-      saveOffsets(next);
+      save(STORAGE_KEY, next);
       return next;
     });
   };
 
-  if (!positions.length) return <div ref={layerRef} className={styles.layer} aria-hidden="true" />;
+  const handleGrab = () => {
+    if (moved) return;
+    setMoved(true);
+    save(MOVED_KEY, true);
+  };
 
   return (
-    <div ref={layerRef} className={styles.layer}>
-      {t.fun.strips.map((text, i) => (
-        <Strip
-          key={i}
-          index={i}
-          text={text}
-          anchor={ANCHORS[i]}
-          position={positions[i]}
-          offset={offsets[i] ?? { x: 0, y: 0 }}
-          onMove={handleMove}
-        />
-      ))}
+    <div ref={layerRef} className={`${styles.layer} ${moved ? '' : styles.invite}`}>
+      {positions.length > 0 &&
+        t.fun.strips.map((text, i) => (
+          <Strip
+            key={i}
+            index={i}
+            text={text}
+            anchor={ANCHORS[i]}
+            position={positions[i]}
+            saved={offsets[i] ?? { x: 0, y: 0, a: 0 }}
+            onSettle={handleSettle}
+            onGrab={handleGrab}
+            showHint={!moved && i === 0}
+            hintText={t.fun.dragHint}
+          />
+        ))}
     </div>
   );
 }
