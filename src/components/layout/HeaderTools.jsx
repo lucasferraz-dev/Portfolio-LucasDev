@@ -140,7 +140,7 @@ export function TvModeToggle() {
 
 /* ---------- Como usar ---------- */
 
-/* O “?” fica sempre girando de lado; o clique abre o tour guiado */
+/* O “?” dentro de um círculo dá um pulinho e um giro de lado sem parar; o clique abre o tour */
 export function HelpButton() {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
@@ -154,7 +154,11 @@ export function HelpButton() {
         aria-label={t.header.help}
         title={t.header.help}
       >
-        <span className={styles.helpMark} aria-hidden="true">?</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.helpMark}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M9.4 9.3a2.7 2.7 0 0 1 5.2 1c0 1.8-2.6 2.4-2.6 3.9" />
+          <path d="M12 17.2h.01" />
+        </svg>
       </button>
 
       {open && <Tour onClose={() => setOpen(false)} />}

@@ -282,23 +282,33 @@
   @apply text-accent border-accent/50;
 }
 
-/* "?" girando de lado sem parar */
+/* "?" num círculo branco: fica parado, dá um pulinho, gira de lado no ar e cai */
 .helpButton {
   perspective: 120px;
 }
 
-.helpMark {
-  @apply block font-mono text-sm font-black leading-none;
-  animation: helpSpin 2.8s linear infinite;
+.themeButton svg.helpMark {
+  @apply w-[17px] h-[17px];
+  color: var(--color-white);
+  stroke-width: 2;
+  animation: helpHop 3s ease-in-out infinite;
 }
 
-@keyframes helpSpin {
-  from { transform: rotateY(0deg); }
-  to { transform: rotateY(360deg); }
+.helpButton:hover svg.helpMark {
+  color: var(--color-accent);
+}
+
+@keyframes helpHop {
+  0%, 52% { transform: translateY(0) rotateY(0deg) scale(1); }
+  60% { transform: translateY(-1px) scale(1.1, 0.9); }
+  70% { transform: translateY(-5px) rotateY(180deg) scale(1); }
+  80% { transform: translateY(0) rotateY(360deg) scale(1); }
+  86% { transform: translateY(0) rotateY(360deg) scale(1.12, 0.88); }
+  92%, 100% { transform: translateY(0) rotateY(360deg) scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .helpMark,
+  .themeButton svg.helpMark,
   .tvDot {
     animation: none;
   }
