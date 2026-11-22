@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { siClaudecode } from 'simple-icons';
 import styles from './Critters.module.css';
+import { useLanguage } from '../../i18n/useLanguage';
 import { KITTY_HEAD, KITTY_PUPILS, WIKI_FRONT, WIKI_WINGS } from '../sections/skillShapes';
 
 /*
@@ -365,7 +366,10 @@ function ClawdSprite({ id }) {
 }
 
 function Clawd({ main }) {
+  const { t } = useLanguage();
   const id = useId().replace(/:/g, '');
+  const [line, setLine] = useState(null);
+  const lastLine = useRef(-1);
   const ref = useRef(null);
   const [cheers, setCheers] = useState(0);
   const cheerRef = useRef(0);
@@ -465,13 +469,30 @@ function Clawd({ main }) {
     return () => cancelAnimationFrame(frame);
   }, [main]);
 
+  // clique: pulinho, para e dá uma dica de código (sem repetir a anterior)
   const cheer = () => {
-    cheerRef.current = performance.now() + 1400;
+    const lines = t.fun.clawdLines;
+    let index = Math.floor(Math.random() * lines.length);
+    if (index === lastLine.current) index = (index + 1) % lines.length;
+    lastLine.current = index;
+    cheerRef.current = performance.now() + 3600;
+    setLine(lines[index]);
     setCheers((n) => n + 1);
   };
 
+  useEffect(() => {
+    if (line === null) return undefined;
+    const timer = setTimeout(() => setLine(null), 3600);
+    return () => clearTimeout(timer);
+  }, [line, cheers]);
+
   return (
-    <div ref={ref} className={styles.clawd}>
+    <div ref={ref} className={styles.clawd} data-tour="critter">
+      {line !== null && (
+        <span key={cheers} className={styles.clawdBubble} role="status">
+          {line}
+        </span>
+      )}
       <button type="button" className={styles.clawdButton} onClick={cheer} aria-label="Claude Code" title="Claude Code">
         <span key={cheers} className={`${styles.clawdFlip} ${cheers ? styles.cheer : ''}`}>
           <ClawdSprite id={id} />

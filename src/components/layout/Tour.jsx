@@ -13,10 +13,13 @@ const TARGETS = [
   '[data-tour="tv"]',
   '#about',
   '#projects',
+  '[data-sticky="project-ROW_04"]',
+  '[data-sticky="project-ROW_04"] [class*="keychains"]',
   '#skills',
   '#journey',
   '#contact',
   '[data-tour="strip"]',
+  '[data-tour="critter"]',
   '[data-tour="tux"]',
 ];
 
@@ -70,7 +73,10 @@ export default function Tour({ onClose }) {
     const el = document.querySelector(step.target);
     if (!el) return undefined;
 
-    if (step.target.startsWith('#')) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // leva até o alvo (menos os botões do header, que já estão sempre na tela)
+    if (!el.closest('header')) {
+      el.scrollIntoView({ behavior: 'smooth', block: step.target.startsWith('#') ? 'start' : 'center' });
+    }
 
     let frame = 0;
     const update = () => {
