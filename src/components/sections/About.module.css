@@ -33,7 +33,7 @@
 }
 
 .valuesBlock {
-  @apply mt-16;
+  @apply mt-16 max-w-5xl mx-auto;
 }
 
 .valuesTitle {
