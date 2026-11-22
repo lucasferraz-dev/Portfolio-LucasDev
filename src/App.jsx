@@ -8,6 +8,7 @@ import ScrollHint from './components/layout/ScrollHint';
 import Contact from './components/sections/Contact';
 import AsciiWaves from './components/effects/AsciiWaves';
 import FactStrips from './components/effects/FactStrips';
+import Critters from './components/effects/Critters';
 import { Analytics } from '@vercel/analytics/react';
 import { useLanguage } from './i18n/useLanguage';
 
@@ -38,6 +39,7 @@ export default function App() {
       </main>
 
 
+      <Critters />
       <Analytics />
     </div>
   );

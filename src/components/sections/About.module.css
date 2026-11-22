@@ -41,7 +41,8 @@
 }
 
 .valuesGrid {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 list-none p-0 m-0;
+  /* relative: o elefante do PostgreSQL anda em cima desta grade */
+  @apply relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 list-none p-0 m-0;
 }
 
 /* inclina seguindo o mouse (--rx/--ry vêm do useTilt) */
