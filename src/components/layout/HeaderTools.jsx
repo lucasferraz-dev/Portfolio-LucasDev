@@ -50,7 +50,8 @@ export function FullscreenToggle() {
 
 /* seções que o modo TV passa, em ordem; null é o topo da página */
 const TV_SLIDES = [null, 'about', 'projects', 'skills', 'journey', 'contact'];
-const SPEED = 80; // pixels por segundo descendo dentro de uma seção
+const SPEED_MIN = 100; // pixels por segundo descendo dentro de uma seção
+const MAX_SCROLL_SECONDS = 14; // seções compridas descem mais rápido para não passar disso
 const HOLD_START = 2200; // tempo parado no começo de cada seção
 const HOLD_END = 1500; // tempo parado no fim, antes de ir para a próxima
 const TRAVEL = 900; // tempo da rolagem suave até o começo de uma seção
@@ -97,8 +98,9 @@ export function TvModeToggle() {
     const next = (index + TV_SLIDES.length) % TV_SLIDES.length;
     slideRef.current = next;
     setSlide(next);
-    window.scrollTo({ top: slideBounds(next).start, behavior: 'smooth' });
-    phase.current = { name: 'hold', until: performance.now() + TRAVEL + HOLD_START };
+    const { start: top, end } = slideBounds(next);
+    window.scrollTo({ top, behavior: 'smooth' });
+    phase.current = { name: 'hold', until: performance.now() + TRAVEL + HOLD_START, top, end };
   }, []);
 
   const stop = useCallback(() => {
@@ -122,6 +124,31 @@ export function TvModeToggle() {
   // enquanto o modo TV está ligado, as animações de entrada voltam a rodar a cada seção
   useEffect(() => (active ? startPresenting() : undefined), [active]);
 
+  /*
+   * Durante o modo TV: o hover do conteúdo fica desligado (a página descendo sob
+   * o cursor parado ficaria disparando os efeitos dos cards) e o cursor some
+   * depois de 3 segundos parado, voltando assim que o mouse se mexe.
+   */
+  useEffect(() => {
+    if (!active) return undefined;
+    const root = document.documentElement;
+    let timer = 0;
+    const showCursor = () => {
+      root.classList.remove('tv-cursor-hidden');
+      clearTimeout(timer);
+      timer = setTimeout(() => root.classList.add('tv-cursor-hidden'), 3000);
+    };
+
+    root.classList.add('tv-mode');
+    showCursor();
+    window.addEventListener('mousemove', showCursor);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('mousemove', showCursor);
+      root.classList.remove('tv-mode', 'tv-cursor-hidden');
+    };
+  }, [active]);
+
   // o laço que desce a página enquanto está tocando
   useEffect(() => {
     if (!active || !playing) return undefined;
@@ -129,28 +156,40 @@ export function TvModeToggle() {
     let frame = 0;
     let last = performance.now();
 
+    /*
+     * Começa a descer: mede a seção uma vez só (medir a cada quadro força o
+     * navegador a refazer o layout) e guarda a posição com casas decimais por
+     * conta própria, já que o navegador arredonda a rolagem e passos menores
+     * que 1px se perderiam. Seções compridas ganham uma velocidade maior.
+     */
+    const startScroll = () => {
+      const { start: top, end } = slideBounds(slideRef.current);
+      const speed = Math.max(SPEED_MIN, (end - top) / MAX_SCROLL_SECONDS);
+      phase.current = { name: 'scroll', pos: window.scrollY, top, end, speed };
+    };
+
     const tick = (now) => {
       frame = requestAnimationFrame(tick);
-      const dt = now - last;
+      const dt = Math.min(now - last, 100);
       last = now;
-      const { start: top, end } = slideBounds(slideRef.current);
       const current = phase.current;
 
-      if (current.name === 'hold' && now >= current.until) {
-        phase.current = { name: 'scroll', until: 0 };
+      if (current.name === 'resume' || (current.name === 'hold' && now >= current.until)) {
+        startScroll();
       } else if (current.name === 'scroll') {
-        const y = window.scrollY + (SPEED * dt) / 1000;
-        if (y >= end) {
-          window.scrollTo({ top: end, behavior: 'instant' });
-          phase.current = { name: 'end', until: now + HOLD_END };
+        current.pos += (current.speed * dt) / 1000;
+        if (current.pos >= current.end) {
+          window.scrollTo({ top: current.end, behavior: 'instant' });
+          phase.current = { ...current, name: 'end', until: now + HOLD_END };
         } else {
-          window.scrollTo({ top: y, behavior: 'instant' });
+          window.scrollTo({ top: current.pos, behavior: 'instant' });
         }
       } else if (current.name === 'end' && now >= current.until) {
         goTo(slideRef.current + 1);
       }
 
-      if (progressRef.current) {
+      const { top, end } = phase.current;
+      if (progressRef.current && top !== undefined) {
         const p = end > top ? (window.scrollY - top) / (end - top) : 1;
         progressRef.current.style.transform = `scaleX(${Math.min(Math.max(p, 0), 1)})`;
       }
@@ -199,7 +238,7 @@ export function TvModeToggle() {
       const index = currentSlide();
       slideRef.current = index;
       setSlide(index);
-      phase.current = { name: 'scroll', until: 0 };
+      phase.current = { name: 'resume' };
     }
     setPlaying((value) => !value);
   };

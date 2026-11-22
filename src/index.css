@@ -106,3 +106,13 @@ button:focus-visible {
 .skip-link:focus {
   left: 0;
 }
+
+/* modo TV: sem hover no conteúdo e cursor escondido depois de um tempo parado */
+html.tv-mode main {
+  pointer-events: none;
+}
+
+html.tv-cursor-hidden,
+html.tv-cursor-hidden * {
+  cursor: none !important;
+}
