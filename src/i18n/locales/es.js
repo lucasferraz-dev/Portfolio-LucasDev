@@ -351,6 +351,7 @@ export default {
     viewProject: 'Ver proyecto',
     items: {
       pucpr: {
+        achievement: { big: '6º', detail: 'semestre · estudiando IA y machine learning' },
         date: '2024 – 2027',
         title: 'Licenciatura en Ciencias de la Computación',
         org: 'PUCPR - Pontificia Universidad Católica de Paraná',
@@ -359,6 +360,7 @@ export default {
         tags: ['POO', 'Bases de Datos', 'Desarrollo Web', 'IA / ML'],
       },
       gobpr: {
+        achievement: { big: '1º', detail: 'primera pasantía · 13 meses' },
         date: 'Oct/2025 – Nov/2026',
         title: 'Pasante de TI',
         org: 'Grande Oriente do Brasil - Paraná',
@@ -391,6 +393,7 @@ export default {
         tags: ['Python'],
       },
       skinomics: {
+        achievement: { big: '8,1%', detail: 'MAPE en prueba · 21% mejor que el baseline' },
         date: 'Ago/2026 – Nov/2026',
         title: 'Skinomics - Previsión de Precios del Mercado de Steam',
         org: 'Proyecto académico - PUCPR',
@@ -399,6 +402,7 @@ export default {
         tags: ['Python', 'FastAPI', 'PostgreSQL', 'scikit-learn', 'Docker'],
       },
       rotinas: {
+        achievement: { big: 'ISO', detail: '9001 + 37001 convertidas en reglas del sistema' },
         date: 'Sep/2026 – Nov/2026',
         title: 'Sistema de Rutinas - GOB/PR Digital',
         org: 'GOB-PR - Pasantía en TI',
@@ -422,6 +426,7 @@ export default {
         tags: ['Desarrollo Web', 'Infraestructura', 'Zabbix', 'Grafana', 'Wiki.js', 'Linear', 'Claude Code'],
       },
       hackathon: {
+        achievement: { big: '10º', detail: 'Top 10 general · ~35 mil puntos' },
         date: 'Oct/2026',
         title: 'Hackathon Recarga Inteligente - Localiza&Co',
         org: 'Proceso de selección de pasantías de Localiza&Co',

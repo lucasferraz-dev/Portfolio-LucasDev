@@ -351,6 +351,7 @@ export default {
     viewProject: 'View project',
     items: {
       pucpr: {
+        achievement: { big: '6th', detail: 'semester · studying AI and machine learning' },
         date: '2024 – 2027',
         title: 'Bachelor’s in Computer Science',
         org: 'PUCPR - Pontifical Catholic University of Paraná',
@@ -359,6 +360,7 @@ export default {
         tags: ['OOP', 'Databases', 'Web Development', 'AI / ML'],
       },
       gobpr: {
+        achievement: { big: '1st', detail: 'first internship · 13 months' },
         date: 'Oct/2025 – Nov/2026',
         title: 'IT Intern',
         org: 'Grande Oriente do Brasil - Paraná',
@@ -391,6 +393,7 @@ export default {
         tags: ['Python'],
       },
       skinomics: {
+        achievement: { big: '8.1%', detail: 'Test MAPE · 21% better than the baseline' },
         date: 'Aug/2026 – Nov/2026',
         title: 'Skinomics - Steam Market Price Forecasting',
         org: 'Academic project - PUCPR',
@@ -399,6 +402,7 @@ export default {
         tags: ['Python', 'FastAPI', 'PostgreSQL', 'scikit-learn', 'Docker'],
       },
       rotinas: {
+        achievement: { big: 'ISO', detail: '9001 + 37001 turned into system rules' },
         date: 'Sep/2026 – Nov/2026',
         title: 'Routines System - GOB/PR Digital',
         org: 'GOB-PR - IT Internship',
@@ -422,6 +426,7 @@ export default {
         tags: ['Web Development', 'Infrastructure', 'Zabbix', 'Grafana', 'Wiki.js', 'Linear', 'Claude Code'],
       },
       hackathon: {
+        achievement: { big: '10th', detail: 'Top 10 overall · ~35k points' },
         date: 'Oct/2026',
         title: 'Smart Charging Hackathon - Localiza&Co',
         org: 'Localiza&Co internship selection process',

@@ -21,11 +21,11 @@ function logoColor(hex) {
   return luminance < 0.28 ? 'var(--color-white)' : `#${hex}`;
 }
 
-export default function Medals({ medals, mode = 'card', show = false, label = (n) => n }) {
+export default function Medals({ medals, mode = 'card', show = false, label = (n) => n, style }) {
   if (!medals?.length) return null;
 
   return (
-    <div className={`${styles.medals} ${styles[mode]} ${show ? styles.show : ''}`}>
+    <div className={`${styles.medals} ${styles[mode]} ${show ? styles.show : ''}`} style={style}>
       {medals.map(({ name, icon }, i) => (
         <span
           key={name}
@@ -36,7 +36,7 @@ export default function Medals({ medals, mode = 'card', show = false, label = (n
           <span className={styles.thread} aria-hidden="true" />
           <span className={styles.disc}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d={icon.path} fill={logoColor(icon.hex)} />
+              <path d={icon.path} fill={logoColor(icon.hex)} fillRule={icon.rule} />
             </svg>
             <span className={styles.rank} aria-hidden="true">
               {i + 1}
@@ -53,11 +53,11 @@ export default function Medals({ medals, mode = 'card', show = false, label = (n
  * troféu, o número em destaque (ex.: 10º, 8,1%) e o detalhe. Fica no canto
  * esquerdo (o pódio fica no direito) e aparece do mesmo jeito.
  */
-export function Achievement({ achievement, mode = 'card', show = false, label }) {
+export function Achievement({ achievement, mode = 'card', show = false, label, style }) {
   if (!achievement) return null;
 
   return (
-    <div className={`${styles.achievement} ${styles[mode]} ${show ? styles.show : ''}`}>
+    <div className={`${styles.achievement} ${styles[mode]} ${show ? styles.show : ''}`} style={style}>
       <span className={styles.tag} title={`${label}: ${achievement.big} · ${achievement.detail}`}>
         <span className={styles.thread} aria-hidden="true" />
         <span className={styles.pill}>
