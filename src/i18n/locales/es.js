@@ -39,10 +39,10 @@ export default {
     ],
     valuesTitle: 'Cómo trabajo',
     values: [
-      'Escucho el síntoma, pero busco la causa: quien usa describe lo que le molesta, no lo que está mal.',
-      'Planifico antes de prototipar, con MoSCoW y EDT para decidir qué entra y qué queda afuera.',
-      'Cambio de estrategia cuando no está funcionando, incluso después de horas invertidas en ella.',
-      'Construyo pensando en quien lo va a usar sin necesidad de llamarme.',
+      { title: 'Causa, no síntoma', text: 'Escucho el síntoma, pero busco la causa: quien usa describe lo que le molesta, no lo que está mal.' },
+      { title: 'Planificar primero', text: 'Planifico antes de prototipar, con MoSCoW y EDT para decidir qué entra y qué queda afuera.' },
+      { title: 'Cambiar de rumbo', text: 'Cambio de estrategia cuando no está funcionando, incluso después de horas invertidas en ella.' },
+      { title: 'Hecho para quien lo usa', text: 'Construyo pensando en quien lo va a usar sin necesidad de llamarme.' },
     ],
     facts: [
       { key: 'ubicacion', value: 'São José dos Pinhais · Gran Curitiba, PR' },

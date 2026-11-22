@@ -2,7 +2,6 @@ import styles from './About.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
 import RichText from '../common/RichText';
 import TypedText from '../effects/TypedText';
-import useTilt from '../effects/useTilt';
 import useInView from '../effects/useInView';
 import useTypingProgress, { tokensLength } from '../effects/useTypingProgress';
 
@@ -46,26 +45,72 @@ function ProfileRecord({ facts }) {
 }
 
 
-/* Card do “Como eu trabalho”: inclina seguindo o mouse, com brilho, como os cards de skills */
-function ValueCard({ value, index }) {
-  const tilt = useTilt(8);
+/*
+ * Ícones do “Como eu trabalho”, um para cada princípio. Os traços usam
+ * pathLength="1" para serem desenhados (dashoffset 1 → 0) quando o bloco
+ * aparece; no hover cada um faz a sua animação.
+ */
+const VALUE_ICONS = [
+  // lupa: procura a causa
+  <g key="cause" className={styles.iconCause}>
+    <circle cx="10" cy="10" r="6" pathLength="1" />
+    <path d="M14.5 14.5L20 20" pathLength="1" />
+  </g>,
+  // árvore de tarefas (EAP): planejar antes
+  <g key="plan" className={styles.iconPlan}>
+    <rect x="9" y="3" width="6" height="4" rx="1" pathLength="1" />
+    <path d="M12 7v4M5 11h14M5 11v3M12 11v3M19 11v3" pathLength="1" />
+    <rect x="3" y="14" width="4" height="4" rx="1" pathLength="1" />
+    <rect x="10" y="14" width="4" height="4" rx="1" pathLength="1" />
+    <rect x="17" y="14" width="4" height="4" rx="1" pathLength="1" />
+  </g>,
+  // caminho que muda de direção: mudar de rota
+  <g key="route" className={styles.iconRoute}>
+    <path d="M5 21V5" pathLength="1" className={styles.iconFaded} />
+    <path d="M5 21v-7a5 5 0 0 1 5-5h9" pathLength="1" />
+    <path d="M16 6l3 3-3 3" pathLength="1" />
+  </g>,
+  // pessoa com um check: feito para quem usa
+  <g key="user" className={styles.iconUser}>
+    <circle cx="9" cy="8" r="3.5" pathLength="1" />
+    <path d="M3 20a6 6 0 0 1 12 0" pathLength="1" />
+    <path d="M15.5 12.5l2 2 4-4" pathLength="1" />
+  </g>,
+];
+
+/* Um princípio: ícone, título e texto, com um brilho que acompanha o mouse */
+function ValueItem({ value, index }) {
+  const handlePointerMove = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    event.currentTarget.style.setProperty('--gx', `${event.clientX - rect.left}px`);
+    event.currentTarget.style.setProperty('--gy', `${event.clientY - rect.top}px`);
+  };
+
   return (
-    <li
-      ref={tilt.ref}
-      className={styles.valueCard}
-      style={{ '--delay': `${index * 110}ms` }}
-      onPointerMove={tilt.onPointerMove}
-      onPointerLeave={tilt.onPointerLeave}
-    >
-      <span className={styles.valueGlare} aria-hidden="true" />
-      <span className={styles.valueNumber}>{String(index + 1).padStart(2, '0')}</span>
+    <li className={styles.valueItem} style={{ '--i': index }} onPointerMove={handlePointerMove}>
+      <span className={styles.valueGlow} aria-hidden="true" />
+      <span className={styles.valueDot} aria-hidden="true" />
+      <span className={styles.valueNumber} aria-hidden="true">
+        {String(index + 1).padStart(2, '0')}
+      </span>
+
+      <span className={styles.valueIcon} aria-hidden="true">
+        <svg viewBox="0 0 24 24">{VALUE_ICONS[index]}</svg>
+      </span>
+
+      <h4 className={styles.valueTitle}>{value.title}</h4>
       <p className={styles.valueText}>
-        <RichText text={value} />
+        <RichText text={value.text} />
       </p>
     </li>
   );
 }
 
+/*
+ * Os quatro princípios lado a lado, sem caixas. Quando o bloco aparece, a linha
+ * de cima se desenha da esquerda para a direita, as bolinhas acendem em
+ * sequência e cada item sobe com o ícone sendo desenhado.
+ */
 function ValuesBlock({ title, values }) {
   const [ref, inView] = useInView(0.2);
   return (
@@ -73,7 +118,7 @@ function ValuesBlock({ title, values }) {
       <h3 className={styles.valuesTitle}>{title}</h3>
       <ol className={styles.valuesGrid}>
         {values.map((value, i) => (
-          <ValueCard key={value} value={value} index={i} />
+          <ValueItem key={value.title} value={value} index={i} />
         ))}
       </ol>
     </div>
