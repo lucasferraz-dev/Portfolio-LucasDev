@@ -33,18 +33,21 @@ function save(key, value) {
 }
 
 /*
- * Física de “adesivo arrastado numa mesa”, vista de cima:
- * o ponto onde a fita foi pega fica preso no cursor e a fita gira em torno dele.
- * O atrito com a mesa age no centro da fita: quando o ponto de pega se move, o
- * centro fica para trás e a fita se alinha atrás do movimento. Pegando no meio
- * não há alavanca, então ela só acompanha, sem girar. Ao soltar, segue com a
- * velocidade do próprio corpo até parar, e quica nas bordas da página.
+ * Física de corpo rígido preso pelo ponto de pega:
+ * o ponto onde a fita foi pega fica preso no cursor e ela gira em torno dele.
+ * A aceleração do cursor joga o centro da fita para o lado (inércia), então
+ * trancos fazem ela balançar e passar do ponto, e girar o mouse em círculos faz
+ * ela girar como hélice. Um atrito leve alinha a fita atrás do movimento.
+ * Pegando no meio não há alavanca, então ela só acompanha, sem girar. Ao
+ * soltar, segue girando e deslizando com o embalo, e quica nas bordas da página.
  */
-const DRAG = 0.5; // força do atrito que alinha a fita atrás do movimento
-const MAX_SPIN = 0.22; // giro máximo por quadro (radianos)
-const FRICTION = 0.92;
-const SPIN_FRICTION = 0.92;
-const BOUNCE = 0.45;
+const INERTIA = 1.6; // quanto a aceleração do ponteiro joga a fita (balanço, hélice)
+const DRAG = 0.12; // atrito leve que alinha a fita atrás do movimento
+const SPIN_DAMPING = 0.015; // freio do giro enquanto está segurando (baixo = mais solta)
+const MAX_SPIN = 0.7; // giro máximo por quadro (radianos)
+const FRICTION = 0.94;
+const SPIN_FRICTION = 0.985;
+const BOUNCE = 0.5;
 
 function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHint, hintText, layerRef }) {
   const ref = useRef(null);
@@ -126,7 +129,8 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
       // torque do atrito no centro em volta do ponto de pega (preso no cursor)
       const r2 = d.rx * d.rx + d.ry * d.ry;
       const inertia = r2 + d.i0;
-      const torque = -DRAG * (d.rx * d.vy - d.ry * d.vx) - DRAG * b.w * r2;
+      const torque =
+        -INERTIA * (d.rx * d.ay - d.ry * d.ax) - DRAG * (d.rx * d.vy - d.ry * d.vx) - SPIN_DAMPING * b.w * r2;
       b.w = Math.max(Math.min(b.w + (torque / inertia) * dt, MAX_SPIN), -MAX_SPIN);
 
       const turn = b.w * dt;
@@ -140,9 +144,11 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
       b.x = d.px + d.rx - b.baseX;
       b.y = d.py + d.ry - b.baseY;
       keepInside();
-      // sem eventos novos do mouse, a velocidade do ponteiro some aos poucos
-      d.vx *= 0.6;
-      d.vy *= 0.6;
+      // aceleração do ponteiro neste quadro; sem eventos novos, a velocidade some aos poucos
+      d.ax = 0;
+      d.ay = 0;
+      d.vx *= 0.75;
+      d.vy *= 0.75;
     } else {
       b.x += b.vx * dt;
       b.y += b.vy * dt;
@@ -185,6 +191,8 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
       ry: b.baseY + b.y - py,
       vx: 0,
       vy: 0,
+      ax: 0,
+      ay: 0,
       lastT: performance.now(),
       // momento de inércia da própria fita (retângulo girando no centro)
       i0: (el.offsetWidth ** 2 + el.offsetHeight ** 2) / 12,
@@ -203,8 +211,12 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     const now = performance.now();
     const [px, py] = pointerInLayer(event);
     const frames = Math.max((now - d.lastT) / 16.67, 0.5);
-    d.vx = d.vx * 0.4 + ((px - d.px) / frames) * 0.6;
-    d.vy = d.vy * 0.4 + ((py - d.py) / frames) * 0.6;
+    const vx = d.vx * 0.3 + ((px - d.px) / frames) * 0.7;
+    const vy = d.vy * 0.3 + ((py - d.py) / frames) * 0.7;
+    d.ax += vx - d.vx;
+    d.ay += vy - d.vy;
+    d.vx = vx;
+    d.vy = vy;
     d.px = px;
     d.py = py;
     d.lastT = now;
