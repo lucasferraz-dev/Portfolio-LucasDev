@@ -99,7 +99,7 @@
 }
 
 .langButton:hover {
-  @apply text-accent border-accent/40;
+  @apply text-white border-accent/40;
 }
 
 .langIcon {
@@ -125,7 +125,21 @@
   stroke: currentColor;
   stroke-width: 0.4;
   stroke-linejoin: round;
-  transform: translateX(-3px);
+}
+
+/* giro até o país: a transição só existe enquanto ele está girando */
+.spinning {
+  transition: transform var(--spin) cubic-bezier(0.45, 0, 0.25, 1);
+}
+
+.country {
+  fill: currentColor;
+  stroke: none;
+}
+
+.countryActive {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
 }
 
 .planetEdge {
@@ -134,14 +148,33 @@
   stroke-width: 1.4;
 }
 
-.langButton:hover .land,
-.langButton:focus-visible .land {
-  animation: spinWorld 1.8s cubic-bezier(0.45, 0, 0.25, 1);
+/* pulso em cima do país, depois que o planeta para */
+.markerDot {
+  fill: var(--color-accent);
+  stroke: var(--color-page);
+  stroke-width: 0.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: markerPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes spinWorld {
-  from { transform: translateX(-3px); }
-  to { transform: translateX(33px); }
+.markerPulse {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 0.8;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: markerPulse 1.6s ease-out 0.1s 2;
+}
+
+@keyframes markerPop {
+  from { transform: scale(0); }
+}
+
+@keyframes markerPulse {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(3.2); opacity: 0; }
 }
 
 .langCode {
@@ -161,7 +194,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .land,
+  .spinning,
+  .markerDot,
+  .markerPulse,
   .langCode {
     transition: none;
     animation: none;

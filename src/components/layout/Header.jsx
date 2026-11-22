@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import styles from './Header.module.css';
 import { LANGUAGES, useLanguage } from '../../i18n/useLanguage';
 import { useTheme } from '../../theme/useTheme';
@@ -51,12 +51,77 @@ const WORLD = (
 );
 
 /*
- * Planetinha: oceano, continentes, brilho e sombra de esfera, com o eixo
- * inclinado. No hover (e a cada troca de idioma) o mapa, desenhado duas vezes
- * lado a lado, desliza uma volta inteira de oeste para leste por dentro do círculo.
+ * País em destaque para cada idioma: x é a longitude do país no mapa e marker
+ * é onde ele fica na tela depois que o planeta gira até deixá-lo no centro
+ * (já considerando a inclinação de 15° do eixo).
  */
-function Planet() {
+const COUNTRIES = {
+  en: {
+    x: 8.2,
+    marker: [10.99, 8.23],
+    shape: 'M5.6 7.2C6.08 7.05 7.82 7.07 8.5 7.1C9.18 7.13 9.28 7.33 9.7 7.4C10.12 7.47 10.88 7.37 11 7.5C11.12 7.63 10.58 7.97 10.4 8.2C10.22 8.43 9.97 8.68 9.9 8.9C9.83 9.12 10.15 9.47 10 9.5C9.85 9.53 9.28 9.12 9 9.1C8.72 9.08 8.57 9.43 8.3 9.4C8.03 9.37 7.73 9.00 7.4 8.9C7.07 8.80 6.60 8.95 6.3 8.8C6.00 8.65 5.72 8.27 5.6 8C5.48 7.73 5.12 7.35 5.6 7.2Z',
+  },
+  pt: {
+    x: 12.8,
+    marker: [12.26, 12.97],
+    shape: 'M10.7 12.8C10.78 12.55 11.62 11.67 12 11.5C12.38 11.33 12.58 11.63 13 11.8C13.42 11.97 14.32 12.22 14.5 12.5C14.68 12.78 14.32 13.12 14.1 13.5C13.88 13.88 13.43 14.50 13.2 14.8C12.97 15.10 12.87 15.27 12.7 15.3C12.53 15.33 12.28 15.22 12.2 15C12.12 14.78 12.32 14.33 12.2 14C12.08 13.67 11.75 13.20 11.5 13C11.25 12.80 10.62 13.05 10.7 12.8Z',
+  },
+  es: {
+    x: 17.6,
+    marker: [10.96, 8.14],
+    shape: 'M17.1 7.7C17.18 7.64 17.60 7.63 17.8 7.65C18.00 7.67 18.27 7.72 18.3 7.8C18.33 7.88 18.08 8.01 18 8.1C17.92 8.19 17.90 8.28 17.8 8.33C17.70 8.38 17.52 8.41 17.4 8.4C17.28 8.39 17.12 8.37 17.1 8.3C17.08 8.23 17.30 8.10 17.3 8C17.30 7.90 17.02 7.76 17.1 7.7Z',
+  },
+};
+
+const MAP_WIDTH = 36;
+const SPIN_MS = 1400;
+const MIN_SPIN = 12;
+
+const offsetFor = (lang) => 12 - COUNTRIES[lang].x;
+
+/*
+ * Planetinha: oceano, continentes, brilho e sombra de esfera, com o eixo
+ * inclinado. Ao trocar de idioma ele gira sempre para o leste até o país da
+ * língua ficar no centro, pinta o país e solta um pulso em cima dele.
+ * O mapa é desenhado várias vezes lado a lado (para aguentar cliques seguidos); depois de cada giro o deslocamento
+ * volta para a primeira volta sem animação, o que não aparece porque o mapa se repete.
+ */
+function Planet({ lang }) {
   const id = useId();
+  const [offset, setOffset] = useState(() => offsetFor(lang));
+  const [spinning, setSpinning] = useState(false);
+  const offsetRef = useRef(offset);
+  const shownLang = useRef(lang);
+
+  useEffect(() => {
+    if (shownLang.current === lang) return undefined;
+    shownLang.current = lang;
+
+    const base = offsetFor(lang);
+    let target = base;
+    while (target < offsetRef.current + MIN_SPIN) target += MAP_WIDTH;
+
+    offsetRef.current = target;
+    setSpinning(true);
+    setOffset(target);
+
+    const timer = setTimeout(() => {
+      offsetRef.current = base;
+      setSpinning(false);
+      setOffset(base);
+    }, SPIN_MS);
+    return () => clearTimeout(timer);
+  }, [lang]);
+
+  const country = COUNTRIES[lang];
+  const world = (
+    <>
+      {WORLD}
+      {Object.entries(COUNTRIES).map(([code, { shape }]) => (
+        <path key={code} d={shape} className={code === lang ? styles.countryActive : styles.country} />
+      ))}
+    </>
+  );
 
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.planet}>
@@ -75,14 +140,25 @@ function Planet() {
       <g clipPath={`url(#${id}-clip)`}>
         <circle className={styles.ocean} cx="12" cy="12" r="9" />
         <g transform="rotate(-15 12 12)">
-          <g className={styles.land}>
-            <g transform="translate(-36 0)">{WORLD}</g>
-            <g>{WORLD}</g>
+          <g
+            className={`${styles.land} ${spinning ? styles.spinning : ''}`}
+            style={{ transform: `translateX(${offset}px)`, '--spin': `${SPIN_MS}ms` }}
+          >
+            {[-5, -4, -3, -2, -1, 0, 1].map((copy) => (
+              <g key={copy} transform={`translate(${copy * MAP_WIDTH} 0)`}>{world}</g>
+            ))}
           </g>
         </g>
         <circle cx="12" cy="12" r="9" fill={`url(#${id}-light)`} />
       </g>
       <circle className={styles.planetEdge} cx="12" cy="12" r="9" />
+
+      {!spinning && (
+        <g key={lang} className={styles.marker}>
+          <circle className={styles.markerPulse} cx={country.marker[0]} cy={country.marker[1]} r="1.2" />
+          <circle className={styles.markerDot} cx={country.marker[0]} cy={country.marker[1]} r="1" />
+        </g>
+      )}
     </svg>
   );
 }
@@ -102,8 +178,8 @@ function LanguageToggle() {
       aria-label={label}
       title={label}
     >
-      <span key={`planet-${current.code}`} className={styles.langIcon}>
-        <Planet />
+      <span className={styles.langIcon}>
+        <Planet lang={current.code} />
       </span>
       <span key={current.code} lang={current.htmlLang} className={styles.langCode}>
         {current.label}
