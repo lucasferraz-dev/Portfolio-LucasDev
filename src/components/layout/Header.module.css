@@ -12,11 +12,11 @@
 }
 
 .navWrapper {
-  @apply max-w-none w-full px-6 md:px-16 lg:px-24 pt-5 pb-8 md:pt-6 md:pb-10 flex items-center justify-between gap-6 transition-all duration-300;
+  @apply max-w-none w-full px-6 md:px-16 lg:px-24 pt-5 pb-8 md:pt-6 md:pb-10 flex items-center justify-between gap-3 md:gap-6 transition-all duration-300;
 }
 
 .logo {
-  @apply font-mono text-lg md:text-2xl font-black tracking-tight text-white flex items-center gap-1 transition-colors shrink-0;
+  @apply font-mono text-base sm:text-lg md:text-2xl font-black tracking-tight text-white flex items-center gap-1 transition-colors shrink-0;
 }
 
 .logo:hover {
@@ -32,7 +32,7 @@
 }
 
 .actions {
-  @apply flex items-center gap-2 shrink-0;
+  @apply flex items-center gap-1.5 sm:gap-2 shrink-0;
 }
 
 .themeButton {
@@ -202,6 +202,104 @@
   .markerPulse,
   .langCode {
     transition: none;
+    animation: none;
+  }
+}
+
+/* ---------- Tela cheia, modo TV e ajuda ---------- */
+
+.fullscreenButton svg path {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: 12px 12px;
+}
+
+.fullscreenButton:hover svg path {
+  transform: scale(1.12);
+}
+
+/* botão ligado (modo TV rodando) */
+.toolActive,
+.toolActive:hover {
+  @apply text-accent border-accent/60 bg-accent/10;
+}
+
+.tvGlyph {
+  fill: none;
+}
+
+.tvPlay {
+  fill: currentColor;
+  stroke-width: 1;
+}
+
+/* pílula do modo TV, presa embaixo da tela */
+.tvBar {
+  @apply fixed bottom-6 left-1/2 z-[60] flex items-center gap-3 pl-4 pr-1.5 py-1.5 rounded-full
+         border border-slate-800 bg-page/80 shadow-2xl;
+  translate: -50% 0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: tvBarIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes tvBarIn {
+  from { opacity: 0; translate: -50% 12px; }
+}
+
+.tvDot {
+  @apply w-2 h-2 rounded-full bg-red-500;
+  animation: tvBlink 1.2s ease-in-out infinite;
+}
+
+@keyframes tvBlink {
+  50% { opacity: 0.25; }
+}
+
+.tvText {
+  @apply font-mono text-[11px] font-bold tracking-widest uppercase text-slate-300;
+}
+
+.tvProgress {
+  @apply relative w-20 h-1 rounded-full overflow-hidden bg-slate-800;
+}
+
+.tvProgressFill {
+  @apply absolute inset-0 bg-accent origin-left;
+  animation: tvFill var(--slide) linear forwards;
+}
+
+@keyframes tvFill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.tvStop {
+  @apply w-7 h-7 rounded-full flex items-center justify-center border border-slate-800 bg-transparent
+         text-slate-400 text-lg leading-none cursor-pointer transition-colors duration-200;
+}
+
+.tvStop:hover {
+  @apply text-accent border-accent/50;
+}
+
+/* "?" girando de lado sem parar */
+.helpButton {
+  perspective: 120px;
+}
+
+.helpMark {
+  @apply block font-mono text-sm font-black leading-none;
+  animation: helpSpin 2.8s linear infinite;
+}
+
+@keyframes helpSpin {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .helpMark,
+  .tvDot {
     animation: none;
   }
 }

@@ -1,0 +1,114 @@
+@reference "../../index.css";
+
+.tour {
+  @apply fixed inset-0 z-[100];
+}
+
+/* camada transparente que segura os cliques na página enquanto o tour está aberto */
+.blocker {
+  @apply absolute inset-0;
+}
+
+/*
+ * O recorte claro: um retângulo transparente com uma sombra enorme em volta,
+ * que escurece todo o resto da tela. Ele desliza de um alvo para o outro.
+ */
+.spotlight {
+  @apply absolute rounded-2xl pointer-events-none;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--color-accent) 70%, transparent),
+    0 0 0 9999px rgb(0 0 0 / 0.72);
+  transition: top 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), left 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: spotIn 0.35s ease-out;
+}
+
+@keyframes spotIn {
+  from { opacity: 0; }
+}
+
+.card {
+  @apply absolute flex flex-col gap-3 w-[min(340px,calc(100vw-2rem))] p-5 rounded-2xl
+         bg-surface border border-slate-800 shadow-2xl;
+  transition: top 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), left 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: cardIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes cardIn {
+  from { opacity: 0; translate: 0 8px; }
+}
+
+.cardTop {
+  @apply flex items-center justify-between;
+}
+
+.counter {
+  @apply font-mono text-[11px] font-bold tracking-widest text-accent;
+}
+
+.skip {
+  @apply bg-transparent border-0 p-0 font-mono text-[11px] tracking-widest uppercase text-slate-500 cursor-pointer
+         transition-colors duration-200;
+}
+
+.skip:hover {
+  @apply text-slate-200;
+}
+
+.title {
+  @apply m-0 text-lg font-bold text-white tracking-tight;
+}
+
+.text {
+  @apply m-0 text-sm text-slate-400 leading-relaxed;
+}
+
+.dots {
+  @apply flex gap-1.5 pt-1;
+}
+
+.dot {
+  @apply w-1.5 h-1.5 rounded-full bg-slate-800 transition-all duration-300;
+}
+
+.dotActive {
+  @apply w-4 bg-accent;
+}
+
+.actions {
+  @apply flex justify-between gap-2 pt-1;
+}
+
+.prev,
+.next {
+  @apply px-4 py-1.5 rounded-full font-mono text-xs font-bold uppercase tracking-widest cursor-pointer
+         transition-colors duration-200;
+}
+
+.prev {
+  @apply bg-transparent border border-slate-800 text-slate-400;
+}
+
+.prev:hover:not(:disabled) {
+  @apply text-slate-200 border-slate-700;
+}
+
+.prev:disabled {
+  @apply opacity-30 cursor-default;
+}
+
+.next {
+  @apply border border-accent/40 bg-accent/10 text-accent;
+}
+
+.next:hover {
+  @apply bg-accent/20 border-accent/60;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spotlight,
+  .card {
+    transition: none;
+    animation: none;
+  }
+}

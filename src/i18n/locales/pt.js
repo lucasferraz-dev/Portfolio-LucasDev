@@ -13,6 +13,31 @@ export default {
     language: 'Idioma',
     lightMode: 'Ativar modo claro',
     darkMode: 'Ativar modo escuro',
+    fullscreen: 'Tela cheia',
+    exitFullscreen: 'Sair da tela cheia',
+    tvMode: 'Modo TV: passar pelas seções sozinho',
+    tvStop: 'Parar o modo TV',
+    tvLabel: 'Modo TV',
+    help: 'Como usar o portfólio',
+  },
+
+  tour: {
+    next: 'Próximo',
+    prev: 'Anterior',
+    done: 'Concluir',
+    skip: 'Pular',
+    steps: [
+      { title: 'Bem-vindo!', text: 'Este é um tour rápido pelo portfólio. Use as setas do teclado ou os botões abaixo para navegar.' },
+      { title: 'Idioma', text: 'Troca entre português, inglês e espanhol. O planeta gira até o país de cada idioma.' },
+      { title: 'Tema', text: 'Alterna entre o tema escuro e o tema claro.' },
+      { title: 'Tela cheia', text: 'Abre o portfólio em tela cheia, sem as barras do navegador.' },
+      { title: 'Modo TV', text: 'Passa pelas seções sozinho, como uma apresentação de slides. Role a página ou aperte Esc para parar.' },
+      { title: 'Quem eu sou', text: 'Um pouco da minha história e de como eu trabalho.' },
+      { title: 'Projetos', text: 'Clique em um projeto para ver o processo completo, as fotos e os links.' },
+      { title: 'Skills', text: 'Clique em uma tecnologia para ver em quais projetos e experiências eu usei.' },
+      { title: 'Trajetória', text: 'Minha formação, experiências e projetos em ordem, do começo até hoje.' },
+      { title: 'Contato', text: 'Copie meu e-mail ou fale comigo pelo LinkedIn, GitHub ou WhatsApp.' },
+    ],
   },
 
   hero: {

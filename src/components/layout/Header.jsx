@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import styles from './Header.module.css';
 import { LANGUAGES, useLanguage } from '../../i18n/useLanguage';
 import { useTheme } from '../../theme/useTheme';
+import { FullscreenToggle, HelpButton, TvModeToggle } from './HeaderTools';
 
 /*
  * Um único desenho que vira sol ou lua: o círculo cresce, uma máscara desliza
@@ -16,7 +17,14 @@ function ThemeToggle() {
   const isMoon = theme === 'light';
 
   return (
-    <button type="button" className={styles.themeButton} onClick={toggleTheme} aria-label={label} title={label}>
+    <button
+      type="button"
+      className={styles.themeButton}
+      onClick={toggleTheme}
+      aria-label={label}
+      title={label}
+      data-tour="theme"
+    >
       <svg viewBox="0 0 24 24" aria-hidden="true" className={`${styles.themeIcon} ${isMoon ? styles.moon : ''}`}>
         <mask id={maskId}>
           <rect width="24" height="24" fill="white" stroke="none" />
@@ -174,6 +182,7 @@ function LanguageToggle() {
     <button
       type="button"
       className={styles.langButton}
+      data-tour="lang"
       onClick={() => setLang(next.code)}
       aria-label={label}
       title={label}
@@ -200,13 +209,16 @@ export default function Header() {
   return (
     <header className={`${styles.headerContainer} ${isScrolled ? styles.scrolled : ''}`}>
       <div className={styles.navWrapper}>
-        <a href="#top" className={styles.logo}>
+        <a href="#top" className={styles.logo} data-tour="logo">
           <span className={styles.logoPrefix}>&lt;</span>
           Lucas Ferraz
           <span className={styles.logoSuffix}> /&gt;</span>
         </a>
 
         <div className={styles.actions}>
+          <HelpButton />
+          <TvModeToggle />
+          <FullscreenToggle />
           <LanguageToggle />
           <ThemeToggle />
         </div>

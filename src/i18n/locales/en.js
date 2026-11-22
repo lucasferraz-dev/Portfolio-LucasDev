@@ -13,6 +13,31 @@ export default {
     language: 'Language',
     lightMode: 'Switch to light mode',
     darkMode: 'Switch to dark mode',
+    fullscreen: 'Fullscreen',
+    exitFullscreen: 'Exit fullscreen',
+    tvMode: 'TV mode: go through the sections automatically',
+    tvStop: 'Stop TV mode',
+    tvLabel: 'TV mode',
+    help: 'How to use this portfolio',
+  },
+
+  tour: {
+    next: 'Next',
+    prev: 'Back',
+    done: 'Finish',
+    skip: 'Skip',
+    steps: [
+      { title: 'Welcome!', text: 'This is a quick tour of the portfolio. Use the arrow keys or the buttons below to navigate.' },
+      { title: 'Language', text: 'Switches between Portuguese, English and Spanish. The planet spins to the country of each language.' },
+      { title: 'Theme', text: 'Toggles between the dark and the light theme.' },
+      { title: 'Fullscreen', text: 'Opens the portfolio in fullscreen, without the browser bars.' },
+      { title: 'TV mode', text: 'Goes through the sections on its own, like a slideshow. Scroll the page or press Esc to stop.' },
+      { title: 'About me', text: 'A bit of my story and how I work.' },
+      { title: 'Projects', text: 'Click a project to see the full process, the photos and the links.' },
+      { title: 'Skills', text: 'Click a technology to see which projects and experiences I used it in.' },
+      { title: 'Journey', text: 'My education, experience and projects in order, from the beginning until today.' },
+      { title: 'Contact', text: 'Copy my email or reach me on LinkedIn, GitHub or WhatsApp.' },
+    ],
   },
 
   hero: {
