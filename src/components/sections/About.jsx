@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import styles from './About.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
 import RichText from '../common/RichText';
@@ -46,80 +47,80 @@ function ProfileRecord({ facts }) {
 
 
 /*
- * Ícones do “Como eu trabalho”, um para cada princípio. Os traços usam
- * pathLength="1" para serem desenhados (dashoffset 1 → 0) quando o bloco
- * aparece; no hover cada um faz a sua animação.
+ * Divide a frase em duas partes: o começo (até a primeira vírgula ou dois-pontos),
+ * que fica em destaque, e o resto. Cada palavra vira um <span> com o seu índice.
  */
-const VALUE_ICONS = [
-  // lupa: procura a causa
-  <g key="cause" className={styles.iconCause}>
-    <circle cx="10" cy="10" r="6" pathLength="1" />
-    <path d="M14.5 14.5L20 20" pathLength="1" />
-  </g>,
-  // árvore de tarefas (EAP): planejar antes
-  <g key="plan" className={styles.iconPlan}>
-    <rect x="9" y="3" width="6" height="4" rx="1" pathLength="1" />
-    <path d="M12 7v4M5 11h14M5 11v3M12 11v3M19 11v3" pathLength="1" />
-    <rect x="3" y="14" width="4" height="4" rx="1" pathLength="1" />
-    <rect x="10" y="14" width="4" height="4" rx="1" pathLength="1" />
-    <rect x="17" y="14" width="4" height="4" rx="1" pathLength="1" />
-  </g>,
-  // caminho que muda de direção: mudar de rota
-  <g key="route" className={styles.iconRoute}>
-    <path d="M5 21V5" pathLength="1" className={styles.iconFaded} />
-    <path d="M5 21v-7a5 5 0 0 1 5-5h9" pathLength="1" />
-    <path d="M16 6l3 3-3 3" pathLength="1" />
-  </g>,
-  // pessoa com um check: feito para quem usa
-  <g key="user" className={styles.iconUser}>
-    <circle cx="9" cy="8" r="3.5" pathLength="1" />
-    <path d="M3 20a6 6 0 0 1 12 0" pathLength="1" />
-    <path d="M15.5 12.5l2 2 4-4" pathLength="1" />
-  </g>,
-];
-
-/* Um princípio: ícone, título e texto, com um brilho que acompanha o mouse */
-function ValueItem({ value, index }) {
-  const handlePointerMove = (event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    event.currentTarget.style.setProperty('--gx', `${event.clientX - rect.left}px`);
-    event.currentTarget.style.setProperty('--gy', `${event.clientY - rect.top}px`);
-  };
-
-  return (
-    <li className={styles.valueItem} style={{ '--i': index }} onPointerMove={handlePointerMove}>
-      <span className={styles.valueGlow} aria-hidden="true" />
-      <span className={styles.valueDot} aria-hidden="true" />
-      <span className={styles.valueNumber} aria-hidden="true">
-        {String(index + 1).padStart(2, '0')}
-      </span>
-
-      <span className={styles.valueIcon} aria-hidden="true">
-        <svg viewBox="0 0 24 24">{VALUE_ICONS[index]}</svg>
-      </span>
-
-      <h4 className={styles.valueTitle}>{value.title}</h4>
-      <p className={styles.valueText}>
-        <RichText text={value.text} />
-      </p>
-    </li>
-  );
+function splitWords(text) {
+  const cut = text.search(/[,:]/);
+  const lead = cut === -1 ? text : text.slice(0, cut + 1);
+  const rest = cut === -1 ? '' : text.slice(cut + 1);
+  const words = [
+    ...lead.split(' ').filter(Boolean).map((word) => ({ word, lead: true })),
+    ...rest.split(' ').filter(Boolean).map((word) => ({ word, lead: false })),
+  ];
+  return words;
 }
 
 /*
- * Os quatro princípios lado a lado, sem caixas. Quando o bloco aparece, a linha
- * de cima se desenha da esquerda para a direita, as bolinhas acendem em
- * sequência e cada item sobe com o ícone sendo desenhado.
+ * Como eu trabalho: cada princípio é uma frase grande numa linha, separada por
+ * um fio. As palavras começam apagadas e acendem uma a uma conforme a linha sobe
+ * na tela (--p vai de 0 a 1 com o scroll).
  */
 function ValuesBlock({ title, values }) {
-  const [ref, inView] = useInView(0.2);
+  const listRef = useRef(null);
+
+  useEffect(() => {
+    const rows = [...listRef.current.children];
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const vh = window.innerHeight;
+      rows.forEach((row) => {
+        const { top } = row.getBoundingClientRect();
+        const progress = (vh * 0.9 - top) / (vh * 0.45);
+        row.style.setProperty('--p', Math.min(Math.max(progress, 0), 1).toFixed(3));
+      });
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [values]);
+
   return (
-    <div ref={ref} className={`${styles.valuesBlock} ${inView ? styles.valuesRevealed : ''}`}>
+    <div className={styles.valuesBlock}>
       <h3 className={styles.valuesTitle}>{title}</h3>
-      <ol className={styles.valuesGrid}>
-        {values.map((value, i) => (
-          <ValueItem key={value.title} value={value} index={i} />
-        ))}
+      <ol ref={listRef} className={styles.valuesList}>
+        {values.map((value, i) => {
+          const words = splitWords(value);
+          return (
+            <li key={value} className={styles.valueRow} style={{ '--n': words.length }}>
+              <span className={styles.valueIndex}>{String(i + 1).padStart(2, '0')}</span>
+              <p className={styles.valueSentence} aria-label={value}>
+                {words.map(({ word, lead }, w) => (
+                  <span
+                    key={w}
+                    aria-hidden="true"
+                    className={lead ? styles.wordLead : styles.word}
+                    style={{ '--w': w }}
+                  >
+                    {word}{' '}
+                  </span>
+                ))}
+              </p>
+            </li>
+          );
+        })}
       </ol>
     </div>
   );

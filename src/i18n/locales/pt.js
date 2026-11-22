@@ -39,10 +39,10 @@ export default {
     ],
     valuesTitle: 'Como eu trabalho',
     values: [
-      { title: 'Causa, não sintoma', text: 'Escuto o sintoma, mas procuro a causa: quem usa descreve o que incomoda, não o que está errado.' },
-      { title: 'Planejar antes', text: 'Planejo antes de prototipar, com MoSCoW e EAP para decidir o que entra e o que fica de fora.' },
-      { title: 'Mudar de rota', text: 'Mudo de estratégia quando ela não está funcionando, mesmo depois de horas investidas nela.' },
-      { title: 'Feito pra quem usa', text: 'Construo pensando em quem vai usar sem precisar me chamar.' },
+      'Escuto o sintoma, mas procuro a causa: quem usa descreve o que incomoda, não o que está errado.',
+      'Planejo antes de prototipar, com MoSCoW e EAP para decidir o que entra e o que fica de fora.',
+      'Mudo de estratégia quando ela não está funcionando, mesmo depois de horas investidas nela.',
+      'Construo pensando em quem vai usar sem precisar me chamar.',
     ],
     facts: [
       { key: 'localizacao', value: 'São José dos Pinhais · Grande Curitiba, PR' },

@@ -39,10 +39,10 @@ export default {
     ],
     valuesTitle: 'How I work',
     values: [
-      { title: 'Cause, not symptom', text: 'I listen to the symptom, but look for the cause: users describe what bothers them, not what is wrong.' },
-      { title: 'Plan first', text: 'I plan before prototyping, using MoSCoW and a WBS to decide what’s in and what’s out.' },
-      { title: 'Change course', text: 'I change strategy when it isn’t working, even after hours invested in it.' },
-      { title: 'Built for the user', text: 'I build for people who should be able to use it without having to call me.' },
+      'I listen to the symptom, but look for the cause: users describe what bothers them, not what is wrong.',
+      'I plan before prototyping, using MoSCoW and a WBS to decide what’s in and what’s out.',
+      'I change strategy when it isn’t working, even after hours invested in it.',
+      'I build for people who should be able to use it without having to call me.',
     ],
     facts: [
       { key: 'location', value: 'São José dos Pinhais · Greater Curitiba, PR' },
