@@ -41,10 +41,11 @@ function save(key, value) {
  * Pegando no meio não há alavanca, então ela só acompanha, sem girar. Ao
  * soltar, segue girando e deslizando com o embalo, e quica nas bordas da página.
  */
-const INERTIA = 1.6; // quanto a aceleração do ponteiro joga a fita (balanço, hélice)
-const DRAG = 0.12; // atrito leve que alinha a fita atrás do movimento
-const SPIN_DAMPING = 0.015; // freio do giro enquanto está segurando (baixo = mais solta)
-const MAX_SPIN = 0.7; // giro máximo por quadro (radianos)
+const INERTIA = 0.9; // quanto a aceleração do ponteiro joga a fita (balanço, hélice)
+const DRAG = 0.15; // atrito leve que alinha a fita atrás do movimento
+const SPIN_DAMPING = 0.06; // freio do giro enquanto está segurando
+const MAX_SPIN = 0.45; // giro máximo por quadro (radianos)
+const JITTER = 1.2; // trancos menores que isso (px/quadro²) são tremida da mão e não contam
 const FRICTION = 0.94;
 const SPIN_FRICTION = 0.985;
 const BOUNCE = 0.5;
@@ -193,6 +194,7 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
       vy: 0,
       ax: 0,
       ay: 0,
+      moved: false,
       lastT: performance.now(),
       // momento de inércia da própria fita (retângulo girando no centro)
       i0: (el.offsetWidth ** 2 + el.offsetHeight ** 2) / 12,
@@ -211,10 +213,16 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     const now = performance.now();
     const [px, py] = pointerInLayer(event);
     const frames = Math.max((now - d.lastT) / 16.67, 0.5);
-    const vx = d.vx * 0.3 + ((px - d.px) / frames) * 0.7;
-    const vy = d.vy * 0.3 + ((py - d.py) / frames) * 0.7;
-    d.ax += vx - d.vx;
-    d.ay += vy - d.vy;
+    const vx = d.vx * 0.4 + ((px - d.px) / frames) * 0.6;
+    const vy = d.vy * 0.4 + ((py - d.py) / frames) * 0.6;
+    // o primeiro movimento depois de segurar não conta como tranco, e tremidas pequenas são ignoradas
+    const ax = vx - d.vx;
+    const ay = vy - d.vy;
+    if (d.moved && Math.hypot(ax, ay) > JITTER) {
+      d.ax += ax;
+      d.ay += ay;
+    }
+    d.moved = true;
     d.vx = vx;
     d.vy = vy;
     d.px = px;
