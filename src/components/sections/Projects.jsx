@@ -8,6 +8,20 @@ import FotoSkinomicsLanding from '../../assets/skinomics-landing.webp';
 import FotoSkinomicsExplorar from '../../assets/skinomics-explorar.webp';
 import FotoSkinomicsItem from '../../assets/skinomics-item.webp';
 import { useLanguage } from '../../i18n/useLanguage';
+import {
+  siDjango,
+  siDocker,
+  siExpress,
+  siFastapi,
+  siGithub,
+  siMysql,
+  siNodedotjs,
+  siPostgresql,
+  siPython,
+  siReact,
+  siTypescript,
+} from 'simple-icons';
+import Keychains from '../effects/Keychains';
 
 const CATEGORY_IDS = ['todos', 'software', 'hackathon', 'academico', 'social', 'experimento'];
 
@@ -22,6 +36,10 @@ const PROJECTS = [
     images: [FotoRotinas],
     imagePosition: 'top',
     links: [],
+    keychains: [
+      { name: 'Python', icon: siPython },
+      { name: 'Django', icon: siDjango },
+    ],
   },
 
   {
@@ -30,6 +48,7 @@ const PROJECTS = [
     images: [FotoHackathon],
     imagePosition: 'center',
     links: [],
+    keychains: [{ name: 'Python', icon: siPython }],
   },
 
   {
@@ -41,6 +60,13 @@ const PROJECTS = [
       { labelKey: 'demo', url: 'https://youtu.be/WEJ--3yszYM' },
       { labelKey: 'repo', url: 'https://github.com/lucasferraz-dev/save_point' },
     ],
+    keychains: [
+      { name: 'React', icon: siReact },
+      { name: 'Node.js', icon: siNodedotjs },
+      { name: 'Express', icon: siExpress },
+      { name: 'MySQL', icon: siMysql },
+      { name: 'GitHub', icon: siGithub },
+    ],
   },
 
   {
@@ -51,6 +77,14 @@ const PROJECTS = [
     links: [
       { labelKey: 'site', url: 'https://skinomics.ferrazdeveloper.com/' },
       { labelKey: 'repo', url: 'https://github.com/lucasferraz-dev/skinomics' },
+    ],
+    keychains: [
+      { name: 'Python', icon: siPython },
+      { name: 'FastAPI', icon: siFastapi },
+      { name: 'PostgreSQL', icon: siPostgresql },
+      { name: 'React', icon: siReact },
+      { name: 'TypeScript', icon: siTypescript },
+      { name: 'Docker', icon: siDocker },
     ],
   },
 ];
@@ -140,6 +174,9 @@ function ProjectCard({ project, onOpenProcess }) {
 
         </div>
       </button>
+
+      {/* chaveiros das tecnologias usadas, pendurados embaixo do card */}
+      {project.keychains?.length > 0 && <Keychains items={project.keychains} />}
     </article>
   );
 }
