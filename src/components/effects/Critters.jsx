@@ -2,7 +2,8 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import DockerWhale from './DockerWhale';
 import styles from './Critters.module.css';
-import { MYSQL_DOLPHIN, WIKI_FRONT, WIKI_WINGS } from '../sections/skillShapes';
+import { WIKI_FRONT, WIKI_WINGS } from '../sections/skillShapes';
+import MysqlDolphin from './MysqlDolphin';
 
 /*
  * Easter egg: cópias dos mascotes que são bichos (das skills) espalhadas pelo
@@ -223,10 +224,16 @@ function Butterfly({ main }) {
 
 /* ---------- Golfinho do MySQL: salta pela linha da Trajetória quando ela está na tela ---------- */
 
+const WATER = 320; // altura da faixa acima da linha (onde o salto acontece)
+const JUMP_MS = 1500;
+const JUMP_WIDTH = 300;
+const JUMP_HEIGHT = 190;
+
 function Dolphin() {
   const section = useTarget('#journey');
   const ref = useRef(null);
   const [jump, setJump] = useState(null);
+  const [kicking, setKicking] = useState(false);
 
   useEffect(() => {
     if (!section) return undefined;
@@ -236,55 +243,82 @@ function Dolphin() {
       clearTimeout(timer);
       timer = setTimeout(() => {
         if (!visible) return;
-        setJump({ x: rand(0.3, 0.9) * section.offsetWidth, id: Math.random() });
-        schedule(rand(4500, 7500));
+        setJump({ x: rand(0.35, 0.92) * section.offsetWidth, id: Math.random() });
+        schedule(rand(5000, 8000));
       }, delay);
     };
     // só salta enquanto a linha de cima da Trajetória está na tela
     const observer = new IntersectionObserver(
       ([entry]) => {
         visible = entry.isIntersecting;
-        if (visible) schedule(rand(600, 1400));
+        if (visible) schedule(rand(500, 1200));
         else clearTimeout(timer);
       },
-      { rootMargin: '-15% 0px -15% 0px' }
+      { rootMargin: '-10% 0px -10% 0px' }
     );
-    const probe = section.querySelector('[class*="dolphinWater"]') ?? section;
-    observer.observe(probe);
+    observer.observe(section.querySelector('[class*="dolphinWater"]') ?? section);
     return () => {
       observer.disconnect();
       clearTimeout(timer);
     };
   }, [section]);
 
+  /*
+   * O salto: x anda em ritmo constante e y segue uma parábola (como um corpo
+   * jogado para cima), e o golfinho gira para apontar sempre na direção em que
+   * está indo. Ele sai e volta abaixo da linha, então entra e sai da “água”.
+   */
   useEffect(() => {
     if (!jump) return undefined;
     const el = ref.current;
-    // arco da direita para a esquerda (o golfinho do logo olha para a esquerda)
-    const frames = Array.from({ length: 13 }, (_, i) => {
-      const k = i / 12;
-      const x = jump.x - 260 * k;
-      const y = 300 - Math.sin(Math.PI * k) * 280;
-      const angle = -40 + 95 * k;
-      return { transform: `translate(${x}px, ${y}px) rotate(${angle}deg)` };
-    });
-    const animation = el.animate(frames, { duration: 1700, easing: 'ease-in-out' });
-    return () => animation.cancel();
+    const start = performance.now();
+    let frame = 0;
+    setKicking(true);
+    const kickTimer = setTimeout(() => setKicking(false), JUMP_MS * 0.35);
+
+    const tick = (now) => {
+      const k = Math.min((now - start) / JUMP_MS, 1);
+      // começa e termina um pouco abaixo da linha d'água (WATER)
+      const x = jump.x - JUMP_WIDTH * k;
+      const y = WATER + 40 - (JUMP_HEIGHT + 40) * 4 * k * (1 - k);
+      // velocidade: vx constante para a esquerda, vy é a derivada da parábola
+      const vx = -JUMP_WIDTH;
+      const vy = -(JUMP_HEIGHT + 40) * 4 * (1 - 2 * k);
+      // golfinho olha para a esquerda: nariz para cima quando está subindo
+      const angle = (Math.atan2(-vy, -vx) * 180) / Math.PI;
+      el.style.transform = `translate(${x}px, ${y}px) rotate(${angle}deg)`;
+      el.style.opacity = '1';
+      if (k < 1) frame = requestAnimationFrame(tick);
+      else el.style.opacity = '0';
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(kickTimer);
+    };
   }, [jump]);
 
   if (!section) return null;
 
   return createPortal(
-    <div className={styles.dolphinWater}>
+    <div className={styles.dolphinWater} style={{ '--water': `${WATER}px` }}>
       <div ref={ref} className={styles.dolphin}>
-        <svg viewBox="15.4 2.6 9 10.6" aria-hidden="true">
-          <path d={MYSQL_DOLPHIN} fill="var(--color-white)" />
-        </svg>
+        <MysqlDolphin kicking={kicking} />
       </div>
       {jump && (
         <span key={jump.id} aria-hidden="true">
-          <span className={styles.splash} style={{ left: jump.x + 30 }} />
-          <span className={`${styles.splash} ${styles.splashLate}`} style={{ left: jump.x - 230 }} />
+          {[
+            { x: jump.x - 30, delay: 0.05 },
+            { x: jump.x - JUMP_WIDTH - 10, delay: (JUMP_MS / 1000) * 0.92 },
+          ].map(({ x, delay }) => (
+            <span key={x} className={styles.splashAt} style={{ left: x, '--d': `${delay}s` }}>
+              <span className={styles.ripple} />
+              {[-3, -2, -1, 1, 2, 3].map((n) => (
+                <i key={n} className={styles.drop} style={{ '--n': n }} />
+              ))}
+            </span>
+          ))}
         </span>
       )}
     </div>,

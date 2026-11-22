@@ -118,30 +118,44 @@
 
 /* faixa acima da linha da seção: abaixo da linha fica escondido, como embaixo d'água */
 .dolphinWater {
-  @apply absolute left-0 right-0 -top-[300px] h-[300px] overflow-hidden pointer-events-none z-10;
+  @apply absolute left-0 right-0 overflow-hidden pointer-events-none z-10;
+  top: calc(var(--water) * -1);
+  height: var(--water);
 }
 
+/* o ponto (0, 0) é o centro do golfinho, para ele girar em volta do próprio corpo */
 .dolphin {
-  @apply absolute top-0 left-0 w-24 h-28;
-  transform: translate(-300px, 360px);
+  @apply absolute top-0 left-0 w-0 h-0 opacity-0;
 }
 
-.dolphin svg {
-  @apply block w-full h-full;
-  filter: drop-shadow(0 0 1px rgb(255 255 255 / 0.4)) drop-shadow(0 4px 8px rgb(0 0 0 / 0.5));
+.dolphin > svg {
+  @apply absolute w-32 h-16 -left-16 -top-8;
 }
 
-.splash {
-  @apply absolute bottom-0 w-10 h-3 -ml-5 rounded-full border-t-2 opacity-0;
-  border-color: color-mix(in srgb, var(--color-white) 70%, transparent);
-  animation: splash 0.7s ease-out forwards;
+/* respingo: um anel na linha d'água e gotas voando em leque */
+.splashAt {
+  @apply absolute bottom-0 w-0 h-0;
 }
 
-.splashLate {
-  animation-delay: 1.5s;
+.ripple {
+  @apply absolute -left-6 -bottom-1 w-12 h-3 rounded-full border-t-2 opacity-0;
+  border-color: color-mix(in srgb, #9cc6ec 80%, transparent);
+  animation: ripple 0.8s ease-out var(--d) forwards;
 }
 
-@keyframes splash {
+@keyframes ripple {
   0% { opacity: 1; transform: scale(0.3, 1); }
-  100% { opacity: 0; transform: scale(1.8, 1.6) translateY(-6px); }
+  100% { opacity: 0; transform: scale(2, 1.6); }
+}
+
+.drop {
+  @apply absolute left-0 bottom-0 w-1.5 h-1.5 rounded-full opacity-0;
+  background-color: #b9d8f3;
+  animation: drop 0.7s cubic-bezier(0.2, 0.7, 0.4, 1) var(--d) forwards;
+}
+
+@keyframes drop {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  55% { opacity: 1; transform: translate(calc(var(--n) * 7px), calc(-30px + var(--n) * var(--n) * 1.5px)) scale(0.9); }
+  100% { opacity: 0; transform: translate(calc(var(--n) * 11px), 4px) scale(0.6); }
 }
