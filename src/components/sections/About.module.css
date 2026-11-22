@@ -33,7 +33,7 @@
 }
 
 .valuesBlock {
-  @apply mt-16;
+  @apply mt-16 max-w-5xl mx-auto;
 }
 
 .valuesTitle {
@@ -41,12 +41,13 @@
 }
 
 .valuesGrid {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 list-none p-0 m-0;
+  /* relative: o elefante do PostgreSQL anda em cima desta grade */
+  @apply relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 list-none p-0 m-0;
 }
 
 /* inclina seguindo o mouse (--rx/--ry vêm do useTilt) */
 .valueCard {
-  @apply relative overflow-hidden flex flex-col gap-4 p-6 rounded-2xl bg-surface border border-slate-800;
+  @apply relative overflow-hidden flex flex-col gap-5 p-6 rounded-2xl bg-surface border border-slate-800;
   transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s;
   opacity: 0;
@@ -89,45 +90,384 @@
   }
 }
 
-.valueNumber {
-  @apply font-mono text-3xl font-bold leading-none text-slate-800 transition-colors duration-300;
-}
-
-.valueCard:hover .valueNumber {
-  @apply text-accent/50;
-}
-
 .valueText {
-  @apply text-sm md:text-base text-slate-400 leading-relaxed;
+  @apply relative text-sm md:text-base text-slate-400 leading-relaxed;
+}
+
+/* ---------- Ícones ---------- */
+
+.valueIcon {
+  @apply relative block w-16 h-16 -ml-1;
+  --reveal: calc(var(--delay) + 0.45s);
+}
+
+.icon {
+  @apply block w-full h-full overflow-visible;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/*
+ * Os estilos base são o estado final de cada animação. As animações de entrada
+ * usam fill "backwards" (mostram o primeiro quadro enquanto esperam o atraso) e
+ * as do hover usam keyframes com outro nome para recomeçar do zero.
+ */
+
+/* Lupa + bug */
+.bugBody,
+.bugHead {
+  fill: var(--color-accent);
+}
+
+.bugLine {
+  fill: none;
+  stroke: var(--color-surface);
+  stroke-width: 1.2;
+}
+
+.bugLegs,
+.bugAntennae {
+  fill: none;
+  stroke: var(--color-slate-500);
+  stroke-width: 1.6;
+}
+
+.bugLegs {
+  transform-origin: 20px 28px;
+}
+
+.lens {
+  transform: translate(-8px, 6px);
+}
+
+.lensGlass {
+  fill: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  stroke: var(--color-slate-300);
+  stroke-width: 3;
+}
+
+.lensHandle {
+  fill: none;
+  stroke: var(--color-slate-300);
+  stroke-width: 4;
+}
+
+@keyframes search {
+  0% { transform: translate(10px, -8px); }
+  35% { transform: translate(-14px, -4px); }
+  65% { transform: translate(4px, 10px); }
+  100% { transform: translate(-8px, 6px); }
+}
+
+@keyframes searchHover {
+  0% { transform: translate(10px, -8px); }
+  35% { transform: translate(-14px, -4px); }
+  65% { transform: translate(4px, 10px); }
+  100% { transform: translate(-8px, 6px); }
+}
+
+@keyframes bugFound {
+  0%, 80% { fill: var(--color-slate-600); }
+  100% { fill: var(--color-accent); }
+}
+
+@keyframes bugFoundHover {
+  0%, 80% { fill: var(--color-slate-600); }
+  100% { fill: var(--color-accent); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-9deg); }
+  75% { transform: rotate(9deg); }
+}
+
+@keyframes wiggleHover {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-9deg); }
+  75% { transform: rotate(9deg); }
+}
+
+/* Prancheta */
+.board {
+  fill: var(--color-surface-deep);
+  stroke: var(--color-slate-600);
+  stroke-width: 2;
+}
+
+.clip {
+  fill: var(--color-slate-600);
+}
+
+.taskBox {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 1.5;
+}
+
+.taskCheck {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.taskLine {
+  fill: none;
+  stroke: var(--color-slate-600);
+  stroke-width: 2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+@keyframes draw {
+  from { stroke-dashoffset: 1; }
+}
+
+@keyframes drawHover {
+  from { stroke-dashoffset: 1; }
+}
+
+@keyframes boxOn {
+  0%, 60% { stroke: var(--color-slate-500); }
+}
+
+@keyframes boxOnHover {
+  0%, 60% { stroke: var(--color-slate-500); }
+}
+
+/* Bússola */
+.compass {
+  fill: var(--color-surface-deep);
+  stroke: var(--color-slate-600);
+  stroke-width: 2.5;
+}
+
+.compassTicks {
+  fill: none;
+  stroke: var(--color-slate-500);
+  stroke-width: 2;
+}
+
+.needle {
+  transform-origin: 24px 24px;
+  transform: rotate(50deg);
+}
+
+.needleNorth {
+  fill: var(--color-accent);
+}
+
+.needleSouth {
+  fill: var(--color-slate-500);
+}
+
+.compassPin {
+  fill: var(--color-slate-300);
+}
+
+@keyframes spin {
+  0% { transform: rotate(-20deg); }
+  40% { transform: rotate(250deg); }
+  60% { transform: rotate(15deg); }
+  78% { transform: rotate(78deg); }
+  90% { transform: rotate(42deg); }
+  100% { transform: rotate(50deg); }
+}
+
+@keyframes spinHover {
+  0% { transform: rotate(50deg); }
+  40% { transform: rotate(320deg); }
+  60% { transform: rotate(15deg); }
+  78% { transform: rotate(78deg); }
+  90% { transform: rotate(42deg); }
+  100% { transform: rotate(50deg); }
+}
+
+/* Celular dormindo */
+.phone {
+  transform-origin: 21.5px 25px;
+}
+
+.phoneBody {
+  fill: var(--color-surface-deep);
+  stroke: var(--color-slate-600);
+  stroke-width: 2;
+}
+
+.phoneFace {
+  fill: none;
+  stroke: var(--color-slate-300);
+  stroke-width: 1.6;
+}
+
+.phoneSpeaker {
+  fill: none;
+  stroke: var(--color-slate-600);
+  stroke-width: 2;
+}
+
+.zzz {
+  fill: var(--color-accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 700;
+  font-size: calc(6px + var(--z) * 1.6px);
+}
+
+@keyframes zIn {
+  from { opacity: 0; transform: translate(-3px, 4px); }
+}
+
+@keyframes zFloat {
+  0% { opacity: 0; transform: translate(-3px, 4px); }
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: translate(3px, -5px); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes breatheHover {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ---------- Entrada (uma vez, quando o bloco aparece) ---------- */
+
+.valuesRevealed .lens {
+  animation: search 1.4s cubic-bezier(0.45, 0, 0.25, 1) var(--reveal) backwards;
+}
+
+.valuesRevealed .bugBody,
+.valuesRevealed .bugHead {
+  animation: bugFound 1.4s linear var(--reveal) backwards;
+}
+
+.valuesRevealed .bugLegs {
+  animation: wiggle 0.25s ease-in-out calc(var(--reveal) + 1.4s) 4;
+}
+
+.valuesRevealed .taskCheck {
+  animation: draw 0.4s ease-out calc(var(--reveal) + 0.2s + var(--t) * 0.35s) backwards;
+}
+
+.valuesRevealed .taskLine {
+  animation: draw 0.4s ease-out calc(var(--reveal) + var(--t) * 0.35s) backwards;
+}
+
+.valuesRevealed .taskBox {
+  animation: boxOn 0.6s linear calc(var(--reveal) + var(--t) * 0.35s) backwards;
+}
+
+.valuesRevealed .needle {
+  animation: spin 1.8s cubic-bezier(0.3, 0, 0.2, 1) var(--reveal) backwards;
+}
+
+.valuesRevealed .zzz {
+  animation: zIn 0.5s ease-out calc(var(--reveal) + 0.3s + var(--z) * 0.3s) backwards;
+}
+
+.valuesRevealed .phone {
+  animation: breathe 1.6s ease-in-out var(--reveal) 2;
+}
+
+/* ---------- Hover (recomeça a animação) ---------- */
+
+@media (hover: hover) {
+  .valuesRevealed .valueCard:hover .lens {
+    animation: searchHover 1.4s cubic-bezier(0.45, 0, 0.25, 1);
+  }
+
+  .valuesRevealed .valueCard:hover .bugBody,
+  .valuesRevealed .valueCard:hover .bugHead {
+    animation: bugFoundHover 1.4s linear;
+  }
+
+  .valuesRevealed .valueCard:hover .bugLegs {
+    animation: wiggleHover 0.25s ease-in-out 1.4s infinite;
+  }
+
+  .valuesRevealed .valueCard:hover .taskCheck {
+    animation: drawHover 0.4s ease-out calc(0.2s + var(--t) * 0.35s) backwards;
+  }
+
+  .valuesRevealed .valueCard:hover .taskLine {
+    animation: drawHover 0.4s ease-out calc(var(--t) * 0.35s) backwards;
+  }
+
+  .valuesRevealed .valueCard:hover .taskBox {
+    animation: boxOnHover 0.6s linear calc(var(--t) * 0.35s) backwards;
+  }
+
+  .valuesRevealed .valueCard:hover .needle {
+    animation: spinHover 1.8s cubic-bezier(0.3, 0, 0.2, 1);
+  }
+
+  .valuesRevealed .valueCard:hover .zzz {
+    animation: zFloat 1.8s ease-in-out calc(var(--z) * 0.45s) infinite backwards;
+  }
+
+  .valuesRevealed .valueCard:hover .phone {
+    animation: breatheHover 1.8s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .valueIcon * {
+    animation: none !important;
+  }
 }
 
 .factsCard {
-  @apply w-full lg:w-[400px] shrink-0 bg-surface border border-slate-900 rounded-2xl overflow-hidden shadow-2xl;
-}
-
-.factsHeader {
-  @apply px-5 py-3.5 border-b border-slate-900 bg-surface-alt;
-}
-
-.factsFile {
-  @apply text-xs font-mono tracking-widest text-slate-500 uppercase;
+  @apply w-full lg:w-[420px] shrink-0;
 }
 
 .factsBody {
-  @apply p-5 font-mono text-sm flex flex-col gap-2.5;
+  @apply px-0 py-4 text-[13px];
+}
+
+/* números de linha com contador de CSS, numa coluna à esquerda */
+.code {
+  @apply list-none m-0 p-0;
+  counter-reset: line;
+}
+
+.codeLine {
+  @apply grid grid-cols-[2.75rem_1fr] pr-5 leading-relaxed;
+  counter-increment: line;
+  transition: opacity 0.3s ease-out, background-color 0.2s;
+}
+
+.codeLine::before {
+  content: counter(line);
+  @apply pr-4 text-right text-slate-700 select-none;
+}
+
+.activeLine {
+  background-color: color-mix(in srgb, var(--color-accent) 5%, transparent);
+}
+
+.activeLine::before {
+  @apply text-slate-400;
+}
+
+.codeText {
+  @apply min-w-0 break-words;
+}
+
+.factRow .codeText {
+  @apply pl-4;
 }
 
 .brace {
-  @apply text-slate-600;
-  transition: opacity 0.3s ease-out;
+  @apply text-slate-500;
 }
 
 .pending {
   opacity: 0;
-}
-
-.factRow {
-  @apply flex flex-wrap gap-x-2 pl-4;
 }
 
 .factKey {

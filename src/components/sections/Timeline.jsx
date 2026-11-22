@@ -5,6 +5,40 @@ import logoGobpr from '../../assets/GOBPR.jpg';
 import logoPilgrims from '../../assets/pilgrims.png';
 import { useLanguage } from '../../i18n/useLanguage';
 import RichText, { KeywordLink } from '../common/RichText';
+import Medals, { Achievement } from '../effects/Medals';
+import { EXCEL_PATH, KITTY_MARK } from './skillShapes';
+import {
+  siC,
+  siDjango,
+  siGrafana,
+  siHtml5,
+  siLinear,
+  siMysql,
+  siNodedotjs,
+  siOpenjdk,
+  siPostgresql,
+  siPython,
+  siReact,
+  siScikitlearn,
+} from 'simple-icons';
+
+/* logos que não estão na simple-icons: os mesmos usados nas skills */
+const EXCEL = { hex: '21A366', path: EXCEL_PATH };
+const KITTY = { hex: 'FFFFFF', path: KITTY_MARK, rule: 'evenodd' };
+
+const LIFT = { top: -34 };
+
+// pódio das tecnologias de cada etapa (ouro, prata, bronze)
+const PODIUM = {
+  pucpr: [['Python', siPython], ['Java', siOpenjdk], ['C', siC]],
+  gobpr: [['Python', siPython], ['Django', siDjango], ['Excel', EXCEL]],
+  savepoint: [['React', siReact], ['Node.js', siNodedotjs], ['MySQL', siMysql]],
+  python: [['Python', siPython]],
+  skinomics: [['Python', siPython], ['PostgreSQL', siPostgresql], ['scikit-learn', siScikitlearn]],
+  rotinas: [['Django', siDjango], ['Python', siPython], ['HTML', siHtml5]],
+  hackathon: [['Python', siPython]],
+  pilgrims: [['kitty', KITTY], ['Grafana', siGrafana], ['Linear', siLinear]],
+};
 
 const TIMELINE = [
   { id: 'pucpr', type: 'education', logo: logoPucpr, ongoing: true },
@@ -99,6 +133,8 @@ function TimelineItem({ item, index }) {
   const cardRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const content = t.timeline.items[item.id];
+  const [hover, setHover] = useState(false);
+  const medals = PODIUM[item.id]?.map(([name, icon]) => ({ name, icon }));
   useBookOpen(cardRef);
 
   useEffect(() => {
@@ -124,7 +160,18 @@ function TimelineItem({ item, index }) {
     >
       <span data-dot className={`${styles.dot} ${item.ongoing ? styles.dotOngoing : ''}`} aria-hidden="true" />
 
-      <article ref={cardRef} className={styles.card}>
+      <article
+        ref={cardRef}
+        className={styles.card}
+        data-sticky={`journey-${item.id}`}
+        onPointerEnter={() => setHover(true)}
+        onPointerLeave={() => setHover(false)}
+      >
+        {/* a maior conquista (esquerda) e o pódio das tecnologias (direita), no hover;
+            presos na borda de cima, metade para fora, para não cobrir a data e as etiquetas */}
+        <Achievement achievement={content.achievement} show={hover} label={t.projects.achievementLabel} style={LIFT} />
+        <Medals medals={medals} show={hover} label={t.projects.rank} style={LIFT} />
+
         <div className={styles.cardTop}>
           <div className={styles.badges}>
             <span className={styles.typeBadge}>{t.timeline.types[item.type]}</span>

@@ -5,15 +5,18 @@
 }
 
 .scrolled {
-  @apply bg-page/95 border-slate-900/80 shadow-lg py-0;
+  @apply bg-page/55 border-slate-900/60 py-0;
+  /* translúcido: o fundo aparece borrado por trás */
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
 }
 
 .navWrapper {
-  @apply max-w-none w-full px-6 md:px-16 lg:px-24 py-5 md:py-6 flex items-center justify-between gap-6 transition-all duration-300;
+  @apply max-w-none w-full px-6 md:px-16 lg:px-24 pt-5 pb-8 md:pt-6 md:pb-10 flex items-center justify-between gap-3 md:gap-6 transition-all duration-300;
 }
 
 .logo {
-  @apply font-mono text-lg md:text-2xl font-black tracking-tight text-white flex items-center gap-1 transition-colors shrink-0;
+  @apply font-mono text-base sm:text-lg md:text-2xl font-black tracking-tight text-white flex items-center gap-1 transition-colors shrink-0;
 }
 
 .logo:hover {
@@ -28,16 +31,12 @@
   @apply opacity-60;
 }
 
-.navbar {
-  @apply hidden xl:flex items-center gap-5 2xl:gap-10 font-mono text-sm 2xl:text-base;
-}
-
 .actions {
-  @apply flex items-center gap-2 shrink-0;
+  @apply flex items-center gap-1.5 sm:gap-2 shrink-0;
 }
 
 .themeButton {
-  @apply flex items-center justify-center w-9 h-9 rounded-full border border-slate-900 bg-transparent
+  @apply flex items-center justify-center w-8 h-8 rounded-full border border-slate-900 bg-transparent
          text-slate-400 cursor-pointer transition-colors duration-200;
 }
 
@@ -46,34 +45,143 @@
 }
 
 .themeButton svg {
-  @apply w-4 h-4 fill-none stroke-current;
+  @apply w-[15px] h-[15px] fill-none stroke-current;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+/*
+ * Sol ↔ lua. No sol o círculo fica pequeno, a sombra fica fora do desenho e
+ * os raios aparecem. Na lua o círculo cresce, a sombra desliza para cima dele
+ * e recorta o crescente, e os raios giram e encolhem até sumir.
+ */
+.themeIcon {
+  transform: rotate(0deg);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.themeIcon.moon {
+  transform: rotate(-20deg);
+}
+
+.sunBody {
+  fill: currentColor;
+  stroke: none;
+  transform-origin: 12px 12px;
+  transform: scale(0.55);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.moon .sunBody {
+  transform: scale(1);
+}
+
+.moonShadow {
+  transform: translate(9px, -9px);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.moon .moonShadow {
+  transform: translate(0, 0);
+}
+
+.sunRays {
+  transform-origin: 12px 12px;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+}
+
+.moon .sunRays {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.4);
 }
 
 .langButton {
-  @apply flex items-center gap-1.5 h-9 pl-2.5 pr-3 rounded-full border border-slate-900 bg-transparent
-         font-mono text-xs font-bold tracking-wider text-slate-400 cursor-pointer transition-colors duration-200;
+  @apply flex items-center justify-center w-8 h-8 p-0 rounded-full border border-slate-900 bg-transparent
+         font-mono text-xs md:text-sm font-bold tracking-wider text-slate-400 cursor-pointer transition-colors duration-200;
 }
 
 .langButton:hover {
-  @apply text-accent border-accent/40;
+  @apply text-white border-accent/40;
 }
 
 .langIcon {
-  @apply w-4 h-4 fill-none stroke-current transition-transform duration-500;
-  stroke-width: 2;
-  stroke-linecap: round;
+  @apply block w-[19px] h-[19px];
+}
+
+/*
+ * Planeta: o oceano e os continentes usam a cor do botão (cinza parado,
+ * verde no hover), com os continentes mais fortes que o oceano.
+ * A volta ao mundo desliza o mapa 36 unidades (uma volta inteira) para a direita.
+ */
+.planet {
+  @apply block w-full h-full;
+}
+
+.ocean {
+  fill: currentColor;
+  opacity: 0.22;
+}
+
+.land {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0.4;
   stroke-linejoin: round;
 }
 
-.langButton:hover .langIcon {
-  transform: rotate(180deg);
+/* giro até o país: a transição só existe enquanto ele está girando */
+.spinning {
+  transition: transform var(--spin) cubic-bezier(0.45, 0, 0.25, 1);
+}
+
+.country {
+  fill: currentColor;
+  stroke: none;
+}
+
+.countryActive {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+}
+
+.planetEdge {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+}
+
+/* pulso em cima do país, depois que o planeta para */
+.markerDot {
+  fill: var(--color-accent);
+  stroke: var(--color-page);
+  stroke-width: 0.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: markerPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.markerPulse {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 0.8;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: markerPulse 1.6s ease-out 0.1s 2;
+}
+
+@keyframes markerPop {
+  from { transform: scale(0); }
+}
+
+@keyframes markerPulse {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(3.2); opacity: 0; }
 }
 
 .langCode {
-  @apply inline-block w-[2ch] text-left;
+  @apply sr-only;
   animation: langIn 0.25s ease-out;
 }
 
@@ -89,65 +197,134 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .langIcon,
+  .spinning,
+  .markerDot,
+  .markerPulse,
   .langCode {
     transition: none;
     animation: none;
   }
 }
 
-.navLink {
-  @apply text-slate-400 font-bold tracking-wide transition-colors duration-200 flex items-center gap-1.5;
+/* ---------- Tela cheia, modo TV e ajuda ---------- */
+
+.fullscreenButton svg path {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: 12px 12px;
 }
 
-.navLink:hover {
-  @apply text-white;
+.fullscreenButton:hover svg path {
+  transform: scale(1.12);
 }
 
-.linkLine {
-  @apply text-slate-700 font-normal transition-colors duration-200;
+/* botão ligado (modo TV rodando) */
+.toolActive,
+.toolActive:hover {
+  @apply text-accent border-accent/60 bg-accent/10;
 }
 
-.navLink:hover .linkLine {
-  @apply text-accent;
+.tvGlyph {
+  fill: none;
 }
 
-.menuButton {
-  @apply xl:hidden flex flex-col justify-center gap-1 w-9 h-9 px-2.5 rounded-full
-         bg-transparent border border-slate-900 cursor-pointer transition-colors duration-200;
+.tvPlay {
+  fill: currentColor;
+  stroke-width: 1;
 }
 
-.menuButton:hover {
-  @apply border-accent/40;
+/* barra do modo TV, presa embaixo da tela, com os controles */
+.tvBar {
+  @apply fixed bottom-6 left-1/2 z-[60] flex items-center gap-3 pl-4 pr-1.5 py-1.5 rounded-full
+         border border-slate-800 bg-page/80 shadow-2xl;
+  translate: -50% 0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: tvBarIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.menuBar {
-  @apply block w-full h-0.5 bg-slate-300 rounded-full transition-all duration-200 origin-center;
+@keyframes tvBarIn {
+  from { opacity: 0; translate: -50% 12px; }
 }
 
-.menuBarTopOpen {
-  transform: translateY(6px) rotate(45deg);
+.tvDot {
+  @apply w-2 h-2 shrink-0 rounded-full bg-red-500;
+  animation: tvBlink 1.2s ease-in-out infinite;
 }
 
-.menuBarMidOpen {
-  @apply opacity-0;
+.tvDotPaused {
+  @apply bg-slate-500;
+  animation: none;
 }
 
-.menuBarBottomOpen {
-  transform: translateY(-6px) rotate(-45deg);
+@keyframes tvBlink {
+  50% { opacity: 0.25; }
 }
 
-.mobileMenu {
-  @apply xl:hidden flex flex-col gap-1 px-6 pb-8 pt-2
-         bg-page/98 border-t border-slate-900/80;
+.tvText {
+  @apply font-mono text-[11px] font-bold tracking-widest uppercase text-slate-300 whitespace-nowrap;
 }
 
-.mobileLink {
-  @apply font-mono text-lg font-bold text-slate-300 py-3.5 px-2 rounded-lg
-         border-b border-slate-900/60 flex items-center gap-2 transition-colors duration-200;
+.tvProgress {
+  @apply relative hidden sm:block w-20 h-1 rounded-full overflow-hidden bg-slate-800;
 }
 
-.mobileLink:hover,
-.mobileLink:focus-visible {
-  @apply text-accent;
+.tvProgressFill {
+  @apply absolute inset-0 bg-accent origin-left;
+  transform: scaleX(0);
+}
+
+.tvControls {
+  @apply flex items-center gap-1;
+}
+
+.tvControl {
+  @apply w-8 h-8 rounded-full flex items-center justify-center border border-slate-800 bg-transparent
+         text-slate-300 cursor-pointer transition-colors duration-200;
+}
+
+.tvControl:hover {
+  @apply text-accent border-accent/50;
+}
+
+.tvControl svg {
+  @apply w-3.5 h-3.5 fill-none stroke-current;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tvFilled {
+  fill: currentColor;
+}
+
+/* "?" num círculo branco: fica parado, dá um pulinho, gira de lado no ar e cai */
+.helpButton {
+  perspective: 120px;
+}
+
+.themeButton svg.helpMark {
+  @apply w-[17px] h-[17px];
+  color: var(--color-white);
+  stroke-width: 2;
+  animation: helpHop 3s ease-in-out infinite;
+}
+
+.helpButton:hover svg.helpMark {
+  color: var(--color-accent);
+}
+
+@keyframes helpHop {
+  0%, 52% { transform: translateY(0) rotateY(0deg) scale(1); }
+  60% { transform: translateY(-1px) scale(1.1, 0.9); }
+  70% { transform: translateY(-5px) rotateY(180deg) scale(1); }
+  80% { transform: translateY(0) rotateY(360deg) scale(1); }
+  86% { transform: translateY(0) rotateY(360deg) scale(1.12, 0.88); }
+  92%, 100% { transform: translateY(0) rotateY(360deg) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .themeButton svg.helpMark,
+  .tvDot {
+    animation: none;
+  }
 }

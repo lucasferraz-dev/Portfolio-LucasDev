@@ -1,0 +1,175 @@
+@reference "../../index.css";
+
+/* camada do tamanho da página; só as fitas recebem o ponteiro */
+.layer {
+  @apply absolute inset-0 z-20 pointer-events-none overflow-x-clip;
+}
+
+/*
+ * A fita em si. --dx/--dy/--angle vêm da física; --tilt é a inclinação inicial.
+ * --peel é o tamanho da pontinha descolada no canto.
+ */
+.strip {
+  @apply absolute pointer-events-auto select-none cursor-grab;
+  --peel: 11px;
+  touch-action: none;
+  transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(calc(var(--tilt) + var(--angle, 0deg)));
+  animation: stripIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.6s + var(--i) * 0.12s) backwards;
+}
+
+@keyframes stripIn {
+  from { opacity: 0; scale: 0.6; }
+}
+
+.inner {
+  @apply relative;
+  transition: scale 0.2s, filter 0.2s;
+  filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.45));
+}
+
+/* corpo do adesivo, com o canto de cima à direita cortado para a pontinha descolada */
+.face {
+  @apply flex items-center gap-2 max-w-[270px] pl-2.5 pr-4 py-2 font-mono text-[11px] leading-snug text-slate-200;
+  background-color: color-mix(in srgb, var(--color-accent) 9%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
+  border-radius: 6px;
+  /* linha tracejada por dentro, como a picotagem de um selo */
+  outline: 1px dashed color-mix(in srgb, var(--color-accent) 28%, transparent);
+  outline-offset: -5px;
+  clip-path: polygon(0 0, calc(100% - var(--peel)) 0, 100% var(--peel), 100% 100%, 0 100%);
+  transition: clip-path 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* a pontinha dobrada: o verso da fita aparecendo no canto */
+.peel {
+  @apply absolute top-0 right-0 pointer-events-none;
+  width: var(--peel);
+  height: var(--peel);
+  background: linear-gradient(225deg, transparent 50%, color-mix(in srgb, var(--color-slate-300) 55%, var(--color-surface)) 50%);
+  border-bottom-left-radius: 3px;
+  filter: drop-shadow(-1px 1px 1.5px rgb(0 0 0 / 0.6));
+  transition: width 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.strip:hover {
+  --peel: 17px;
+}
+
+/* segurando: a fita sai do papel */
+.lifted {
+  --peel: 22px;
+  cursor: grabbing;
+}
+
+.lifted .inner {
+  scale: 1.07;
+  filter: drop-shadow(0 22px 26px rgb(0 0 0 / 0.6));
+}
+
+.lifted .face {
+  border-color: var(--color-accent);
+}
+
+/* ao parar, “cola” com uma apertadinha, como um selo */
+.stuck .inner {
+  animation: stick 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes stick {
+  0% { scale: 1.07; }
+  45% { scale: 0.94; }
+  100% { scale: 1; }
+}
+
+/* colada num card: desenhada dentro dele, então vira, inclina e escurece junto */
+.onCard {
+  transform: translate(-50%, -50%) rotate(var(--rot));
+  animation: none;
+}
+
+.onCard .inner {
+  animation: stick 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.4));
+}
+
+/* a versão solta some enquanto a fita está colada num card */
+.away {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.returning {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* pontinhos de pegar */
+.grip {
+  @apply w-1.5 h-3 shrink-0 text-accent opacity-70;
+  background-image: radial-gradient(currentColor 1px, transparent 1.2px);
+  background-size: 3px 3px;
+}
+
+.slashes {
+  @apply text-accent shrink-0 font-bold;
+}
+
+.text {
+  @apply min-w-0;
+}
+
+/* ---------- convite para mexer (até a primeira vez que alguém arrasta) ---------- */
+
+.invite .inner {
+  animation: nudge 5s ease-in-out calc(2s + var(--i) * 0.7s) infinite;
+}
+
+@keyframes nudge {
+  0%, 88%, 100% { rotate: 0deg; translate: 0 0; }
+  90% { rotate: -4deg; translate: 0 -2px; }
+  93% { rotate: 3deg; }
+  96% { rotate: -2deg; }
+}
+
+.hint {
+  @apply absolute left-4 top-[calc(100%+10px)] flex items-center gap-1.5 px-2.5 py-1 rounded-full
+         bg-accent font-mono text-[10px] font-bold uppercase tracking-widest whitespace-nowrap text-on-accent shadow-lg;
+  animation: hintBounce 1.4s ease-in-out infinite;
+}
+
+.hint::before {
+  content: "";
+  @apply absolute -top-1 left-5 w-2 h-2 rotate-45 bg-accent;
+}
+
+.hint svg {
+  @apply w-3.5 h-3.5 fill-none stroke-current;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes hintBounce {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -4px; }
+}
+
+@media (max-width: 767px) {
+  .face {
+    @apply max-w-[190px] text-[10px];
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strip,
+  .invite .inner,
+  .stuck .inner,
+  .hint {
+    animation: none;
+  }
+
+  .returning,
+  .face,
+  .peel {
+    transition: none;
+  }
+}

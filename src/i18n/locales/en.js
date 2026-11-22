@@ -10,23 +10,129 @@ export default {
   },
 
   header: {
-    nav: {
-      about: 'About',
-      projects: 'Projects',
-      skills: 'Skills',
-      journey: 'Journey',
-      contact: 'Contact',
-    },
-    mainNav: 'Main navigation',
-    mobileNav: 'Mobile navigation',
-    openMenu: 'Open menu',
-    closeMenu: 'Close menu',
     language: 'Language',
     lightMode: 'Switch to light mode',
     darkMode: 'Switch to dark mode',
+    fullscreen: 'Fullscreen',
+    exitFullscreen: 'Exit fullscreen',
+    tvMode: 'TV mode: present the portfolio in fullscreen',
+    tvStop: 'Stop TV mode',
+    tvPause: 'Pause',
+    tvPlay: 'Resume',
+    tvPrev: 'Previous section',
+    tvNext: 'Next section',
+    tvSections: ['Home', 'About me', 'Projects', 'Skills', 'Journey', 'Contact'],
+    tvLabel: 'TV mode',
+    help: 'How to use this portfolio',
+  },
+
+  fun: {
+    tuxLabel: 'Poke Tux',
+    tuxLines: [
+      'Works on my machine.',
+      'I use Arch, btw.',
+      'rm -rf / ? No way.',
+      'Have you tried turning it off and on again?',
+      'sudo apt install coffee',
+      'Hiring Lucas is a simple command.',
+      'It\'s not a bug, it\'s an undocumented feature.',
+      'Deploying on a Friday? Brave.',
+      'git push --force? Only on your own repo.',
+      'My file system is better than yours.',
+      'I opened vim. Does anyone know how to exit?',
+      'Fish for breakfast? Count me in.',
+      'Lucas writes descriptive commit messages. I checked.',
+      'chmod 777 is asking for trouble.',
+      '99 bugs in the code... fix one, now there are 127.',
+      'Kernel panic? Not on my watch.',
+      'If it works, don\'t touch it.',
+      'Tabs or spaces? I\'m staying out of that fight.',
+      'Read the README? Yeah, nobody does.',
+      'I\'m open source, feel free to study me.',
+    ],
+    clawdLines: [
+      'A good variable name beats a comment.',
+      'A function that does one thing is a happy function.',
+      'Measure before you optimize.',
+      'If it\'s hard to test, it\'s hard to understand.',
+      'Duplicated it three times? Now abstract it.',
+      'Small commit, quick review.',
+      'Validate at the edges, trust the core.',
+      'A swallowed error is a postponed bug.',
+      'Separate what changes from what doesn\'t.',
+      'Model the database before the first screen.',
+      'Simple first. Clever only if needed.',
+      'Write it like you\'ll maintain it a year from now.',
+      'Every new dependency is a small debt.',
+      'Test the sad path too.',
+      'Config lives in the environment, not in the code.',
+      'A good API is boringly predictable.',
+      'Good logs tell a story.',
+      'Refactoring is cleaning the kitchen while you cook.',
+      'Had to explain that if? Make it a named function.',
+      'Deleting code is programming too.',
+    ],
+    dragHint: 'drag me',
+    strips: [
+      [
+        'top 10 overall at the Localiza&Co hackathon, reaching top 4 midday',
+        'led a team of 5 people through an 11-hour hackathon',
+        'we scored about 35k points at the hackathon; first place scored 37k',
+      ],
+      [
+        'turned ISO 9001 and ISO 37001 requirements into system rules',
+        'my first internship was at Grande Oriente do Brasil - Paraná, in Oct/2025',
+        'started in support and spreadsheet automation before building systems',
+      ],
+      [
+        'Skinomics forecasts Steam prices with an 8.1% MAPE',
+        'my forecasting model makes 21% less error than the naive forecast',
+        'Skinomics went live on 11/13/2026, with Steam login',
+      ],
+      [
+        'Save Point: a game library with a REST API, a database and React',
+        'Python is my internship language and powered the hackathon engine',
+        'I monitor infrastructure with Zabbix and Grafana at Pilgrims',
+      ],
+      [
+        'software development intern at Pilgrims since Nov/2026',
+        'in the 6th semester of Computer Science at PUCPR',
+        'studying artificial intelligence and machine learning in college',
+      ],
+      [
+        'native PT · technical EN · basic ES, and a terminal always open',
+        'I live in São José dos Pinhais, in Greater Curitiba',
+        'I code in the terminal, with kitty and Claude Code',
+      ],
+    ],
+  },
+
+  tour: {
+    next: 'Next',
+    prev: 'Back',
+    done: 'Finish',
+    skip: 'Skip',
+    steps: [
+      { title: 'Welcome!', text: 'This is a quick tour of the portfolio. Use the arrow keys or the buttons below to navigate.' },
+      { title: 'Language', text: 'Switches between Portuguese, English and Spanish. The planet spins to the country of each language.' },
+      { title: 'Theme', text: 'Toggles between the dark and the light theme.' },
+      { title: 'Fullscreen', text: 'Opens the portfolio in fullscreen, without the browser bars.' },
+      { title: 'TV mode', text: 'Presents the portfolio in fullscreen, slowly scrolling through each section. You can pause, go back, skip ahead and leave whenever you want.' },
+      { title: 'About me', text: 'A bit of my story and how I work.' },
+      { title: 'Projects', text: 'Click a project to see the full process, the photos and the links.' },
+      { title: 'Medals and achievements', text: 'Hover a project or a journey card to see the podium of the technologies I used the most and the main achievement.' },
+      { title: 'Keychains', text: 'Below each project hang the technologies it used. Grab a keychain and swing it with the mouse: they bump into each other.' },
+      { title: 'Skills', text: 'Click a technology to see which projects and experiences I used it in.' },
+      { title: 'Journey', text: 'My education, experience and projects in order, from the beginning until today.' },
+      { title: 'Contact', text: 'Copy my email or reach me on LinkedIn, GitHub or WhatsApp. The terminal also takes commands: type help.' },
+      { title: 'Stickers', text: 'These stickers hold fun facts about me. Drag, spin and stick them anywhere: dropped on a card or on my photo, they stay there. Double-click puts one back.' },
+      { title: 'Critters', text: 'A few critters live on this site. Click them: each one reacts in its own way, and some have something to say.' },
+      { title: 'Tux', text: 'Click Tux, on top of the terminal, to hear what he has to say.' },
+    ],
   },
 
   hero: {
+    terminal: { connected: 'connected · portfolio_db', typing: 'typing…', running: 'running…' },
     typedPrefix: 'i build',
     typedPhrases: ['web systems', 'internal tools', 'automations', 'REST APIs', 'solutions to real problems'],
     subtitle:
@@ -42,6 +148,7 @@ export default {
   },
 
   about: {
+    terminal: { readonly: 'read-only' },
     title: 'Who I am',
     lead: 'I started programming because I wanted to understand how the things I used every day worked behind the scenes. Today, what grips me most is the other side: figuring out why a process isn’t working before deciding what to build.',
     paragraphs: [
@@ -85,8 +192,9 @@ export default {
       role: 'my role',
       result: 'result',
     },
+    achievementLabel: 'Achievement',
+    rank: (n) => ({ '1º': '1st', '2º': '2nd', '3º': '3rd' })[n] ?? n,
     viewProcess: 'See process',
-    hoverHint: 'Hover for details',
     close: 'Close',
     gallery: {
       label: (title) => `Image gallery of the ${title} project`,
@@ -106,6 +214,7 @@ export default {
     },
     items: {
       ROW_01: {
+        achievement: { big: 'ISO', detail: '9001 + 37001 turned into system rules' },
         title: 'Routines System - GOB/PR Digital',
         categoryLabel: 'Full Stack',
         period: 'Sep/2026 - Nov/2026',
@@ -135,6 +244,7 @@ export default {
       },
 
       ROW_02: {
+        achievement: { big: '10th', detail: 'Top 10 overall · ~35k points' },
         title: 'Smart Charging Hackathon - Localiza&Co',
         categoryLabel: 'Leadership',
         period: 'Oct 21, 2026 - 11 hours (8 am to 7 pm)',
@@ -192,6 +302,7 @@ export default {
       },
 
       ROW_04: {
+        achievement: { big: '8.1%', detail: 'Test MAPE · 21% better than the baseline' },
         title: 'Skinomics - Steam Market Price Forecasting',
         categoryLabel: 'Full Stack',
         period: 'Aug–Nov/2026 · 12 weeks',
@@ -265,6 +376,7 @@ export default {
     viewProject: 'View project',
     items: {
       pucpr: {
+        achievement: { big: '6th', detail: 'semester · studying AI and machine learning' },
         date: '2024 – 2027',
         title: 'Bachelor’s in Computer Science',
         org: 'PUCPR - Pontifical Catholic University of Paraná',
@@ -273,6 +385,7 @@ export default {
         tags: ['OOP', 'Databases', 'Web Development', 'AI / ML'],
       },
       gobpr: {
+        achievement: { big: '1st', detail: 'first internship · 13 months' },
         date: 'Oct/2025 – Nov/2026',
         title: 'IT Intern',
         org: 'Grande Oriente do Brasil - Paraná',
@@ -305,6 +418,7 @@ export default {
         tags: ['Python'],
       },
       skinomics: {
+        achievement: { big: '8.1%', detail: 'Test MAPE · 21% better than the baseline' },
         date: 'Aug/2026 – Nov/2026',
         title: 'Skinomics - Steam Market Price Forecasting',
         org: 'Academic project - PUCPR',
@@ -313,6 +427,7 @@ export default {
         tags: ['Python', 'FastAPI', 'PostgreSQL', 'scikit-learn', 'Docker'],
       },
       rotinas: {
+        achievement: { big: 'ISO', detail: '9001 + 37001 turned into system rules' },
         date: 'Sep/2026 – Nov/2026',
         title: 'Routines System - GOB/PR Digital',
         org: 'GOB-PR - IT Internship',
@@ -336,6 +451,7 @@ export default {
         tags: ['Web Development', 'Infrastructure', 'Zabbix', 'Grafana', 'Wiki.js', 'Linear', 'Claude Code'],
       },
       hackathon: {
+        achievement: { big: '10th', detail: 'Top 10 overall · ~35k points' },
         date: 'Oct/2026',
         title: 'Smart Charging Hackathon - Localiza&Co',
         org: 'Localiza&Co internship selection process',
@@ -347,8 +463,32 @@ export default {
   },
 
   contact: {
-    title: 'Let’s build something together?',
-    subtitle: 'Open to internship opportunities, projects and good conversations about tech.',
+    shell: {
+      user: 'visitor',
+      status: 'online',
+      placeholder: 'type help and press Enter',
+      inputLabel: 'Terminal command',
+      hint: '# your turn: type help to see the commands',
+      tuxHint: '# psst: tap Tux up here for life tips and fun facts about Lucas',
+      help: [
+        'available commands:',
+        '  email      copies my email',
+        '  linkedin   opens my LinkedIn',
+        '  github     opens my GitHub',
+        '  whatsapp   opens a WhatsApp chat',
+        '  cv         opens my resume',
+        '  whoami     who you are',
+        '  clear      clears the terminal',
+      ],
+      emailCopied: 'email copied:',
+      opening: (name) => `opening ${name}...`,
+      cv: 'opening the resume...',
+      whoami: 'someone with good taste in portfolios. shall we talk?',
+      sudo: 'permission granted. hiring unlocked: just send me an email.',
+      notFound: (cmd) => `command not found: ${cmd}. type help to see the commands.`,
+    },
+    title: 'Got a problem to solve?',
+    subtitle: 'Reach out. I like to understand the process before writing the first line of code.',
     copyEmail: 'Copy email',
     copied: 'Email copied!',
     ping: [

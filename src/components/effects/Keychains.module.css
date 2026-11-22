@@ -1,0 +1,45 @@
+@reference "../../index.css";
+
+/* fileira de chaveiros presa na borda de baixo do card */
+.keychains {
+  @apply absolute left-8 top-full z-10 flex gap-5 pointer-events-none;
+}
+
+.right {
+  @apply left-auto right-8 flex-row-reverse;
+}
+
+/* cada chaveiro gira em volta da argola (--swing vem da física) */
+.keychain {
+  @apply relative flex flex-col items-center;
+  transform-origin: 50% 0;
+  rotate: var(--swing, 0rad);
+}
+
+/* fiozinho preso na borda do card (é a referência de onde o chaveiro gira) */
+.ring {
+  @apply block w-px h-7 -mt-px bg-slate-500;
+}
+
+/* o próprio logo, sem fundo; balança um pouco atrasado (--lag) */
+.charm {
+  @apply block w-9 h-9 pointer-events-auto cursor-grab select-none;
+  touch-action: none;
+  transform-origin: 50% 0;
+  rotate: var(--lag, 0rad);
+  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.55));
+  transition: scale 0.15s;
+}
+
+.charm:hover {
+  scale: 1.08;
+}
+
+.held .charm {
+  cursor: grabbing;
+  scale: 1.12;
+}
+
+.charm svg {
+  @apply block w-full h-full;
+}

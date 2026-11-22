@@ -21,7 +21,8 @@
 }
 
 .groups {
-  @apply flex flex-col gap-12 max-w-6xl mx-auto;
+  /* relativo para o Tux que foge do card do Linux andar pela borda daqui */
+  @apply relative flex flex-col gap-12 max-w-6xl mx-auto;
 }
 
 .group {
