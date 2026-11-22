@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './FactStrips.module.css';
 import { useLanguage } from '../../i18n/useLanguage';
 
@@ -59,10 +60,18 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
   const drag = useRef(null);
   const frame = useRef(0);
   const last = useRef(0);
-  // card em que a fita está colada (data-sticky) e a distância do centro dela ao centro dele
-  const host = useRef(saved.host ? { id: saved.host, ox: saved.ox, oy: saved.oy } : null);
-  const follow = useRef(0);
+  /*
+   * Colada num card (data-sticky): a fita passa a ser desenhada DENTRO do card,
+   * por um portal, então herda tudo o que acontece com ele (virar em 3D como
+   * livro, inclinar, flutuar, escurecer). ox/oy são a distância do centro dela
+   * ao centro do card, nas medidas do próprio card; angle é o ângulo total.
+   */
+  const [attached, setAttached] = useState(() =>
+    saved.host ? { id: saved.host, ox: saved.ox, oy: saved.oy, angle: saved.angle ?? anchor.tilt + (saved.a ?? 0) } : null
+  );
+  const [hostEl, setHostEl] = useState(null);
   const target = useRef(null);
+  const listening = useRef(null);
 
   const apply = () => {
     const { x, y, a } = body.current;
@@ -125,25 +134,22 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     target.current = el;
   };
 
-  // colada num card: a cada quadro a fita vai para onde o card estiver
-  const startFollowing = () => {
-    cancelAnimationFrame(follow.current);
-    const tick = () => {
-      follow.current = requestAnimationFrame(tick);
-      const h = host.current;
-      if (!h || drag.current) return;
-      const card = document.querySelector(`[data-sticky="${CSS.escape(h.id)}"]`);
-      const r = card?.getBoundingClientRect();
-      if (!r || !r.width) return;
-      const layer = layerRef.current.getBoundingClientRect();
-      measureBase();
-      const b = body.current;
-      b.x = r.left + r.width / 2 - layer.left + h.ox - b.baseX;
-      b.y = r.top + r.height / 2 - layer.top + h.oy - b.baseY;
-      apply();
+  // acha o card em que ela está colada (ele pode demorar a aparecer ou ser recriado)
+  useEffect(() => {
+    if (!attached) {
+      setHostEl(null);
+      return undefined;
+    }
+    const resolve = () => {
+      setHostEl((current) => {
+        if (current?.isConnected && current.dataset.sticky === attached.id) return current;
+        return document.querySelector(`[data-sticky="${CSS.escape(attached.id)}"]`);
+      });
     };
-    tick();
-  };
+    resolve();
+    const timer = setInterval(resolve, 500);
+    return () => clearInterval(timer);
+  }, [attached]);
 
   useLayoutEffect(() => {
     Object.assign(body.current, { x: saved.x, y: saved.y, a: saved.a ?? 0 });
@@ -154,9 +160,8 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     if (hitX || hitY) {
       apply();
       const { x, y, a } = body.current;
-      onSettle(index, { x, y, a, ...(host.current && { host: host.current.id, ox: host.current.ox, oy: host.current.oy }) });
+      onSettle(index, { x, y, a, ...(attached && { host: attached.id, ox: attached.ox, oy: attached.oy, angle: attached.angle }) });
     }
-    if (host.current) startFollowing();
     // só deve rodar quando a posição salva muda, não a cada render
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saved.x, saved.y, saved.a]);
@@ -164,8 +169,8 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
   useEffect(
     () => () => {
       cancelAnimationFrame(frame.current);
-      cancelAnimationFrame(follow.current);
       target.current?.removeAttribute('data-sticker-target');
+      listening.current?.();
     },
     []
   );
@@ -177,19 +182,28 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     el.classList.add(styles.stuck);
     highlight(null);
 
-    // se caiu em cima de um card, cola nele e passa a acompanhá-lo
+    // se caiu em cima de um card, cola nele: passa a ser desenhada dentro dele
     const card = findHost();
+    const { x, y, a } = body.current;
     if (card) {
       const r = card.getBoundingClientRect();
       const [cx, cy] = stripCenter();
-      host.current = { id: card.dataset.sticky, ox: cx - (r.left + r.width / 2), oy: cy - (r.top + r.height / 2) };
-      startFollowing();
+      // de medidas da tela para medidas do card (ele pode estar inclinado ou em perspectiva)
+      const sx = r.width / card.offsetWidth || 1;
+      const sy = r.height / card.offsetHeight || 1;
+      const stuck = {
+        id: card.dataset.sticky,
+        ox: (cx - (r.left + r.width / 2)) / sx,
+        oy: (cy - (r.top + r.height / 2)) / sy,
+        angle: anchor.tilt + a,
+      };
+      setHostEl(card);
+      setAttached(stuck);
+      onSettle(index, { x, y, a, host: stuck.id, ox: stuck.ox, oy: stuck.oy, angle: stuck.angle });
     } else {
-      host.current = null;
+      setAttached(null);
+      onSettle(index, { x, y, a });
     }
-
-    const { x, y, a } = body.current;
-    onSettle(index, { x, y, a, ...(host.current && { host: host.current.id, ox: host.current.ox, oy: host.current.oy }) });
   };
 
   const loop = (now) => {
@@ -254,11 +268,8 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     return [event.clientX - layer.left, event.clientY - layer.top];
   };
 
-  const onPointerDown = (event) => {
+  const startDrag = (event) => {
     cancelAnimationFrame(frame.current);
-    cancelAnimationFrame(follow.current);
-    host.current = null;
-    event.currentTarget.setPointerCapture(event.pointerId);
     measureBase();
     const b = body.current;
     const [px, py] = pointerInLayer(event);
@@ -283,6 +294,44 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     onGrab();
     last.current = performance.now();
     frame.current = requestAnimationFrame(loop);
+
+    listening.current?.();
+    const move = (e) => onPointerMove(e);
+    const up = () => {
+      listening.current?.();
+      onPointerUp();
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
+    listening.current = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+      listening.current = null;
+    };
+  };
+
+  const onPointerDown = (event) => {
+    event.preventDefault();
+    startDrag(event);
+  };
+
+  // pegar uma fita colada: ela sai do card e volta para a camada solta, no mesmo lugar
+  const grabFromCard = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const r = event.currentTarget.getBoundingClientRect();
+    const layer = layerRef.current.getBoundingClientRect();
+    const b = body.current;
+    b.a = attached.angle - anchor.tilt;
+    apply();
+    measureBase();
+    b.x = r.left + r.width / 2 - layer.left - b.baseX;
+    b.y = r.top + r.height / 2 - layer.top - b.baseY;
+    apply();
+    setAttached(null);
+    startDrag(event);
   };
 
   const onPointerMove = (event) => {
@@ -335,8 +384,7 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
 
   const reset = () => {
     cancelAnimationFrame(frame.current);
-    cancelAnimationFrame(follow.current);
-    host.current = null;
+    setAttached(null);
     highlight(null);
     drag.current = null;
     const el = ref.current;
@@ -347,26 +395,28 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
     setTimeout(() => el.classList.remove(styles.returning, styles.lifted), 500);
   };
 
+  const face = (
+    <div className={styles.inner}>
+      <div className={styles.face}>
+        <span className={styles.grip} aria-hidden="true" />
+        <span className={styles.slashes}>//</span>
+        <span className={styles.text}>{text}</span>
+      </div>
+      <span className={styles.peel} aria-hidden="true" />
+    </div>
+  );
+
   return (
+    <>
     <div
       ref={ref}
-      className={styles.strip}
+      className={`${styles.strip} ${attached && hostEl ? styles.away : ''}`}
       style={{ ...position, '--tilt': `${anchor.tilt}deg`, '--i': index }}
       onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
       onDoubleClick={reset}
       data-tour={index === 0 ? 'strip' : undefined}
     >
-      <div className={styles.inner}>
-        <div className={styles.face}>
-          <span className={styles.grip} aria-hidden="true" />
-          <span className={styles.slashes}>//</span>
-          <span className={styles.text}>{text}</span>
-        </div>
-        <span className={styles.peel} aria-hidden="true" />
-      </div>
+      {face}
       {showHint && (
         <span className={styles.hint} aria-hidden="true">
           <svg viewBox="0 0 24 24">
@@ -376,6 +426,21 @@ function Strip({ text, anchor, position, saved, onSettle, onGrab, index, showHin
         </span>
       )}
     </div>
+
+    {attached &&
+      hostEl &&
+      createPortal(
+        <div
+          className={`${styles.strip} ${styles.onCard}`}
+          style={{ left: `calc(50% + ${attached.ox}px)`, top: `calc(50% + ${attached.oy}px)`, '--rot': `${attached.angle}deg` }}
+          onPointerDown={grabFromCard}
+          onDoubleClick={reset}
+        >
+          {face}
+        </div>,
+        hostEl
+      )}
+    </>
   );
 }
 
